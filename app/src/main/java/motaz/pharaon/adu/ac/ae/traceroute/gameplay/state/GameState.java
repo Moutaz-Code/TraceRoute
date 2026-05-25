@@ -1,10 +1,25 @@
 package motaz.pharaon.adu.ac.ae.traceroute.gameplay.state;
 
-enum GameState {
-    MAIN_MENU,
-    EXPLORING,       // point-and-click scene navigation
-    DIALOGUE,        // dialogue overlay active
-    PUZZLE,          // puzzle scene replacing exploration
-    EVIDENCE_BOARD,  // inventory overlay active
-    CASE_SOLVED      // terminal state
+public enum GameState {
+    /*
+     * Purpose:
+     * - High-level mode enum for the MVP runtime.
+     *
+     * Responsibilities:
+     * - Describe what kind of interaction is currently active.
+     * - Stay broad; detailed case progress belongs to evidence/thread/timeline systems.
+     *
+     * Depends on:
+     * - None.
+     *
+     * Used by:
+     * - GameStateMachine.
+     * - GameController.
+     */
+
+    BOOT,
+    WORLD_INVESTIGATION,
+    HANDHELD_OPEN,
+    TIMELINE_ORDERING,
+    ENDING
 }

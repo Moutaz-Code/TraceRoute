@@ -1,13 +1,18 @@
 # Architecture Notes
 
-Use this folder for high-level technical documentation as the app grows.
+This folder holds technical design notes for the Android/Java/OpenGL ES 3.0 MVP.
 
-Possible topics:
+Start here:
 
-- application startup flow
-- scene / state model
-- rendering pipeline
-- input and event handling
-- asset and resource loading
-- data and persistence layers
+-   [Runtime Architecture](runtime_architecture.md)
+-   [Class Responsibility Map](class_responsibility_map.md)
+
+Current architectural direction:
+
+-   Android Fragments are mandatory and should be used meaningfully, but not for every small UI panel.
+-   OpenGL rendering lives inside `WorldInvestigationFragment` through `GameView`.
+-   Apartment rooms are data definitions, not Android `View` classes.
+-   The handheld is one fragment-based Android UI overlay with ordinary internal views/controllers.
+-   The stylized terminal computer is a major mechanic and uses `TerminalFragment`.
+-   Game logic should live in gameplay/core systems, not inside fragment classes.
 

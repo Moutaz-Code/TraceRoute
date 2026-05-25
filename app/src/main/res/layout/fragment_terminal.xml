@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/terminal_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#05080A"
+    android:minHeight="360dp"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/terminal_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="TERMINAL"
+        android:textColor="#D6F5E3"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/terminal_placeholder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="> awaiting command"
+        android:textColor="#9FD8B4"
+        android:textSize="14sp" />
+
+</LinearLayout>
