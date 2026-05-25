@@ -1,5 +1,7 @@
 package motaz.pharaon.adu.ac.ae.traceroute.core;
 
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.world.WorldInvestigationScene;
+
 public class GameController {
     /*
      * Purpose:
@@ -20,4 +22,5 @@ public class GameController {
      * - GLRenderer for update/render coordination.
      * - GameShellFragment and handheld fragments for UI actions.
      */
+    private WorldInvestigationScene worldInvestigationScene; //hmmmmmmmmmmmmmmm, rethink this
 }
