@@ -31,6 +31,7 @@ public class WorldInvestigationScene implements Scene {
 
     @Override
     public void render(RenderPipeline renderer) {
+        renderer.drawDebugQuad(-0.5f, -0.5f, 1.0f, 1.0f);
     }
 
     @Override

@@ -1,8 +1,9 @@
 package motaz.pharaon.adu.ac.ae.traceroute.core;
 
+import motaz.pharaon.adu.ac.ae.traceroute.engine.render.RenderPipeline;
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.scene.Scene;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.world.WorldInvestigationScene;
 
-public class GameController {
     /*
      * Purpose:
      * - Central coordinator for MVP game logic.
@@ -22,5 +23,20 @@ public class GameController {
      * - GLRenderer for update/render coordination.
      * - GameShellFragment and handheld fragments for UI actions.
      */
-    private WorldInvestigationScene worldInvestigationScene; //hmmmmmmmmmmmmmmm, rethink this
+public class GameController {
+    private Scene worldInvestigationScene;
+
+    public GameController(){
+        worldInvestigationScene = new WorldInvestigationScene();
+    }
+
+    public void update(float deltaTime) {
+        worldInvestigationScene.update(deltaTime);
+    }
+
+    public void render(RenderPipeline renderPipeline) {
+        worldInvestigationScene.render(renderPipeline);
+    }
+
+
 }

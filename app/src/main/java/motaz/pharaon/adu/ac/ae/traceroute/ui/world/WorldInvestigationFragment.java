@@ -65,4 +65,8 @@ public class WorldInvestigationFragment extends Fragment {
         }
         super.onPause();
     }
+
+
+
+
 }
