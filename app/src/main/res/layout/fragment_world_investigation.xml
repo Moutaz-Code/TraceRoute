@@ -9,6 +9,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <LinearLayout
+        android:id="@+id/debug_room_context_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="18dp"
+        android:background="#AA05080A"
+        android:clickable="false"
+        android:focusable="false"
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/debug_room_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ROOM"
+            android:textColor="#D6F5E3"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/debug_room_context"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Context"
+            android:textColor="#9FD8B4"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
     <TextView
         android:id="@+id/debug_label_previous_room"
         android:layout_width="wrap_content"
@@ -46,7 +78,7 @@
         android:clickable="false"
         android:focusable="false"
         android:padding="8dp"
-        android:text="ROOM CLUE / TERMINAL"
+        android:text="ROOM HOTSPOT"
         android:textColor="#F5DA7A"
         android:textSize="12sp" />
 

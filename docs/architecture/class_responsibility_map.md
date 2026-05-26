@@ -238,7 +238,12 @@ Purpose:
 Owns:
 
 -   `EvidenceSystem`,
--   temporary hardcoded MVP content seed data.
+-   `ThreadSystem`,
+-   `TimelineSystem`,
+-   `StatementSystem`,
+-   current room id,
+-   temporary hardcoded MVP content seed data,
+-   calls to `GameRepository` for MVP save/load.
 
 Used by:
 
@@ -247,9 +252,8 @@ Used by:
 
 Later:
 
--   can be backed by `GameRepository`,
 -   can be populated by `DataLoader`,
--   can load/save through persistence.
+-   can move hardcoded case content into assets or JSON.
 
 ### `EvidenceItem`
 
@@ -301,18 +305,26 @@ Current implemented thread:
 -   `T01_DEATH_WINDOW_INSTABILITY`
 -   `T02_POSTMORTEM_ACTIVITY`
 -   `T03_APARTMENT_ACCESS`
+-   `T04_DATA_SALE_MOTIVE`
+-   `T05_SCENE_DISTURBANCE`
 
 Current progression:
 
 -   `E01_BODY_CONDITION_REPORT` unlocks the first observation,
 -   `E02_THERMOSTAT_AC_LOG` unlocks the second observation,
 -   collecting both stabilizes the thread.
+-   `E03_BROKEN_VASE_DISTURBED_TABLE` unlocks a Scene Disturbance observation.
+-   `E04_BLOOD_MARKED_COMPANY_AWARD` unlocks a Scene Disturbance observation.
+-   collecting both scene-disturbance clues stabilizes the thread.
 -   `E06_SCHEDULED_VICTIM_MESSAGE` unlocks the first Postmortem Activity observation.
 -   `E07_LAPTOP_SESSION_METADATA` unlocks the second Postmortem Activity observation.
 -   collecting both Postmortem Activity clues stabilizes the thread.
 -   `E05_SMART_LOCK_ENTRY_EXIT_LOG` unlocks the first Apartment Access observation.
 -   `E08_ROUTER_ADMIN_ACCESS_RECORD` unlocks the second Apartment Access observation.
 -   collecting both Apartment Access clues stabilizes the thread.
+-   `E12_ACCESS_DATA_SALE_FILE` unlocks the first Data-Sale Motive observation.
+-   `E13_VICTIM_DRAFT_DISCLOSURE_EMAIL` unlocks the second Data-Sale Motive observation.
+-   collecting both motive clues stabilizes the thread.
 
 ### `TimelineEvent`
 
@@ -329,6 +341,25 @@ Owns:
 -   resolved interpretation,
 -   visible/contradicted/stabilized state.
 
+### `FinalTimelineEvent`
+
+Purpose:
+
+-   Data model for one event in the final timeline-ordering sequence.
+
+Owns:
+
+-   stable id,
+-   correct order index,
+-   displayed time,
+-   title,
+-   short player-facing summary.
+
+Why it is separate from `TimelineEvent`:
+
+-   `TimelineEvent` represents investigation contradictions and uncertainty.
+-   `FinalTimelineEvent` represents the final solved sequence the player orders.
+
 ### `TimelineSystem`
 
 Purpose:
@@ -340,6 +371,10 @@ Owns:
 -   timeline event definitions,
 -   visible timeline state,
 -   thread-to-timeline reveal rules.
+-   final timeline event definitions,
+-   selected final timeline sequence,
+-   final timeline unlock/completion state,
+-   final timeline validation feedback.
 
 Current implemented event:
 
@@ -348,6 +383,23 @@ Current implemented event:
 Current trigger:
 
 -   `T01_DEATH_WINDOW_INSTABILITY` reveals and stabilizes the first contradiction.
+
+Current final timeline unlock:
+
+-   requires all five core threads to stabilize:
+-   `T01_DEATH_WINDOW_INSTABILITY`
+-   `T02_POSTMORTEM_ACTIVITY`
+-   `T03_APARTMENT_ACCESS`
+-   `T04_DATA_SALE_MOTIVE`
+-   `T05_SCENE_DISTURBANCE`
+
+Current final timeline behavior:
+
+-   the handheld shows scrambled final events,
+-   the player taps events into the selected sequence,
+-   `TimelineSystem` validates the order,
+-   a wrong full sequence clears and asks the player to try again,
+-   a correct full sequence marks the timeline completed.
 
 ### `SuspectStatement`
 
@@ -391,12 +443,12 @@ Current progression:
 
 Purpose:
 
--   DialogFragment UI for the stylized terminal computer.
+-   DialogFragment UI for the graybox victim laptop.
 
 Owns:
 
--   terminal display widgets,
--   command input widgets later.
+-   laptop display widgets,
+-   authored laptop panel buttons.
 
 Depends on:
 
@@ -407,7 +459,7 @@ Depends on:
 
 Purpose:
 
--   Runtime state for terminal history and prompt state.
+-   Runtime state for victim laptop history/panel output.
 
 Owns:
 
@@ -419,7 +471,7 @@ Owns:
 
 Purpose:
 
--   Handles authored terminal commands.
+-   Handles authored victim-laptop panel commands.
 
 Should:
 
@@ -435,19 +487,22 @@ Should not:
 
 Current starter commands:
 
--   `HELP`
--   `EVIDENCE`
 -   `MESSAGES`
--   `BODY`
--   `LOGS`
--   `LAPTOP`
+-   `ACTIVITY` / `LAPTOP`
+-   `FILES`
+-   `DRAFT`
 -   `CLEAR`
 
 Current gameplay side effect:
 
 -   `MESSAGES` collects `E06_SCHEDULED_VICTIM_MESSAGE`.
 -   `LAPTOP` collects `E07_LAPTOP_SESSION_METADATA`.
--   `LOGS` collects `E08_ROUTER_ADMIN_ACCESS_RECORD`.
+-   `FILES` collects `E12_ACCESS_DATA_SALE_FILE`.
+-   `DRAFT` collects `E13_VICTIM_DRAFT_DISCLOSURE_EMAIL`.
+
+Note:
+
+-   `E08_ROUTER_ADMIN_ACCESS_RECORD` is now collected from a separate office router/admin hotspot, not from the victim laptop.
 
 ## Handheld UI
 
@@ -489,7 +544,8 @@ Current screens:
 -   Evidence,
 -   Threads,
 -   Timeline,
--   Statements.
+-   Statements,
+-   Final Timeline.
 
 Why not fragments for every tab:
 
@@ -515,6 +571,7 @@ Currently renders:
 -   stabilized thread conclusion text,
 -   visible timeline contradiction cards,
 -   suspect statement cards.
+-   final timeline ordering cards and selectable event buttons.
 
 Why it exists:
 
@@ -529,19 +586,18 @@ Purpose:
 
 Owns:
 
--   terminal history display,
--   command input widgets,
--   command submit button wiring later.
+-   victim laptop output display,
+-   authored panel buttons.
 
 Currently binds:
 
 -   output history text,
--   authored command buttons,
+-   authored laptop panel buttons,
 -   no native Android soft keyboard.
 
 Why it exists:
 
--   The terminal should feel like a stylized computer UI built from normal Android Views.
+-   The laptop should feel like a stylized computer UI built from normal Android Views.
 -   Terminal state and command parsing stay in `TerminalSession` and `TerminalCommandProcessor`.
 
 ## Persistence
@@ -558,17 +614,60 @@ Purpose:
 
 -   Single access point for static content and save state.
 
+Owns:
+
+-   `GameDatabase`,
+-   conversion between `GameSaveState` and stored SQLite values.
+
+Current behavior:
+
+-   saves collected evidence ids,
+-   saves current room id,
+-   saves selected final timeline ids,
+-   saves final timeline completion.
+
+### `GameSaveState`
+
+Purpose:
+
+-   Plain Java save-state transfer object.
+
+Owns:
+
+-   collected evidence ids,
+-   current room id,
+-   selected final timeline event ids,
+-   final timeline completion flag.
+
 ### `GameDatabase`
 
 Purpose:
 
--   SQLite helper if database CRUD is required.
+-   Basic SQLite helper for MVP save state.
+
+Owns:
+
+-   database name/version,
+-   creation of the `save_state` table,
+-   basic CRUD helpers.
+
+Current CRUD surface:
+
+-   `putValue` creates or updates one key/value row,
+-   `getValue` reads one key/value row,
+-   `clearSaveState` deletes all save rows.
 
 ### `GameContract`
 
 Purpose:
 
 -   SQLite table and column names.
+
+Owns:
+
+-   `save_state` table name,
+-   key/value column names,
+-   save keys for evidence, room, final timeline selection, and final timeline completion.
 
 ## Deprecated / Old Scaffold
 

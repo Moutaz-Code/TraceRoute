@@ -9,6 +9,7 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
+import motaz.pharaon.adu.ac.ae.traceroute.core.GameRuntime;
 import motaz.pharaon.adu.ac.ae.traceroute.ui.shell.GameShellFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        GameRuntime.initialize(getApplicationContext());
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_main);
         hideSystemBars();

@@ -2,6 +2,7 @@ package motaz.pharaon.adu.ac.ae.traceroute.ui.handheld;
 
 import android.graphics.Color;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -11,6 +12,7 @@ import motaz.pharaon.adu.ac.ae.traceroute.R;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.evidence.EvidenceItem;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.investigation.InvestigationThread;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.statement.SuspectStatement;
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.timeline.FinalTimelineEvent;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.timeline.TimelineEvent;
 
 public class HandheldViewBinder {
@@ -36,6 +38,12 @@ public class HandheldViewBinder {
     private final TextView titleText;
     private final TextView emptyText;
     private final LinearLayout contentList;
+
+    public interface FinalTimelineSelectionListener {
+        void onFinalTimelineEventSelected(String eventId);
+
+        void onFinalTimelineResetRequested();
+    }
 
     public HandheldViewBinder(View rootView) {
         this.rootView = rootView;
@@ -109,6 +117,51 @@ public class HandheldViewBinder {
 
         for (SuspectStatement suspectStatement : suspectStatements) {
             contentList.addView(createStatementView(suspectStatement));
+        }
+    }
+
+    public void renderFinalTimeline(
+            List<FinalTimelineEvent> selectedEvents,
+            List<FinalTimelineEvent> availableEvents,
+            boolean unlocked,
+            boolean completed,
+            String feedback,
+            FinalTimelineSelectionListener selectionListener
+    ) {
+        titleText.setText("HANDHELD // FINAL TIMELINE");
+        contentList.removeAllViews();
+        emptyText.setVisibility(View.GONE);
+
+        if (!unlocked) {
+            emptyText.setVisibility(View.VISIBLE);
+            emptyText.setText(feedback);
+            return;
+        }
+
+        contentList.addView(createFinalTimelineStatusView(feedback, completed));
+
+        boolean hasSelectedEvents = selectedEvents != null && !selectedEvents.isEmpty();
+        if (hasSelectedEvents) {
+            TextView selectedHeader = createSectionLabel("Selected sequence");
+            contentList.addView(selectedHeader);
+
+            for (int index = 0; index < selectedEvents.size(); index++) {
+                contentList.addView(createSelectedFinalTimelineEventView(index + 1, selectedEvents.get(index)));
+            }
+        }
+
+        if (!completed) {
+            Button resetButton = new Button(rootView.getContext());
+            resetButton.setText("Reset Sequence");
+            resetButton.setOnClickListener(view -> selectionListener.onFinalTimelineResetRequested());
+            contentList.addView(resetButton);
+
+            TextView availableHeader = createSectionLabel("Tap events in true order");
+            contentList.addView(availableHeader);
+
+            for (FinalTimelineEvent availableEvent : availableEvents) {
+                contentList.addView(createAvailableFinalTimelineEventButton(availableEvent, selectionListener));
+            }
         }
     }
 
@@ -288,5 +341,84 @@ public class HandheldViewBinder {
         }
 
         return card;
+    }
+
+    private View createFinalTimelineStatusView(String feedback, boolean completed) {
+        LinearLayout card = new LinearLayout(rootView.getContext());
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setPadding(18, 16, 18, 16);
+        card.setBackgroundColor(completed ? Color.rgb(23, 34, 20) : Color.rgb(24, 27, 34));
+
+        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        cardParams.setMargins(0, 0, 0, 16);
+        card.setLayoutParams(cardParams);
+
+        TextView status = new TextView(rootView.getContext());
+        status.setText(feedback);
+        status.setTextColor(completed ? Color.rgb(245, 218, 122) : Color.rgb(214, 245, 227));
+        status.setTextSize(14);
+        card.addView(status);
+
+        return card;
+    }
+
+    private TextView createSectionLabel(String label) {
+        TextView textView = new TextView(rootView.getContext());
+        textView.setText(label);
+        textView.setTextColor(Color.rgb(159, 216, 180));
+        textView.setTextSize(13);
+        textView.setPadding(0, 12, 0, 8);
+        return textView;
+    }
+
+    private View createSelectedFinalTimelineEventView(int selectedOrder, FinalTimelineEvent finalTimelineEvent) {
+        LinearLayout card = new LinearLayout(rootView.getContext());
+        card.setOrientation(LinearLayout.VERTICAL);
+        card.setPadding(18, 16, 18, 16);
+        card.setBackgroundColor(Color.rgb(21, 26, 28));
+
+        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        cardParams.setMargins(0, 0, 0, 12);
+        card.setLayoutParams(cardParams);
+
+        TextView title = new TextView(rootView.getContext());
+        title.setText(selectedOrder + ". " + finalTimelineEvent.getDisplayTime() + " // " + finalTimelineEvent.getTitle());
+        title.setTextColor(Color.rgb(214, 245, 227));
+        title.setTextSize(15);
+        card.addView(title);
+
+        TextView summary = new TextView(rootView.getContext());
+        summary.setText(finalTimelineEvent.getSummary());
+        summary.setTextColor(Color.rgb(159, 216, 180));
+        summary.setTextSize(13);
+        summary.setPadding(0, 8, 0, 0);
+        card.addView(summary);
+
+        return card;
+    }
+
+    private View createAvailableFinalTimelineEventButton(
+            FinalTimelineEvent finalTimelineEvent,
+            FinalTimelineSelectionListener selectionListener
+    ) {
+        Button button = new Button(rootView.getContext());
+        button.setText(finalTimelineEvent.getDisplayTime() + " // " + finalTimelineEvent.getTitle());
+        button.setAllCaps(false);
+        button.setOnClickListener(view -> selectionListener.onFinalTimelineEventSelected(finalTimelineEvent.getId()));
+
+        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        buttonParams.setMargins(0, 0, 0, 10);
+        button.setLayoutParams(buttonParams);
+
+        return button;
     }
 }

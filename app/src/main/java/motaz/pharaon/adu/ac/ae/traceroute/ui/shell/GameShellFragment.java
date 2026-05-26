@@ -98,4 +98,9 @@ public class GameShellFragment extends Fragment implements GameUiEventListener {
                 Toast.LENGTH_SHORT
         ).show();
     }
+
+    @Override
+    public void onRoomContextChanged(String roomName, String contextText, String hotspotHint) {
+        // Room context labels are owned by WorldInvestigationFragment.
+    }
 }

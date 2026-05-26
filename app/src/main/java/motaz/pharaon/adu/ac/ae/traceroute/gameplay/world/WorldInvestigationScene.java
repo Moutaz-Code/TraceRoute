@@ -39,7 +39,9 @@ public class WorldInvestigationScene implements Scene {
         this.gameRuntime = gameRuntime;
         this.uiEventListener = uiEventListener;
         roomNavigator = new RoomNavigator();
+        roomNavigator.goToRoom(gameRuntime.getCurrentRoomId());
         hotspotSystem = new HotspotSystem();
+        publishRoomContext();
     }
 
     @Override
@@ -70,6 +72,8 @@ public class WorldInvestigationScene implements Scene {
 
         if (hotspot.getActionType() == HotspotActionType.NAVIGATE_ROOM) {
             roomNavigator.goToRoom(hotspot.getTargetRoomId());
+            gameRuntime.setCurrentRoomId(roomNavigator.getCurrentRoomId());
+            publishRoomContext();
         } else if (hotspot.getActionType() == HotspotActionType.OPEN_HANDHELD) {
             if (uiEventListener != null) {
                 uiEventListener.onOpenHandheldRequested();
@@ -85,6 +89,19 @@ public class WorldInvestigationScene implements Scene {
                 uiEventListener.onEvidenceInspectionRequested(evidenceId);
             }
         }
+    }
+
+    private void publishRoomContext() {
+        if (uiEventListener == null) {
+            return;
+        }
+
+        RoomDefinition currentRoom = roomNavigator.getCurrentRoom();
+        uiEventListener.onRoomContextChanged(
+                currentRoom.getDisplayName(),
+                currentRoom.getDebugContextText(),
+                currentRoom.getDebugHotspotHint()
+        );
     }
 
     private void drawHotspotDebugOverlay(RenderPipeline renderer, Hotspot hotspot) {

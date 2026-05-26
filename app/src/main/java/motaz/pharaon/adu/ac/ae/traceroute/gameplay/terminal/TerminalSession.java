@@ -26,8 +26,8 @@ public class TerminalSession {
 
     public TerminalSession() {
         history = new ArrayList<>();
-        history.add("TRACE/TERM v0.1");
-        history.add("Type HELP for available authored commands.");
+        history.add("VICTIM LAPTOP // ADRIAN VOSS");
+        history.add("Select a recovered laptop panel.");
     }
 
     public void submitCommand(String command, TerminalCommandProcessor commandProcessor) {
@@ -57,6 +57,6 @@ public class TerminalSession {
 
     private void clear() {
         history.clear();
-        history.add("TRACE/TERM v0.1");
+        history.add("VICTIM LAPTOP // ADRIAN VOSS");
     }
 }

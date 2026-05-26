@@ -1,6 +1,5 @@
 package motaz.pharaon.adu.ac.ae.traceroute.gameplay.terminal;
 
-import java.util.List;
 import java.util.Locale;
 
 import motaz.pharaon.adu.ac.ae.traceroute.core.GameRuntime;
@@ -36,49 +35,22 @@ public class TerminalCommandProcessor {
 
         switch (normalizedCommand) {
             case "help":
-                return "Commands: HELP, EVIDENCE, MESSAGES, BODY, LOGS, LAPTOP, CLEAR";
-            case "evidence":
-                return buildEvidenceOutput();
+                return "Laptop panels: MESSAGES, ACTIVITY, FILES, DRAFT, CLEAR";
             case "message":
             case "messages":
                 return buildMessagesOutput();
-            case "body":
-                return buildBodyReportOutput();
-            case "logs":
-                return buildLogsOutput();
+            case "activity":
             case "laptop":
                 return buildLaptopOutput();
+            case "file":
+            case "files":
+                return buildFilesOutput();
+            case "draft":
+            case "email":
+                return buildDraftOutput();
             default:
                 return "Unknown authored command. Type HELP.";
         }
-    }
-
-    private String buildEvidenceOutput() {
-        List<EvidenceItem> collectedEvidence = gameRuntime.getEvidenceSystem().getCollectedEvidence();
-        if (collectedEvidence.isEmpty()) {
-            return "No collected evidence in handheld database.";
-        }
-
-        StringBuilder builder = new StringBuilder("Collected evidence:");
-        for (EvidenceItem evidenceItem : collectedEvidence) {
-            builder.append('\n')
-                    .append("- ")
-                    .append(evidenceItem.getId())
-                    .append(" // ")
-                    .append(evidenceItem.getTitle());
-        }
-
-        return builder.toString();
-    }
-
-    private String buildBodyReportOutput() {
-        if (!gameRuntime.getEvidenceSystem().isCollected("E01_BODY_CONDITION_REPORT")) {
-            return "Body report not collected. Inspect the living room scene first.";
-        }
-
-        return "E01_BODY_CONDITION_REPORT\n"
-                + "Finding: body condition conflicts with activity after 21:00.\n"
-                + "Note: death window requires review against apartment temperature logs.";
     }
 
     private String buildMessagesOutput() {
@@ -106,16 +78,27 @@ public class TerminalCommandProcessor {
                 + "Finding: activity pattern resembles automation, not normal human use.";
     }
 
-    private String buildLogsOutput() {
-        EvidenceItem evidenceItem = gameRuntime.collectEvidence("E08_ROUTER_ADMIN_ACCESS_RECORD");
+    private String buildFilesOutput() {
+        EvidenceItem evidenceItem = gameRuntime.collectEvidence("E12_ACCESS_DATA_SALE_FILE");
         if (evidenceItem == null) {
-            return "Router log metadata unavailable.";
+            return "Access-data files unavailable.";
         }
 
         return evidenceItem.getId() + "\n"
-                + "Session type: trusted admin\n"
-                + "Access window: staging period\n"
-                + "Scope: smart-home hub / router / apartment devices\n"
-                + "Finding: manipulation required privileged technical access.";
+                + "File: ledger_access_export.dat\n"
+                + "Status: hidden archive recovered\n"
+                + "Finding: sale records connect the company to illegal apartment-system access data.";
+    }
+
+    private String buildDraftOutput() {
+        EvidenceItem evidenceItem = gameRuntime.collectEvidence("E13_VICTIM_DRAFT_DISCLOSURE_EMAIL");
+        if (evidenceItem == null) {
+            return "Draft disclosure email unavailable.";
+        }
+
+        return evidenceItem.getId() + "\n"
+                + "Draft status: unsent\n"
+                + "Recipient: legal counsel / regulator\n"
+                + "Finding: victim intended to expose the access-data operation.";
     }
 }

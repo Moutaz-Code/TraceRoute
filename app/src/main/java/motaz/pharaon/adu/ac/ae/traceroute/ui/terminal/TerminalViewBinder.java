@@ -30,36 +30,30 @@ public class TerminalViewBinder {
 
     private final ScrollView scrollView;
     private final TextView outputText;
-    private final Button helpButton;
-    private final Button evidenceButton;
     private final Button messagesButton;
-    private final Button bodyButton;
-    private final Button logsButton;
     private final Button laptopButton;
     private final Button clearButton;
+    private final Button filesButton;
+    private final Button draftButton;
 
     public TerminalViewBinder(View rootView) {
         scrollView = rootView.findViewById(R.id.terminal_scroll);
         outputText = rootView.findViewById(R.id.terminal_output);
-        helpButton = rootView.findViewById(R.id.terminal_command_help);
-        evidenceButton = rootView.findViewById(R.id.terminal_command_evidence);
         messagesButton = rootView.findViewById(R.id.terminal_command_messages);
-        bodyButton = rootView.findViewById(R.id.terminal_command_body);
-        logsButton = rootView.findViewById(R.id.terminal_command_logs);
         laptopButton = rootView.findViewById(R.id.terminal_command_laptop);
         clearButton = rootView.findViewById(R.id.terminal_command_clear);
+        filesButton = rootView.findViewById(R.id.terminal_command_files);
+        draftButton = rootView.findViewById(R.id.terminal_command_draft);
     }
 
     public void bind(TerminalSession terminalSession, TerminalCommandProcessor commandProcessor) {
         render(terminalSession);
 
-        helpButton.setOnClickListener(view -> submitCommand("help", terminalSession, commandProcessor));
-        evidenceButton.setOnClickListener(view -> submitCommand("evidence", terminalSession, commandProcessor));
         messagesButton.setOnClickListener(view -> submitCommand("messages", terminalSession, commandProcessor));
-        bodyButton.setOnClickListener(view -> submitCommand("body", terminalSession, commandProcessor));
-        logsButton.setOnClickListener(view -> submitCommand("logs", terminalSession, commandProcessor));
         laptopButton.setOnClickListener(view -> submitCommand("laptop", terminalSession, commandProcessor));
         clearButton.setOnClickListener(view -> submitCommand("clear", terminalSession, commandProcessor));
+        filesButton.setOnClickListener(view -> submitCommand("files", terminalSession, commandProcessor));
+        draftButton.setOnClickListener(view -> submitCommand("draft", terminalSession, commandProcessor));
     }
 
     private void submitCommand(

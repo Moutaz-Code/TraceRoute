@@ -45,6 +45,8 @@ public class RoomNavigator {
         addRoom(buildRoom(
                 RoomId.LIVING_ROOM,
                 "Living Room / Body Scene",
+                "Victim: Adrian Voss. Physical clues define the real violence.",
+                "Body / vase / company award",
                 PLACEHOLDER_ROOM_TEXTURE,
                 RoomId.CCTV_WINDOW_OPTIONAL,
                 RoomId.ENTRY_SMART_LOCK
@@ -52,6 +54,8 @@ public class RoomNavigator {
         addRoom(buildRoom(
                 RoomId.ENTRY_SMART_LOCK,
                 "Entry / Smart-Lock Area",
+                "Visitor log: Marcus Hale entered 19:05 and exited 19:42.",
+                "Smart-lock access log",
                 PLACEHOLDER_ROOM_TEXTURE,
                 RoomId.LIVING_ROOM,
                 RoomId.KITCHEN_SIDE_AREA
@@ -59,6 +63,8 @@ public class RoomNavigator {
         addRoom(buildRoom(
                 RoomId.KITCHEN_SIDE_AREA,
                 "Kitchen / Side Area",
+                "Environmental systems contradict the apparent late death window.",
+                "Thermostat / AC log",
                 PLACEHOLDER_ROOM_TEXTURE,
                 RoomId.ENTRY_SMART_LOCK,
                 RoomId.OFFICE_DEVICE_CORNER
@@ -66,6 +72,8 @@ public class RoomNavigator {
         addRoom(buildRoom(
                 RoomId.OFFICE_DEVICE_CORNER,
                 "Office / Device Corner",
+                "Victim laptop and network devices expose staging and motive.",
+                "Victim laptop / router record",
                 PLACEHOLDER_ROOM_TEXTURE,
                 RoomId.KITCHEN_SIDE_AREA,
                 RoomId.CCTV_WINDOW_OPTIONAL
@@ -73,6 +81,8 @@ public class RoomNavigator {
         addRoom(buildRoom(
                 RoomId.CCTV_WINDOW_OPTIONAL,
                 "CCTV / Window Angle",
+                "Building security context. Useful later for staff suspicion.",
+                "CCTV outage placeholder",
                 PLACEHOLDER_ROOM_TEXTURE,
                 RoomId.OFFICE_DEVICE_CORNER,
                 RoomId.LIVING_ROOM
@@ -118,6 +128,8 @@ public class RoomNavigator {
     private RoomDefinition buildRoom(
             RoomId id,
             String displayName,
+            String debugContextText,
+            String debugHotspotHint,
             String backgroundTexturePath,
             RoomId previousRoomId,
             RoomId nextRoomId
@@ -151,11 +163,27 @@ public class RoomNavigator {
         if (id == RoomId.LIVING_ROOM) {
             hotspots.add(Hotspot.inspectEvidence(
                     "inspect_body_condition",
-                    0.42f,
+                    0.36f,
                     0.38f,
-                    0.18f,
+                    0.12f,
                     0.28f,
                     "E01_BODY_CONDITION_REPORT"
+            ));
+            hotspots.add(Hotspot.inspectEvidence(
+                    "inspect_broken_vase",
+                    0.50f,
+                    0.42f,
+                    0.12f,
+                    0.22f,
+                    "E03_BROKEN_VASE_DISTURBED_TABLE"
+            ));
+            hotspots.add(Hotspot.inspectEvidence(
+                    "inspect_company_award",
+                    0.64f,
+                    0.42f,
+                    0.12f,
+                    0.22f,
+                    "E04_BLOOD_MARKED_COMPANY_AWARD"
             ));
         }
 
@@ -183,15 +211,30 @@ public class RoomNavigator {
 
         if (id == RoomId.OFFICE_DEVICE_CORNER) {
             hotspots.add(Hotspot.openTerminal(
-                    "open_office_terminal",
+                    "open_victim_laptop",
                     0.42f,
                     0.26f,
                     0.20f,
                     0.28f
             ));
+            hotspots.add(Hotspot.inspectEvidence(
+                    "inspect_router_admin_record",
+                    0.66f,
+                    0.28f,
+                    0.14f,
+                    0.24f,
+                    "E08_ROUTER_ADMIN_ACCESS_RECORD"
+            ));
         }
 
-        return new RoomDefinition(id, displayName, backgroundTexturePath, hotspots);
+        return new RoomDefinition(
+                id,
+                displayName,
+                debugContextText,
+                debugHotspotHint,
+                backgroundTexturePath,
+                hotspots
+        );
     }
 
     private int getCurrentRoomIndex() {

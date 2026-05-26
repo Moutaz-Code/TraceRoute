@@ -30,16 +30,34 @@ public class TimelineSystem {
      */
 
     private static final String DEATH_WINDOW_THREAD_ID = "T01_DEATH_WINDOW_INSTABILITY";
+    private static final String POSTMORTEM_ACTIVITY_THREAD_ID = "T02_POSTMORTEM_ACTIVITY";
+    private static final String APARTMENT_ACCESS_THREAD_ID = "T03_APARTMENT_ACCESS";
+    private static final String DATA_SALE_MOTIVE_THREAD_ID = "T04_DATA_SALE_MOTIVE";
+    private static final String SCENE_DISTURBANCE_THREAD_ID = "T05_SCENE_DISTURBANCE";
     private static final String POST_21_ACTIVITY_EVENT_ID = "TL01_POST_21_ACTIVITY_UNRELIABLE";
 
     private final Map<String, TimelineEvent> timelineEvents;
+    private final Map<String, FinalTimelineEvent> finalTimelineEvents;
+    private final List<String> selectedFinalTimelineEventIds;
+    private boolean finalTimelineUnlocked;
+    private boolean finalTimelineCompleted;
+    private String finalTimelineFeedback;
 
     public TimelineSystem() {
         timelineEvents = new LinkedHashMap<>();
+        finalTimelineEvents = new LinkedHashMap<>();
+        selectedFinalTimelineEventIds = new ArrayList<>();
+        finalTimelineUnlocked = false;
+        finalTimelineCompleted = false;
+        finalTimelineFeedback = "Stabilize the core investigation threads to unlock the final sequence.";
     }
 
     public void registerEvent(TimelineEvent timelineEvent) {
         timelineEvents.put(timelineEvent.getId(), timelineEvent);
+    }
+
+    public void registerFinalTimelineEvent(FinalTimelineEvent finalTimelineEvent) {
+        finalTimelineEvents.put(finalTimelineEvent.getId(), finalTimelineEvent);
     }
 
     public TimelineEvent getEvent(String timelineEventId) {
@@ -47,6 +65,129 @@ public class TimelineSystem {
     }
 
     public void onThreadStateChanged(ThreadSystem threadSystem) {
+        updateInvestigationTimeline(threadSystem);
+        updateFinalTimelineUnlock(threadSystem);
+    }
+
+    public List<TimelineEvent> getVisibleTimelineEvents() {
+        List<TimelineEvent> visibleEvents = new ArrayList<>();
+
+        for (TimelineEvent timelineEvent : timelineEvents.values()) {
+            if (timelineEvent.isVisible()) {
+                visibleEvents.add(timelineEvent);
+            }
+        }
+
+        return visibleEvents;
+    }
+
+    public boolean isFinalTimelineUnlocked() {
+        return finalTimelineUnlocked;
+    }
+
+    public boolean isFinalTimelineCompleted() {
+        return finalTimelineCompleted;
+    }
+
+    public String getFinalTimelineFeedback() {
+        return finalTimelineFeedback;
+    }
+
+    public void selectFinalTimelineEvent(String eventId) {
+        if (!finalTimelineUnlocked || finalTimelineCompleted) {
+            return;
+        }
+
+        if (!finalTimelineEvents.containsKey(eventId) || selectedFinalTimelineEventIds.contains(eventId)) {
+            return;
+        }
+
+        selectedFinalTimelineEventIds.add(eventId);
+
+        if (selectedFinalTimelineEventIds.size() == finalTimelineEvents.size()) {
+            if (isSelectedOrderCorrect()) {
+                finalTimelineCompleted = true;
+                finalTimelineFeedback = "Timeline stabilized. The partner killed earlier, staged continuity, and left behind the false death window.";
+            } else {
+                selectedFinalTimelineEventIds.clear();
+                finalTimelineFeedback = "Sequence unstable. Try again from the earliest confirmed event.";
+            }
+        } else {
+            finalTimelineFeedback = "Selected "
+                    + selectedFinalTimelineEventIds.size()
+                    + " of "
+                    + finalTimelineEvents.size()
+                    + " events.";
+        }
+    }
+
+    public void clearFinalTimelineSelection() {
+        if (finalTimelineCompleted) {
+            return;
+        }
+
+        selectedFinalTimelineEventIds.clear();
+        finalTimelineFeedback = "Sequence cleared. Start from the earliest confirmed event.";
+    }
+
+    public List<FinalTimelineEvent> getSelectedFinalTimelineEvents() {
+        List<FinalTimelineEvent> selectedEvents = new ArrayList<>();
+
+        for (String eventId : selectedFinalTimelineEventIds) {
+            FinalTimelineEvent finalTimelineEvent = finalTimelineEvents.get(eventId);
+            if (finalTimelineEvent != null) {
+                selectedEvents.add(finalTimelineEvent);
+            }
+        }
+
+        return selectedEvents;
+    }
+
+    public List<String> getSelectedFinalTimelineEventIds() {
+        return new ArrayList<>(selectedFinalTimelineEventIds);
+    }
+
+    public void restoreFinalTimelineState(List<String> selectedEventIds, boolean completed) {
+        selectedFinalTimelineEventIds.clear();
+
+        for (String eventId : selectedEventIds) {
+            if (finalTimelineEvents.containsKey(eventId) && !selectedFinalTimelineEventIds.contains(eventId)) {
+                selectedFinalTimelineEventIds.add(eventId);
+            }
+        }
+
+        finalTimelineCompleted = completed;
+
+        if (finalTimelineCompleted) {
+            finalTimelineUnlocked = true;
+            finalTimelineFeedback = "Timeline stabilized. The partner killed earlier, staged continuity, and left behind the false death window.";
+        } else if (!selectedFinalTimelineEventIds.isEmpty()) {
+            finalTimelineUnlocked = true;
+            finalTimelineFeedback = "Selected "
+                    + selectedFinalTimelineEventIds.size()
+                    + " of "
+                    + finalTimelineEvents.size()
+                    + " events.";
+        }
+    }
+
+    public List<FinalTimelineEvent> getAvailableFinalTimelineEvents() {
+        List<FinalTimelineEvent> availableEvents = new ArrayList<>();
+
+        if (finalTimelineCompleted) {
+            return availableEvents;
+        }
+
+        for (FinalTimelineEvent finalTimelineEvent : finalTimelineEvents.values()) {
+            if (!selectedFinalTimelineEventIds.contains(finalTimelineEvent.getId())) {
+                availableEvents.add(finalTimelineEvent);
+            }
+        }
+
+        return availableEvents;
+    }
+
+    private void updateInvestigationTimeline(ThreadSystem threadSystem) {
         InvestigationThread deathWindowThread = threadSystem.getThread(DEATH_WINDOW_THREAD_ID);
         TimelineEvent post21ActivityEvent = timelineEvents.get(POST_21_ACTIVITY_EVENT_ID);
 
@@ -64,15 +205,33 @@ public class TimelineSystem {
         }
     }
 
-    public List<TimelineEvent> getVisibleTimelineEvents() {
-        List<TimelineEvent> visibleEvents = new ArrayList<>();
+    private void updateFinalTimelineUnlock(ThreadSystem threadSystem) {
+        boolean allCoreThreadsStabilized =
+                isThreadStabilized(threadSystem, DEATH_WINDOW_THREAD_ID)
+                        && isThreadStabilized(threadSystem, POSTMORTEM_ACTIVITY_THREAD_ID)
+                        && isThreadStabilized(threadSystem, APARTMENT_ACCESS_THREAD_ID)
+                        && isThreadStabilized(threadSystem, DATA_SALE_MOTIVE_THREAD_ID)
+                        && isThreadStabilized(threadSystem, SCENE_DISTURBANCE_THREAD_ID);
 
-        for (TimelineEvent timelineEvent : timelineEvents.values()) {
-            if (timelineEvent.isVisible()) {
-                visibleEvents.add(timelineEvent);
+        if (allCoreThreadsStabilized && !finalTimelineUnlocked) {
+            finalTimelineUnlocked = true;
+            finalTimelineFeedback = "Core threads stabilized. Order the final sequence.";
+        }
+    }
+
+    private boolean isThreadStabilized(ThreadSystem threadSystem, String threadId) {
+        InvestigationThread investigationThread = threadSystem.getThread(threadId);
+        return investigationThread != null && investigationThread.isStabilized();
+    }
+
+    private boolean isSelectedOrderCorrect() {
+        for (int index = 0; index < selectedFinalTimelineEventIds.size(); index++) {
+            FinalTimelineEvent finalTimelineEvent = finalTimelineEvents.get(selectedFinalTimelineEventIds.get(index));
+            if (finalTimelineEvent == null || finalTimelineEvent.getOrderIndex() != index + 1) {
+                return false;
             }
         }
 
-        return visibleEvents;
+        return true;
     }
 }

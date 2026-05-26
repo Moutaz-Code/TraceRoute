@@ -12,7 +12,7 @@
         android:id="@+id/terminal_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="APARTMENT TERMINAL"
+        android:text="VICTIM LAPTOP // ADRIAN VOSS"
         android:textColor="#D6F5E3"
         android:textSize="18sp" />
 
@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
-        android:text="AUTHORED COMMANDS"
+        android:text="LAPTOP PANELS"
         android:textColor="#5E8B73"
         android:textSize="12sp" />
 
@@ -52,27 +52,27 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/terminal_command_help"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Help" />
-
-        <Button
-            android:id="@+id/terminal_command_evidence"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:text="Evidence" />
-
-        <Button
             android:id="@+id/terminal_command_messages"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:text="Messages" />
+
+        <Button
+            android:id="@+id/terminal_command_laptop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="Activity" />
+
+        <Button
+            android:id="@+id/terminal_command_files"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="Files" />
 
     </LinearLayout>
 
@@ -85,27 +85,11 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/terminal_command_body"
+            android:id="@+id/terminal_command_draft"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Body" />
-
-        <Button
-            android:id="@+id/terminal_command_logs"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:text="Logs" />
-
-        <Button
-            android:id="@+id/terminal_command_laptop"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:text="Laptop" />
+            android:text="Draft" />
 
         <Button
             android:id="@+id/terminal_command_clear"

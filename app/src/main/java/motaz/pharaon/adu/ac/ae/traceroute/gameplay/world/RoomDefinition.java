@@ -29,17 +29,23 @@ public class RoomDefinition {
 
     private final RoomId id;
     private final String displayName;
+    private final String debugContextText;
+    private final String debugHotspotHint;
     private final String backgroundTexturePath;
     private final List<Hotspot> hotspots;
 
     public RoomDefinition(
             RoomId id,
             String displayName,
+            String debugContextText,
+            String debugHotspotHint,
             String backgroundTexturePath,
             List<Hotspot> hotspots
     ) {
         this.id = id;
         this.displayName = displayName;
+        this.debugContextText = debugContextText;
+        this.debugHotspotHint = debugHotspotHint;
         this.backgroundTexturePath = backgroundTexturePath;
         this.hotspots = Collections.unmodifiableList(new ArrayList<>(hotspots));
     }
@@ -50,6 +56,14 @@ public class RoomDefinition {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    public String getDebugContextText() {
+        return debugContextText;
+    }
+
+    public String getDebugHotspotHint() {
+        return debugHotspotHint;
     }
 
     public String getBackgroundTexturePath() {

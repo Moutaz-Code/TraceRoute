@@ -96,4 +96,13 @@ public class GameView extends GLSurfaceView implements GameUiEventListener {
         });
     }
 
+    @Override
+    public void onRoomContextChanged(String roomName, String contextText, String hotspotHint) {
+        post(() -> {
+            if (uiEventListener != null) {
+                uiEventListener.onRoomContextChanged(roomName, contextText, hotspotHint);
+            }
+        });
+    }
+
 }

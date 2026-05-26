@@ -21,5 +21,6 @@ public enum HandheldScreen {
     THREADS,
     TIMELINE,
     STATEMENTS,
+    FINAL_TIMELINE,
     TERMINAL
 }

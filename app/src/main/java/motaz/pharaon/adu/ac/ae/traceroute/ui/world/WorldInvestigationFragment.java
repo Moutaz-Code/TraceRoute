@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
@@ -12,7 +13,7 @@ import motaz.pharaon.adu.ac.ae.traceroute.GameView;
 import motaz.pharaon.adu.ac.ae.traceroute.R;
 import motaz.pharaon.adu.ac.ae.traceroute.core.GameUiEventListener;
 
-public class WorldInvestigationFragment extends Fragment {
+public class WorldInvestigationFragment extends Fragment implements GameUiEventListener {
     /*
      * Purpose:
      * - Fragment wrapper for the OpenGL apartment investigation view.
@@ -31,6 +32,9 @@ public class WorldInvestigationFragment extends Fragment {
      */
 
     private GameView gameView;
+    private TextView roomTitleText;
+    private TextView roomContextText;
+    private TextView roomHotspotText;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,11 +45,11 @@ public class WorldInvestigationFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         FrameLayout gameViewContainer = view.findViewById(R.id.game_view_container);
+        roomTitleText = view.findViewById(R.id.debug_room_title);
+        roomContextText = view.findViewById(R.id.debug_room_context);
+        roomHotspotText = view.findViewById(R.id.debug_label_room_hotspot);
         gameView = new GameView(requireContext());
-
-        if (getParentFragment() instanceof GameUiEventListener) {
-            gameView.setUiEventListener((GameUiEventListener) getParentFragment());
-        }
+        gameView.setUiEventListener(this);
 
         gameViewContainer.addView(
                 gameView,
@@ -75,4 +79,39 @@ public class WorldInvestigationFragment extends Fragment {
 
 
 
+    @Override
+    public void onOpenHandheldRequested() {
+        if (getParentFragment() instanceof GameUiEventListener) {
+            ((GameUiEventListener) getParentFragment()).onOpenHandheldRequested();
+        }
+    }
+
+    @Override
+    public void onOpenTerminalRequested() {
+        if (getParentFragment() instanceof GameUiEventListener) {
+            ((GameUiEventListener) getParentFragment()).onOpenTerminalRequested();
+        }
+    }
+
+    @Override
+    public void onEvidenceInspectionRequested(String evidenceId) {
+        if (getParentFragment() instanceof GameUiEventListener) {
+            ((GameUiEventListener) getParentFragment()).onEvidenceInspectionRequested(evidenceId);
+        }
+    }
+
+    @Override
+    public void onRoomContextChanged(String roomName, String contextText, String hotspotHint) {
+        if (roomTitleText != null) {
+            roomTitleText.setText(roomName);
+        }
+
+        if (roomContextText != null) {
+            roomContextText.setText(contextText);
+        }
+
+        if (roomHotspotText != null) {
+            roomHotspotText.setText(hotspotHint);
+        }
+    }
 }

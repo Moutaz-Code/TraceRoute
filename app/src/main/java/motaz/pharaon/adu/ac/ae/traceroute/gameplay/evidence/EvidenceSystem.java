@@ -66,4 +66,8 @@ public class EvidenceSystem {
 
         return collectedEvidence;
     }
+
+    public synchronized List<String> getCollectedEvidenceIds() {
+        return new ArrayList<>(collectedEvidenceIds);
+    }
 }

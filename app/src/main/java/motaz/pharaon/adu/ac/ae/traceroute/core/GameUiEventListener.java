@@ -24,4 +24,6 @@ public interface GameUiEventListener {
     void onOpenTerminalRequested();
 
     void onEvidenceInspectionRequested(String evidenceId);
+
+    void onRoomContextChanged(String roomName, String contextText, String hotspotHint);
 }

@@ -23,7 +23,7 @@ MainActivity
     HandheldFragment
       HandheldController
       HandheldViewBinder
-      regular Android views for evidence / threads / timeline / statements
+      regular Android views for evidence / threads / timeline / statements / final timeline
 
     TerminalFragment
       TerminalViewBinder
@@ -59,7 +59,7 @@ Important fragments:
 -   `GameShellFragment`: root game shell.
 -   `WorldInvestigationFragment`: hosts the OpenGL `GameView`.
 -   `HandheldFragment`: one overlay for forensic device screens.
--   `TerminalFragment`: stylized terminal computer popup.
+-   `TerminalFragment`: stylized victim laptop popup.
 
 Inside `HandheldFragment`, use ordinary Android views and `HandheldController` for:
 
@@ -265,15 +265,15 @@ It exists because:
 -   OpenGL gameplay runs through `GameController` and `WorldInvestigationScene`,
 -   Android UI fragments need to display the same evidence/thread/timeline state,
 -   fragments should not own gameplay state directly,
--   the project does not yet have full repository/save-state plumbing.
+-   save/load should be centralized instead of scattered through fragments and scenes.
 
 Current runtime flow for evidence:
 
 ```text
 WorldInvestigationScene
-  EvidenceSystem.collectEvidence(id)
     GameRuntime
-      EvidenceSystem
+      EvidenceSystem.collectEvidence(id)
+      GameRepository.savePlayState(...)
 
 HandheldFragment
   HandheldViewBinder
@@ -281,16 +281,20 @@ HandheldFragment
       EvidenceSystem.getCollectedEvidence()
 ```
 
-This is acceptable for the early MVP foundation. Later, `GameRuntime` can be backed by `GameRepository`, `DataLoader`, and save/load persistence.
+`GameRuntime` is now backed by `GameRepository` for MVP save/load. Static content is still hardcoded temporarily; `DataLoader` can replace that later.
 
 Implemented evidence items include:
 
 -   `E01_BODY_CONDITION_REPORT`
 -   `E02_THERMOSTAT_AC_LOG`
+-   `E03_BROKEN_VASE_DISTURBED_TABLE`
+-   `E04_BLOOD_MARKED_COMPANY_AWARD`
 -   `E05_SMART_LOCK_ENTRY_EXIT_LOG`
 -   `E06_SCHEDULED_VICTIM_MESSAGE`
 -   `E07_LAPTOP_SESSION_METADATA`
 -   `E08_ROUTER_ADMIN_ACCESS_RECORD`
+-   `E12_ACCESS_DATA_SALE_FILE`
+-   `E13_VICTIM_DRAFT_DISCLOSURE_EMAIL`
 
 The first evidence display surface is:
 
@@ -323,10 +327,8 @@ The handheld currently has working tabs:
 -   Evidence
 -   Threads
 -   Timeline
-
-Later tabs should include:
-
--   Terminal entry point if desired.
+-   Statements
+-   Final Timeline
 
 ## Timeline Loop
 
@@ -351,7 +353,49 @@ Current behavior:
 -   once the Death Window thread is stabilized, the timeline contradiction is marked stabilized,
 -   the handheld Timeline tab displays the initial interpretation and current resolved interpretation.
 
-This timeline screen is not the final ordering puzzle yet. It is the investigation timeline: a readable place for contradictions, uncertain windows, and stabilized chronology claims.
+This timeline screen is not the final ordering puzzle. It is the investigation timeline: a readable place for contradictions, uncertain windows, and stabilized chronology claims.
+
+## Final Timeline Ordering Loop
+
+The final timeline ordering is a separate handheld screen.
+
+It unlocks only after the five core investigation threads are stabilized:
+
+-   Death Window Instability
+-   Postmortem Activity
+-   Apartment Access
+-   Data-Sale Motive
+-   Scene Disturbance
+
+The current graybox flow is:
+
+```text
+Collect required evidence
+  ThreadSystem stabilizes all five core threads
+    TimelineSystem unlocks final timeline ordering
+      HandheldFragment displays selectable final events
+        player taps events in true order
+          TimelineSystem validates the sequence
+```
+
+The implemented final sequence currently uses these 9 events:
+
+1.  Partner arrives.
+2.  Argument escalates.
+3.  Murder occurs.
+4.  AC and smart-home staging begins.
+5.  Partner exits.
+6.  Wife remote access.
+7.  CCTV outage.
+8.  Scheduled message sends.
+9.  Body discovered.
+
+Design boundaries:
+
+-   this is a graybox interaction, not final UI,
+-   the event buttons will later become stylized handheld controls,
+-   the ordering validates relative sequence rather than exact memorized timestamps,
+-   the final completion text should keep the reveal quiet and tragic.
 
 ## Suspect Statement Loop
 
@@ -381,16 +425,22 @@ This keeps statements lightweight:
 -   one suspicious detail,
 -   one contradiction state.
 
-The handheld currently has four working tabs:
+The handheld currently has five working tabs:
 
 -   Evidence
 -   Threads
 -   Timeline
 -   Statements
+-   Final Timeline
 
 ## Terminal Mechanic
 
 The terminal is a major mechanic.
+
+Current diegetic role:
+
+-   victim laptop in the office/device corner,
+-   graybox title: `VICTIM LAPTOP // ADRIAN VOSS`.
 
 It should be treated as:
 
@@ -404,36 +454,36 @@ It should not become:
 -   a freeform parser,
 -   a separate game mode disconnected from evidence and threads.
 
-The terminal should support authored interactions like:
+The victim laptop should support authored interactions like:
 
--   inspect logs,
--   query device activity,
+-   inspect victim messages,
+-   query laptop/device activity,
+-   inspect recovered files,
+-   inspect draft email,
 -   reveal metadata,
 -   unlock evidence,
 -   update investigation threads.
 
-Current MVP terminal boundary:
+Current MVP laptop boundary:
 
--   terminal commands are authored, not freeform,
+-   laptop panels are authored, not freeform,
 -   unknown commands return a readable fallback,
 -   commands do not execute real device or shell operations,
 -   command results may read `GameRuntime` state,
 -   later commands may unlock evidence/thread observations through gameplay systems.
--   the terminal should not use the native Android soft keyboard during normal play.
+-   the laptop should not use the native Android soft keyboard during normal play.
 
-Implemented starter commands:
+Implemented victim laptop panels:
 
--   `HELP`
--   `EVIDENCE`
 -   `MESSAGES`
--   `BODY`
--   `LOGS`
--   `LAPTOP`
+-   `ACTIVITY` / `LAPTOP`
+-   `FILES`
+-   `DRAFT`
 -   `CLEAR`
 
 `TerminalSession` owns visible history. `TerminalCommandProcessor` owns command interpretation. `TerminalViewBinder` owns Android view binding.
 
-For the current graybox, terminal commands are exposed as ordinary Android buttons. Later, replace these with authored game-art buttons, a custom diegetic keypad, or an asset-backed terminal interface. Do not return to a native text-entry keyboard unless there is a deliberate accessibility/debug mode.
+For the current graybox, laptop panels are exposed as ordinary Android buttons. Later, replace these with authored game-art buttons, a custom diegetic keypad, or an asset-backed laptop interface. Do not return to a native text-entry keyboard unless there is a deliberate accessibility/debug mode.
 
 The `MESSAGES` command currently discovers:
 
@@ -445,7 +495,17 @@ The `LAPTOP` command currently discovers:
 
 These clues advance the `Postmortem Activity` thread. Collecting both stabilizes the thread.
 
-The `LOGS` command currently discovers:
+The `FILES` command currently discovers:
+
+-   `E12_ACCESS_DATA_SALE_FILE`
+
+The `DRAFT` command currently discovers:
+
+-   `E13_VICTIM_DRAFT_DISCLOSURE_EMAIL`
+
+These clues support Revelation Beat 4: Data-Sale Motive. Collecting both stabilizes the `Data-Sale Motive` thread.
+
+Router/admin access is not discovered through the victim laptop. It is currently a separate office hotspot that collects:
 
 -   `E08_ROUTER_ADMIN_ACCESS_RECORD`
 
@@ -459,7 +519,7 @@ The current Apartment Access flow is:
 Collect E05_SMART_LOCK_ENTRY_EXIT_LOG
   Apartment Access observes physical entry/exit timing
 
-Run LOGS in terminal
+Inspect router/admin hotspot in office
   Collect E08_ROUTER_ADMIN_ACCESS_RECORD
   Apartment Access observes privileged technical access
 
@@ -472,6 +532,50 @@ Design meaning:
 -   simple presence is no longer the only question,
 -   remote or system-level manipulation becomes central,
 -   suspicion starts shifting toward someone with trusted technical familiarity.
+
+## Revelation Beat 4: Data-Sale Motive
+
+The current motive flow is:
+
+```text
+Run FILES in terminal
+  Collect E12_ACCESS_DATA_SALE_FILE
+  Data-Sale Motive observes illegal access-data operation
+
+Run DRAFT in terminal
+  Collect E13_VICTIM_DRAFT_DISCLOSURE_EMAIL
+  Data-Sale Motive observes victim intended to expose the operation
+
+If both are collected
+  Data-Sale Motive stabilizes
+```
+
+Design meaning:
+
+-   the partner's motive becomes legible,
+-   the case connects cyber-forensic evidence to emotional/legal stakes,
+-   the partner becomes more than an early visitor with technical access.
+
+## Scene Disturbance Loop
+
+The current Scene Disturbance flow is:
+
+```text
+Collect E03_BROKEN_VASE_DISTURBED_TABLE
+  Scene Disturbance observes a short localized struggle
+
+Collect E04_BLOOD_MARKED_COMPANY_AWARD
+  Scene Disturbance observes likely murder weapon
+
+If both are collected
+  Scene Disturbance stabilizes
+```
+
+Design meaning:
+
+-   the physical side of the murder supports impulsive violence,
+-   the cover-up remains more calculated than the killing,
+-   the company award keeps the business relationship visually tied to the murder.
 
 ## Data And Persistence
 
@@ -489,18 +593,27 @@ Static content:
 Save state:
 
 -   collected evidence ids,
--   unlocked thread observations,
--   stabilized threads,
--   unlocked statements,
 -   current room,
+-   selected final timeline event ids,
 -   final timeline completion.
+
+Thread observations, stabilized threads, unlocked statements, and investigation timeline visibility are currently derived from collected evidence during restore.
 
 For MVP, static content can start hardcoded or loaded from assets.
 
-For save state:
+For save state, the MVP now uses:
 
--   `SharedPreferences` is enough technically.
--   Use SQLite through `GameDatabase` if the course requires CRUD/database practice.
+-   `GameContract` for table/key names,
+-   `GameDatabase` for basic SQLite create/read/update/delete helpers,
+-   `GameRepository` as the facade used by runtime systems,
+-   `GameSaveState` as the plain data object crossing the repository boundary.
+
+The database is intentionally basic:
+
+-   one `save_state` key/value table,
+-   `putValue` for create/update,
+-   `getValue` for read,
+-   `clearSaveState` for delete/reset support.
 
 All persistence should be accessed through `GameRepository`.
 
@@ -516,5 +629,5 @@ All persistence should be accessed through `GameRepository`.
 8.  Add thread/timeline/statement screens.
 9.  Add `TerminalFragment` and terminal command state.
 10. Add final timeline ordering inside `HandheldFragment` or as a simple overlay view.
-11. Add save/load.
+11. Add save/load for evidence, threads, statements, current room, and final timeline state.
 12. Polish visuals/audio.

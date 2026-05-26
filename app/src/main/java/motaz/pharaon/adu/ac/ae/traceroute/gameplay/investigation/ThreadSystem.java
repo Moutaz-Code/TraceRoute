@@ -30,12 +30,18 @@ public class ThreadSystem {
     private static final String DEATH_WINDOW_THREAD_ID = "T01_DEATH_WINDOW_INSTABILITY";
     private static final String POSTMORTEM_ACTIVITY_THREAD_ID = "T02_POSTMORTEM_ACTIVITY";
     private static final String APARTMENT_ACCESS_THREAD_ID = "T03_APARTMENT_ACCESS";
+    private static final String DATA_SALE_MOTIVE_THREAD_ID = "T04_DATA_SALE_MOTIVE";
+    private static final String SCENE_DISTURBANCE_THREAD_ID = "T05_SCENE_DISTURBANCE";
     private static final String BODY_REPORT_ID = "E01_BODY_CONDITION_REPORT";
     private static final String AC_LOG_ID = "E02_THERMOSTAT_AC_LOG";
+    private static final String BROKEN_VASE_ID = "E03_BROKEN_VASE_DISTURBED_TABLE";
+    private static final String COMPANY_AWARD_ID = "E04_BLOOD_MARKED_COMPANY_AWARD";
     private static final String SMART_LOCK_LOG_ID = "E05_SMART_LOCK_ENTRY_EXIT_LOG";
     private static final String SCHEDULED_MESSAGE_ID = "E06_SCHEDULED_VICTIM_MESSAGE";
     private static final String LAPTOP_METADATA_ID = "E07_LAPTOP_SESSION_METADATA";
     private static final String ROUTER_ADMIN_ACCESS_ID = "E08_ROUTER_ADMIN_ACCESS_RECORD";
+    private static final String ACCESS_DATA_SALE_FILE_ID = "E12_ACCESS_DATA_SALE_FILE";
+    private static final String DRAFT_DISCLOSURE_EMAIL_ID = "E13_VICTIM_DRAFT_DISCLOSURE_EMAIL";
 
     private final Map<String, InvestigationThread> threads;
 
@@ -74,6 +80,8 @@ public class ThreadSystem {
 
         updatePostmortemActivityThread(evidenceId);
         updateApartmentAccessThread(evidenceId, evidenceSystem);
+        updateDataSaleMotiveThread(evidenceId, evidenceSystem);
+        updateSceneDisturbanceThread(evidenceId, evidenceSystem);
     }
 
     public List<InvestigationThread> getInvestigationThreads() {
@@ -129,6 +137,54 @@ public class ThreadSystem {
         if (evidenceSystem.isCollected(SMART_LOCK_LOG_ID)
                 && evidenceSystem.isCollected(ROUTER_ADMIN_ACCESS_ID)) {
             apartmentAccessThread.setStabilized(true);
+        }
+    }
+
+    private void updateDataSaleMotiveThread(String evidenceId, EvidenceSystem evidenceSystem) {
+        InvestigationThread dataSaleMotiveThread = threads.get(DATA_SALE_MOTIVE_THREAD_ID);
+        if (dataSaleMotiveThread == null) {
+            return;
+        }
+
+        if (ACCESS_DATA_SALE_FILE_ID.equals(evidenceId)) {
+            dataSaleMotiveThread.addObservation(
+                    "Access-data sale records establish the illegal operation behind the partnership."
+            );
+        } else if (DRAFT_DISCLOSURE_EMAIL_ID.equals(evidenceId)) {
+            dataSaleMotiveThread.addObservation(
+                    "The victim drafted a disclosure that would expose the partner and the operation."
+            );
+        }
+
+        if (evidenceSystem.isCollected(ACCESS_DATA_SALE_FILE_ID)
+                && evidenceSystem.isCollected(DRAFT_DISCLOSURE_EMAIL_ID)) {
+            dataSaleMotiveThread.setStabilized(true);
+        }
+    }
+
+    private void updateSceneDisturbanceThread(String evidenceId, EvidenceSystem evidenceSystem) {
+        InvestigationThread sceneDisturbanceThread = threads.get(SCENE_DISTURBANCE_THREAD_ID);
+        if (sceneDisturbanceThread == null) {
+            return;
+        }
+
+        if (BODY_REPORT_ID.equals(evidenceId)) {
+            sceneDisturbanceThread.addObservation(
+                    "The body scene anchors the violence in the living room."
+            );
+        } else if (BROKEN_VASE_ID.equals(evidenceId)) {
+            sceneDisturbanceThread.addObservation(
+                    "The broken vase and disturbed table point to a short localized struggle."
+            );
+        } else if (COMPANY_AWARD_ID.equals(evidenceId)) {
+            sceneDisturbanceThread.addObservation(
+                    "The blood-marked company award is likely the murder weapon."
+            );
+        }
+
+        if (evidenceSystem.isCollected(BROKEN_VASE_ID)
+                && evidenceSystem.isCollected(COMPANY_AWARD_ID)) {
+            sceneDisturbanceThread.setStabilized(true);
         }
     }
 }
