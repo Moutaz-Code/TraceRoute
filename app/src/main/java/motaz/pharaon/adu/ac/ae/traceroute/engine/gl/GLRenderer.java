@@ -1,6 +1,7 @@
 package motaz.pharaon.adu.ac.ae.traceroute.engine.gl;
 
 
+import android.content.Context;
 import android.opengl.GLES30;
 import android.opengl.GLSurfaceView;
 
@@ -29,15 +30,20 @@ import motaz.pharaon.adu.ac.ae.traceroute.engine.render.RenderPipeline;
      * - GameView.
      */
 public class GLRenderer implements GLSurfaceView.Renderer {
+    private final Context context;
     private GameController gameController;
     private RenderPipeline renderPipeline;
     private long lastFrameTimeNanos;
+
+    public GLRenderer(Context context) {
+        this.context = context.getApplicationContext();
+    }
 
     @Override
     public void onSurfaceCreated(GL10 unused, EGLConfig eglConfig) {
         GLES30.glClearColor(0.5f, 0.2f, 0.6f, 1.0f);
         renderPipeline = new RenderPipeline();
-        renderPipeline.initialize();
+        renderPipeline.initialize(context);
 
         gameController = new GameController();
 

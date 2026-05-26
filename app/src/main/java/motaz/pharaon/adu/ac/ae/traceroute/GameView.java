@@ -27,18 +27,18 @@ public class GameView extends GLSurfaceView {
 
     public GameView(Context context) {
         super(context);
-        init();
+        init(context);
     }
 
     public GameView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        init(context);
     }
 
-    private void init() {
+    private void init(Context context) {
         setEGLContextClientVersion(3);
         setPreserveEGLContextOnPause(true);
-        setRenderer(new GLRenderer());
+        setRenderer(new GLRenderer(context));
         setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
     }
 
