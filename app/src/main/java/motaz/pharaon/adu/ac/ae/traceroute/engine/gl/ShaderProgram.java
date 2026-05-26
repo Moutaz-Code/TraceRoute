@@ -83,6 +83,13 @@ public class ShaderProgram {
         public void setUniform(String name, float[] matrix) {
             // Set a matrix uniform variable in the shader (e.g., for transformations).
         }
+        public void setUniform4f(String name, float r, float g, float b, float a) {
+            int location = GLES30.glGetUniformLocation(programId, name);
+            if (location == -1) {
+                throw new RuntimeException("Uniform '" + name + "' not found in shader.");
+            }
+            GLES30.glUniform4f(location, r, g, b, a);
+        }
 
         public void delete() {
             GLES30.glDeleteProgram(programId);
