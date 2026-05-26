@@ -1,5 +1,7 @@
 package motaz.pharaon.adu.ac.ae.traceroute.gameplay.hotspot;
 
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.world.RoomDefinition;
+
 public class HotspotSystem {
     /*
      * Purpose:
@@ -17,4 +19,14 @@ public class HotspotSystem {
      * Used by:
      * - WorldInvestigationScene.
      */
+
+    public Hotspot findHotspot(RoomDefinition roomDefinition, float normalizedX, float normalizedY) {
+        for (Hotspot hotspot : roomDefinition.getHotspots()) {
+            if (hotspot.contains(normalizedX, normalizedY)) {
+                return hotspot;
+            }
+        }
+
+        return null;
+    }
 }

@@ -1,6 +1,9 @@
 package motaz.pharaon.adu.ac.ae.traceroute.gameplay.world;
 
 import motaz.pharaon.adu.ac.ae.traceroute.engine.render.RenderPipeline;
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.hotspot.Hotspot;
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.hotspot.HotspotActionType;
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.hotspot.HotspotSystem;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.scene.Scene;
 
     /*
@@ -25,9 +28,11 @@ import motaz.pharaon.adu.ac.ae.traceroute.gameplay.scene.Scene;
         */
 public class WorldInvestigationScene implements Scene {
     private final RoomNavigator roomNavigator;
+    private final HotspotSystem hotspotSystem;
 
     public WorldInvestigationScene() {
         roomNavigator = new RoomNavigator();
+        hotspotSystem = new HotspotSystem();
     }
 
     @Override
@@ -42,17 +47,35 @@ public class WorldInvestigationScene implements Scene {
         float[] roomColor = getDebugRoomColor(currentRoom.getId());
         renderer.drawColorQuad(-0.92f, 0.78f, 0.22f, 0.12f, roomColor[0], roomColor[1], roomColor[2], 0.95f);
 
-        // Temporary navigation hit-zone markers: tap left/right screen edges to cycle rooms.
-        renderer.drawColorQuad(-0.98f, -0.15f, 0.08f, 0.30f, 0.15f, 0.65f, 0.95f, 0.35f);
-        renderer.drawColorQuad(0.90f, -0.15f, 0.08f, 0.30f, 0.95f, 0.55f, 0.20f, 0.35f);
+        for (Hotspot hotspot : currentRoom.getHotspots()) {
+            drawHotspotDebugOverlay(renderer, hotspot);
+        }
     }
 
     @Override
     public void onTap(float x, float y) {
-        if (x <= 0.20f) {
-            roomNavigator.goToPreviousRoom();
-        } else if (x >= 0.80f) {
-            roomNavigator.goToNextRoom();
+        RoomDefinition currentRoom = roomNavigator.getCurrentRoom();
+        Hotspot hotspot = hotspotSystem.findHotspot(currentRoom, x, y);
+
+        if (hotspot == null) {
+            return;
+        }
+
+        if (hotspot.getActionType() == HotspotActionType.NAVIGATE_ROOM) {
+            roomNavigator.goToRoom(hotspot.getTargetRoomId());
+        }
+    }
+
+    private void drawHotspotDebugOverlay(RenderPipeline renderer, Hotspot hotspot) {
+        float ndcX = hotspot.getX() * 2.0f - 1.0f;
+        float ndcY = 1.0f - ((hotspot.getY() + hotspot.getHeight()) * 2.0f);
+        float ndcWidth = hotspot.getWidth() * 2.0f;
+        float ndcHeight = hotspot.getHeight() * 2.0f;
+
+        if ("nav_previous".equals(hotspot.getId())) {
+            renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.15f, 0.65f, 0.95f, 0.18f);
+        } else if ("nav_next".equals(hotspot.getId())) {
+            renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.95f, 0.55f, 0.20f, 0.18f);
         }
     }
 

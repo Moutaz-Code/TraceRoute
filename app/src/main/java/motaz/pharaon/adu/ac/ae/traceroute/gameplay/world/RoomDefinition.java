@@ -1,5 +1,11 @@
 package motaz.pharaon.adu.ac.ae.traceroute.gameplay.world;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.hotspot.Hotspot;
+
 public class RoomDefinition {
     /*
      * Purpose:
@@ -24,11 +30,18 @@ public class RoomDefinition {
     private final RoomId id;
     private final String displayName;
     private final String backgroundTexturePath;
+    private final List<Hotspot> hotspots;
 
-    public RoomDefinition(RoomId id, String displayName, String backgroundTexturePath) {
+    public RoomDefinition(
+            RoomId id,
+            String displayName,
+            String backgroundTexturePath,
+            List<Hotspot> hotspots
+    ) {
         this.id = id;
         this.displayName = displayName;
         this.backgroundTexturePath = backgroundTexturePath;
+        this.hotspots = Collections.unmodifiableList(new ArrayList<>(hotspots));
     }
 
     public RoomId getId() {
@@ -41,5 +54,9 @@ public class RoomDefinition {
 
     public String getBackgroundTexturePath() {
         return backgroundTexturePath;
+    }
+
+    public List<Hotspot> getHotspots() {
+        return hotspots;
     }
 }

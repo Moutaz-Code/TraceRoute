@@ -1,7 +1,11 @@
 package motaz.pharaon.adu.ac.ae.traceroute.gameplay.world;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
+
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.hotspot.Hotspot;
 
 public class RoomNavigator {
     /*
@@ -38,30 +42,40 @@ public class RoomNavigator {
                 RoomId.CCTV_WINDOW_OPTIONAL
         };
 
-        addRoom(new RoomDefinition(
+        addRoom(buildRoom(
                 RoomId.LIVING_ROOM,
                 "Living Room / Body Scene",
-                PLACEHOLDER_ROOM_TEXTURE
+                PLACEHOLDER_ROOM_TEXTURE,
+                RoomId.CCTV_WINDOW_OPTIONAL,
+                RoomId.ENTRY_SMART_LOCK
         ));
-        addRoom(new RoomDefinition(
+        addRoom(buildRoom(
                 RoomId.ENTRY_SMART_LOCK,
                 "Entry / Smart-Lock Area",
-                PLACEHOLDER_ROOM_TEXTURE
+                PLACEHOLDER_ROOM_TEXTURE,
+                RoomId.LIVING_ROOM,
+                RoomId.KITCHEN_SIDE_AREA
         ));
-        addRoom(new RoomDefinition(
+        addRoom(buildRoom(
                 RoomId.KITCHEN_SIDE_AREA,
                 "Kitchen / Side Area",
-                PLACEHOLDER_ROOM_TEXTURE
+                PLACEHOLDER_ROOM_TEXTURE,
+                RoomId.ENTRY_SMART_LOCK,
+                RoomId.OFFICE_DEVICE_CORNER
         ));
-        addRoom(new RoomDefinition(
+        addRoom(buildRoom(
                 RoomId.OFFICE_DEVICE_CORNER,
                 "Office / Device Corner",
-                PLACEHOLDER_ROOM_TEXTURE
+                PLACEHOLDER_ROOM_TEXTURE,
+                RoomId.KITCHEN_SIDE_AREA,
+                RoomId.CCTV_WINDOW_OPTIONAL
         ));
-        addRoom(new RoomDefinition(
+        addRoom(buildRoom(
                 RoomId.CCTV_WINDOW_OPTIONAL,
                 "CCTV / Window Angle",
-                PLACEHOLDER_ROOM_TEXTURE
+                PLACEHOLDER_ROOM_TEXTURE,
+                RoomId.OFFICE_DEVICE_CORNER,
+                RoomId.LIVING_ROOM
         ));
 
         currentRoomId = RoomId.LIVING_ROOM;
@@ -99,6 +113,35 @@ public class RoomNavigator {
 
     private void addRoom(RoomDefinition roomDefinition) {
         rooms.put(roomDefinition.getId(), roomDefinition);
+    }
+
+    private RoomDefinition buildRoom(
+            RoomId id,
+            String displayName,
+            String backgroundTexturePath,
+            RoomId previousRoomId,
+            RoomId nextRoomId
+    ) {
+        List<Hotspot> hotspots = new ArrayList<>();
+
+        hotspots.add(Hotspot.navigation(
+                "nav_previous",
+                0.0f,
+                0.0f,
+                0.18f,
+                1.0f,
+                previousRoomId
+        ));
+        hotspots.add(Hotspot.navigation(
+                "nav_next",
+                0.82f,
+                0.0f,
+                0.18f,
+                1.0f,
+                nextRoomId
+        ));
+
+        return new RoomDefinition(id, displayName, backgroundTexturePath, hotspots);
     }
 
     private int getCurrentRoomIndex() {

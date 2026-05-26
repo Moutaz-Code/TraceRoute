@@ -177,6 +177,46 @@ Optional room:
 
 -   `CCTV_WINDOW_OPTIONAL`
 
+## Input And Hotspot Model
+
+Touch input flows through the OpenGL game path:
+
+```text
+GameView
+  GLRenderer
+    GameController
+      WorldInvestigationScene
+        HotspotSystem
+```
+
+`GameView` converts Android touch coordinates into normalized screen coordinates:
+
+-   `x = 0.0` at the left edge.
+-   `x = 1.0` at the right edge.
+-   `y = 0.0` at the top edge.
+-   `y = 1.0` at the bottom edge.
+
+For the current MVP stage, hotspots use this same normalized screen-space coordinate model.
+
+Reasons:
+
+-   it matches Android touch input directly,
+-   it is easy to author and debug,
+-   it works well with fixed-view room navigation,
+-   it keeps the first hotspot system simple.
+
+Later, if art-specific precision is needed, add a conversion layer from normalized screen coordinates into room-image coordinates. Do not put that conversion in fragments.
+
+Current hotspot actions:
+
+-   `NAVIGATE_ROOM`
+-   `INSPECT_EVIDENCE`
+-   `OPEN_HANDHELD`
+-   `OPEN_TERMINAL`
+-   `SHOW_FLAVOR_TEXT`
+
+The first implemented action is `NAVIGATE_ROOM`.
+
 ## Terminal Mechanic
 
 The terminal is a major mechanic.

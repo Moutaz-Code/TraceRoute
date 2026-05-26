@@ -66,7 +66,7 @@ Owns:
 
 -   OpenGL ES 3.0 setup,
 -   `GLRenderer`,
--   touch forwarding later.
+-   touch forwarding to the GL/game thread.
 
 Depends on:
 
@@ -139,6 +139,14 @@ Purpose:
 
 -   One tappable region in a room.
 
+Owns:
+
+-   hotspot id,
+-   normalized screen-space rectangle,
+-   action type,
+-   optional target room id,
+-   optional payload id for evidence/terminal/flavor content later.
+
 ### `HotspotActionType`
 
 Purpose:
@@ -158,6 +166,16 @@ Examples:
 Purpose:
 
 -   Converts tap coordinates into hotspot hits.
+
+Owns:
+
+-   hit testing against the current room's hotspot list.
+
+Coordinate model:
+
+-   normalized screen space,
+-   `0,0` top-left,
+-   `1,1` bottom-right.
 
 ## Case Logic
 
