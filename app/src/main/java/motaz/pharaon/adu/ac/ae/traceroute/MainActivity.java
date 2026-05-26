@@ -1,12 +1,13 @@
 package motaz.pharaon.adu.ac.ae.traceroute;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import motaz.pharaon.adu.ac.ae.traceroute.ui.shell.GameShellFragment;
 
@@ -32,13 +33,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_main);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        hideSystemBars();
 
         if (savedInstanceState == null) {
             getSupportFragmentManager()
@@ -46,5 +43,23 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.main_fragment_container, new GameShellFragment())
                     .commit();
         }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus) {
+            hideSystemBars();
+        }
+    }
+
+    private void hideSystemBars() {
+        View decorView = getWindow().getDecorView();
+        WindowInsetsControllerCompat controller = WindowCompat.getInsetsController(getWindow(), decorView);
+
+        controller.hide(WindowInsetsCompat.Type.systemBars());
+        controller.setSystemBarsBehavior(
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        );
     }
 }

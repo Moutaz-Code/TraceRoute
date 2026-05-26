@@ -79,6 +79,13 @@ public class ShaderProgram {
         public void setUniform(String name, int value) {
             // Set an int uniform variable in the shader.
         }
+        public void setUniform1i(String name, int value) {
+            int location = GLES30.glGetUniformLocation(programId, name);
+            if (location == -1) {
+                throw new RuntimeException("Uniform '" + name + "' not found in shader.");
+            }
+            GLES30.glUniform1i(location, value);
+        }
 
         public void setUniform(String name, float[] matrix) {
             // Set a matrix uniform variable in the shader (e.g., for transformations).

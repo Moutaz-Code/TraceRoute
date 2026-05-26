@@ -20,4 +20,26 @@ public class RoomDefinition {
      * - WorldInvestigationScene.
      * - DataLoader.
      */
+
+    private final RoomId id;
+    private final String displayName;
+    private final String backgroundTexturePath;
+
+    public RoomDefinition(RoomId id, String displayName, String backgroundTexturePath) {
+        this.id = id;
+        this.displayName = displayName;
+        this.backgroundTexturePath = backgroundTexturePath;
+    }
+
+    public RoomId getId() {
+        return id;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public String getBackgroundTexturePath() {
+        return backgroundTexturePath;
+    }
 }

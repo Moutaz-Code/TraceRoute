@@ -1,7 +1,5 @@
 package motaz.pharaon.adu.ac.ae.traceroute.gameplay.world;
 
-import android.graphics.Color;
-
 import motaz.pharaon.adu.ac.ae.traceroute.engine.render.RenderPipeline;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.scene.Scene;
 
@@ -23,10 +21,14 @@ import motaz.pharaon.adu.ac.ae.traceroute.gameplay.scene.Scene;
      *
      * Used by:
      * - SceneDirector.
-     * - GameController.
-     */
+        * - GameController.
+        */
 public class WorldInvestigationScene implements Scene {
-    private Color color; //use this later rather than painfully passing 4 parameters each time
+    private final RoomNavigator roomNavigator;
+
+    public WorldInvestigationScene() {
+        roomNavigator = new RoomNavigator();
+    }
 
     @Override
     public void update(float deltaTime) {
@@ -34,7 +36,8 @@ public class WorldInvestigationScene implements Scene {
 
     @Override
     public void render(RenderPipeline renderer) {
-        renderer.drawRoomBackground();
+        RoomDefinition currentRoom = roomNavigator.getCurrentRoom();
+        renderer.drawRoomBackground(currentRoom.getBackgroundTexturePath());
         renderer.drawDebugQuad(-0.25f, -0.25f, 0.5f, 0.5f);
         renderer.drawColorQuad(-0.5f, -0.5f, 0.5f, 0.5f, 0.7f, 0.8f, 0.25f, 1.0f);
     }
