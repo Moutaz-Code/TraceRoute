@@ -58,11 +58,25 @@ public class HandheldFragment extends Fragment {
             renderSelectedScreen();
         });
 
+        view.findViewById(R.id.handheld_timeline_tab).setOnClickListener(tab -> {
+            handheldController.selectScreen(HandheldScreen.TIMELINE);
+            renderSelectedScreen();
+        });
+
+        view.findViewById(R.id.handheld_statements_tab).setOnClickListener(tab -> {
+            handheldController.selectScreen(HandheldScreen.STATEMENTS);
+            renderSelectedScreen();
+        });
+
         renderSelectedScreen();
     }
 
     private void renderSelectedScreen() {
-        if (handheldController.getSelectedScreen() == HandheldScreen.THREADS) {
+        if (handheldController.getSelectedScreen() == HandheldScreen.STATEMENTS) {
+            viewBinder.renderStatements(GameRuntime.getInstance().getStatementSystem().getVisibleStatements());
+        } else if (handheldController.getSelectedScreen() == HandheldScreen.TIMELINE) {
+            viewBinder.renderTimeline(GameRuntime.getInstance().getTimelineSystem().getVisibleTimelineEvents());
+        } else if (handheldController.getSelectedScreen() == HandheldScreen.THREADS) {
             viewBinder.renderThreads(GameRuntime.getInstance().getThreadSystem().getInvestigationThreads());
         } else {
             viewBinder.renderEvidence(GameRuntime.getInstance().getEvidenceSystem().getCollectedEvidence());

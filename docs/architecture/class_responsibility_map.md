@@ -299,12 +299,20 @@ Owns:
 Current implemented thread:
 
 -   `T01_DEATH_WINDOW_INSTABILITY`
+-   `T02_POSTMORTEM_ACTIVITY`
+-   `T03_APARTMENT_ACCESS`
 
 Current progression:
 
 -   `E01_BODY_CONDITION_REPORT` unlocks the first observation,
 -   `E02_THERMOSTAT_AC_LOG` unlocks the second observation,
 -   collecting both stabilizes the thread.
+-   `E06_SCHEDULED_VICTIM_MESSAGE` unlocks the first Postmortem Activity observation.
+-   `E07_LAPTOP_SESSION_METADATA` unlocks the second Postmortem Activity observation.
+-   collecting both Postmortem Activity clues stabilizes the thread.
+-   `E05_SMART_LOCK_ENTRY_EXIT_LOG` unlocks the first Apartment Access observation.
+-   `E08_ROUTER_ADMIN_ACCESS_RECORD` unlocks the second Apartment Access observation.
+-   collecting both Apartment Access clues stabilizes the thread.
 
 ### `TimelineEvent`
 
@@ -312,11 +320,34 @@ Purpose:
 
 -   Data model for apparent/true timeline events.
 
+Owns:
+
+-   stable id,
+-   displayed time/window,
+-   title,
+-   initial interpretation,
+-   resolved interpretation,
+-   visible/contradicted/stabilized state.
+
 ### `TimelineSystem`
 
 Purpose:
 
 -   Owns timeline reveal state and final ordering validation.
+
+Owns:
+
+-   timeline event definitions,
+-   visible timeline state,
+-   thread-to-timeline reveal rules.
+
+Current implemented event:
+
+-   `TL01_POST_21_ACTIVITY_UNRELIABLE`
+
+Current trigger:
+
+-   `T01_DEATH_WINDOW_INSTABILITY` reveals and stabilizes the first contradiction.
 
 ### `SuspectStatement`
 
@@ -324,11 +355,35 @@ Purpose:
 
 -   Data model for a short suspect statement.
 
+Owns:
+
+-   stable id,
+-   speaker,
+-   claim,
+-   suspicious detail,
+-   contradiction text,
+-   visible/contradicted state.
+
 ### `StatementSystem`
 
 Purpose:
 
 -   Owns statement unlock and contradiction state.
+
+Owns:
+
+-   registered suspect statements,
+-   evidence-to-statement unlock rules,
+-   timeline-to-contradiction rules.
+
+Current implemented statement:
+
+-   `S01_PARTNER_STATEMENT`
+
+Current progression:
+
+-   `E05_SMART_LOCK_ENTRY_EXIT_LOG` unlocks the partner statement,
+-   stabilized post-21:00 timeline contradiction marks the statement contradicted.
 
 ## Terminal Mechanic
 
@@ -382,9 +437,17 @@ Current starter commands:
 
 -   `HELP`
 -   `EVIDENCE`
+-   `MESSAGES`
 -   `BODY`
 -   `LOGS`
+-   `LAPTOP`
 -   `CLEAR`
+
+Current gameplay side effect:
+
+-   `MESSAGES` collects `E06_SCHEDULED_VICTIM_MESSAGE`.
+-   `LAPTOP` collects `E07_LAPTOP_SESSION_METADATA`.
+-   `LOGS` collects `E08_ROUTER_ADMIN_ACCESS_RECORD`.
 
 ## Handheld UI
 
@@ -424,7 +487,9 @@ Owns:
 Current screens:
 
 -   Evidence,
--   Threads.
+-   Threads,
+-   Timeline,
+-   Statements.
 
 Why not fragments for every tab:
 
@@ -447,7 +512,9 @@ Currently renders:
 
 -   collected evidence cards,
 -   investigation thread cards,
--   stabilized thread conclusion text.
+-   stabilized thread conclusion text,
+-   visible timeline contradiction cards,
+-   suspect statement cards.
 
 Why it exists:
 
@@ -469,9 +536,8 @@ Owns:
 Currently binds:
 
 -   output history text,
--   command input field,
--   run button,
--   send-action keyboard behavior.
+-   authored command buttons,
+-   no native Android soft keyboard.
 
 Why it exists:
 

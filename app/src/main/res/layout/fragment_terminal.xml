@@ -34,31 +34,86 @@
 
     </ScrollView>
 
-    <LinearLayout
-        android:id="@+id/terminal_input_row"
+    <TextView
+        android:id="@+id/terminal_command_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
+        android:text="AUTHORED COMMANDS"
+        android:textColor="#5E8B73"
+        android:textSize="12sp" />
+
+    <LinearLayout
+        android:id="@+id/terminal_command_row_one"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/terminal_input"
+        <Button
+            android:id="@+id/terminal_command_help"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="command"
-            android:imeOptions="actionSend"
-            android:inputType="text"
-            android:singleLine="true"
-            android:textColor="#D6F5E3"
-            android:textColorHint="#5E8B73" />
+            android:text="Help" />
 
         <Button
-            android:id="@+id/terminal_submit_button"
-            android:layout_width="wrap_content"
+            android:id="@+id/terminal_command_evidence"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Run" />
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="Evidence" />
+
+        <Button
+            android:id="@+id/terminal_command_messages"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="Messages" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/terminal_command_row_two"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/terminal_command_body"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Body" />
+
+        <Button
+            android:id="@+id/terminal_command_logs"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="Logs" />
+
+        <Button
+            android:id="@+id/terminal_command_laptop"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="Laptop" />
+
+        <Button
+            android:id="@+id/terminal_command_clear"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_weight="1"
+            android:text="Clear" />
 
     </LinearLayout>
 

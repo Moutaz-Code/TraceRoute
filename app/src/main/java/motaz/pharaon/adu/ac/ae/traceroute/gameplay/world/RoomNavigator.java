@@ -170,6 +170,17 @@ public class RoomNavigator {
             ));
         }
 
+        if (id == RoomId.ENTRY_SMART_LOCK) {
+            hotspots.add(Hotspot.inspectEvidence(
+                    "inspect_smart_lock_log",
+                    0.42f,
+                    0.28f,
+                    0.18f,
+                    0.30f,
+                    "E05_SMART_LOCK_ENTRY_EXIT_LOG"
+            ));
+        }
+
         if (id == RoomId.OFFICE_DEVICE_CORNER) {
             hotspots.add(Hotspot.openTerminal(
                     "open_office_terminal",

@@ -36,13 +36,18 @@ public class TerminalCommandProcessor {
 
         switch (normalizedCommand) {
             case "help":
-                return "Commands: HELP, EVIDENCE, BODY, LOGS, CLEAR";
+                return "Commands: HELP, EVIDENCE, MESSAGES, BODY, LOGS, LAPTOP, CLEAR";
             case "evidence":
                 return buildEvidenceOutput();
+            case "message":
+            case "messages":
+                return buildMessagesOutput();
             case "body":
                 return buildBodyReportOutput();
             case "logs":
-                return "Router logs locked. Office terminal access confirmed, but no router evidence has been authored yet.";
+                return buildLogsOutput();
+            case "laptop":
+                return buildLaptopOutput();
             default:
                 return "Unknown authored command. Type HELP.";
         }
@@ -74,5 +79,43 @@ public class TerminalCommandProcessor {
         return "E01_BODY_CONDITION_REPORT\n"
                 + "Finding: body condition conflicts with activity after 21:00.\n"
                 + "Note: death window requires review against apartment temperature logs.";
+    }
+
+    private String buildMessagesOutput() {
+        EvidenceItem evidenceItem = gameRuntime.collectEvidence("E06_SCHEDULED_VICTIM_MESSAGE");
+        if (evidenceItem == null) {
+            return "Message metadata unavailable.";
+        }
+
+        return evidenceItem.getId() + "\n"
+                + "Message timestamp: 21:07\n"
+                + "Delivery state: sent\n"
+                + "Metadata flag: scheduled before delivery\n"
+                + "Finding: this message is not reliable proof the victim was alive at 21:07.";
+    }
+
+    private String buildLaptopOutput() {
+        EvidenceItem evidenceItem = gameRuntime.collectEvidence("E07_LAPTOP_SESSION_METADATA");
+        if (evidenceItem == null) {
+            return "Laptop session metadata unavailable.";
+        }
+
+        return evidenceItem.getId() + "\n"
+                + "Session activity: 21:16\n"
+                + "Input pattern: repeated timed actions\n"
+                + "Finding: activity pattern resembles automation, not normal human use.";
+    }
+
+    private String buildLogsOutput() {
+        EvidenceItem evidenceItem = gameRuntime.collectEvidence("E08_ROUTER_ADMIN_ACCESS_RECORD");
+        if (evidenceItem == null) {
+            return "Router log metadata unavailable.";
+        }
+
+        return evidenceItem.getId() + "\n"
+                + "Session type: trusted admin\n"
+                + "Access window: staging period\n"
+                + "Scope: smart-home hub / router / apartment devices\n"
+                + "Finding: manipulation required privileged technical access.";
     }
 }

@@ -9,4 +9,59 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <TextView
+        android:id="@+id/debug_label_previous_room"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|center_vertical"
+        android:layout_marginStart="18dp"
+        android:background="#AA05080A"
+        android:clickable="false"
+        android:focusable="false"
+        android:padding="8dp"
+        android:text="PREV ROOM"
+        android:textColor="#D6F5E3"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/debug_label_next_room"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="18dp"
+        android:background="#AA05080A"
+        android:clickable="false"
+        android:focusable="false"
+        android:padding="8dp"
+        android:text="NEXT ROOM"
+        android:textColor="#D6F5E3"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/debug_label_room_hotspot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#AA05080A"
+        android:clickable="false"
+        android:focusable="false"
+        android:padding="8dp"
+        android:text="ROOM CLUE / TERMINAL"
+        android:textColor="#F5DA7A"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/debug_label_handheld"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="20dp"
+        android:background="#AA05080A"
+        android:clickable="false"
+        android:focusable="false"
+        android:padding="8dp"
+        android:text="HANDHELD"
+        android:textColor="#D6F5E3"
+        android:textSize="12sp" />
+
 </FrameLayout>

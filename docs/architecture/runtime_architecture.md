@@ -85,6 +85,20 @@ Fragments should not:
 
 Use plain Java classes/controllers when a feature does not need its own Android lifecycle.
 
+### Graybox Versus Final Presentation
+
+Current Android widgets are graybox scaffolding, not the final visual language.
+
+Final direction:
+
+-   use authored assets/artwork for rooms, UI frames, device controls, evidence cards, and suspect presentation,
+-   avoid native Android controls when they break immersion,
+-   avoid the native soft keyboard during normal gameplay,
+-   replace temporary buttons/panels with stylized game UI once flow is proven,
+-   keep post-processing, scanlines, vignette, and glitch treatment for a later polish stage.
+
+Temporary Android widgets are acceptable when they help prove game flow quickly, but they should not define the final aesthetic.
+
 ### Android View Layer
 
 Views are still central to the app.
@@ -269,10 +283,14 @@ HandheldFragment
 
 This is acceptable for the early MVP foundation. Later, `GameRuntime` can be backed by `GameRepository`, `DataLoader`, and save/load persistence.
 
-The first implemented evidence item is:
+Implemented evidence items include:
 
 -   `E01_BODY_CONDITION_REPORT`
 -   `E02_THERMOSTAT_AC_LOG`
+-   `E05_SMART_LOCK_ENTRY_EXIT_LOG`
+-   `E06_SCHEDULED_VICTIM_MESSAGE`
+-   `E07_LAPTOP_SESSION_METADATA`
+-   `E08_ROUTER_ADMIN_ACCESS_RECORD`
 
 The first evidence display surface is:
 
@@ -300,16 +318,75 @@ This creates the first playable version of the intended "soft confirmation deduc
 -   investigation threads update automatically,
 -   the handheld explains the evolving line of reasoning.
 
-The handheld currently has two working tabs:
+The handheld currently has working tabs:
 
 -   Evidence
 -   Threads
+-   Timeline
 
 Later tabs should include:
 
+-   Terminal entry point if desired.
+
+## Timeline Loop
+
+The first implemented timeline event is:
+
+-   `TL01_POST_21_ACTIVITY_UNRELIABLE`
+
+The current timeline flow is:
+
+```text
+EvidenceSystem
+  collects body report / AC log
+    ThreadSystem
+      updates Death Window Instability
+        TimelineSystem
+          reveals and stabilizes first contradiction
+```
+
+Current behavior:
+
+-   once the Death Window thread has at least one observation, the timeline contradiction becomes visible,
+-   once the Death Window thread is stabilized, the timeline contradiction is marked stabilized,
+-   the handheld Timeline tab displays the initial interpretation and current resolved interpretation.
+
+This timeline screen is not the final ordering puzzle yet. It is the investigation timeline: a readable place for contradictions, uncertain windows, and stabilized chronology claims.
+
+## Suspect Statement Loop
+
+The first implemented suspect statement is:
+
+-   `S01_PARTNER_STATEMENT`
+
+The first statement unlock clue is:
+
+-   `E05_SMART_LOCK_ENTRY_EXIT_LOG`
+
+Current statement flow:
+
+```text
+Collect E05_SMART_LOCK_ENTRY_EXIT_LOG
+  StatementSystem unlocks S01_PARTNER_STATEMENT
+
+Stabilize TL01_POST_21_ACTIVITY_UNRELIABLE
+  StatementSystem marks S01_PARTNER_STATEMENT contradicted
+```
+
+This keeps statements lightweight:
+
+-   no branching interview tree,
+-   no dialogue minigame,
+-   one readable claim,
+-   one suspicious detail,
+-   one contradiction state.
+
+The handheld currently has four working tabs:
+
+-   Evidence
+-   Threads
 -   Timeline
 -   Statements
--   Terminal entry point if desired.
 
 ## Terminal Mechanic
 
@@ -333,7 +410,7 @@ The terminal should support authored interactions like:
 -   query device activity,
 -   reveal metadata,
 -   unlock evidence,
-  -   update investigation threads.
+-   update investigation threads.
 
 Current MVP terminal boundary:
 
@@ -342,16 +419,59 @@ Current MVP terminal boundary:
 -   commands do not execute real device or shell operations,
 -   command results may read `GameRuntime` state,
 -   later commands may unlock evidence/thread observations through gameplay systems.
+-   the terminal should not use the native Android soft keyboard during normal play.
 
 Implemented starter commands:
 
 -   `HELP`
 -   `EVIDENCE`
+-   `MESSAGES`
 -   `BODY`
 -   `LOGS`
+-   `LAPTOP`
 -   `CLEAR`
 
 `TerminalSession` owns visible history. `TerminalCommandProcessor` owns command interpretation. `TerminalViewBinder` owns Android view binding.
+
+For the current graybox, terminal commands are exposed as ordinary Android buttons. Later, replace these with authored game-art buttons, a custom diegetic keypad, or an asset-backed terminal interface. Do not return to a native text-entry keyboard unless there is a deliberate accessibility/debug mode.
+
+The `MESSAGES` command currently discovers:
+
+-   `E06_SCHEDULED_VICTIM_MESSAGE`
+
+The `LAPTOP` command currently discovers:
+
+-   `E07_LAPTOP_SESSION_METADATA`
+
+These clues advance the `Postmortem Activity` thread. Collecting both stabilizes the thread.
+
+The `LOGS` command currently discovers:
+
+-   `E08_ROUTER_ADMIN_ACCESS_RECORD`
+
+This supports Revelation Beat 3: trusted technical access. When combined with `E05_SMART_LOCK_ENTRY_EXIT_LOG`, it stabilizes the `Apartment Access` thread.
+
+## Revelation Beat 3: Trusted Technical Access
+
+The current Apartment Access flow is:
+
+```text
+Collect E05_SMART_LOCK_ENTRY_EXIT_LOG
+  Apartment Access observes physical entry/exit timing
+
+Run LOGS in terminal
+  Collect E08_ROUTER_ADMIN_ACCESS_RECORD
+  Apartment Access observes privileged technical access
+
+If both are collected
+  Apartment Access stabilizes
+```
+
+Design meaning:
+
+-   simple presence is no longer the only question,
+-   remote or system-level manipulation becomes central,
+-   suspicion starts shifting toward someone with trusted technical familiarity.
 
 ## Data And Persistence
 
