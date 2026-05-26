@@ -18,4 +18,51 @@ public class EvidenceItem {
      * - Handheld evidence screen.
      * - GameRepository for persistence.
      */
+
+    private final String id;
+    private final String title;
+    private final String category;
+    private final String source;
+    private final String playerSummary;
+    private final String technicalNote;
+
+    public EvidenceItem(
+            String id,
+            String title,
+            String category,
+            String source,
+            String playerSummary,
+            String technicalNote
+    ) {
+        this.id = id;
+        this.title = title;
+        this.category = category;
+        this.source = source;
+        this.playerSummary = playerSummary;
+        this.technicalNote = technicalNote;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public String getPlayerSummary() {
+        return playerSummary;
+    }
+
+    public String getTechnicalNote() {
+        return technicalNote;
+    }
 }

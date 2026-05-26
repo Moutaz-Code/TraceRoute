@@ -140,6 +140,45 @@ public class RoomNavigator {
                 1.0f,
                 nextRoomId
         ));
+        hotspots.add(Hotspot.openHandheld(
+                "open_handheld_bottom_strip",
+                0.34f,
+                0.88f,
+                0.32f,
+                0.10f
+        ));
+
+        if (id == RoomId.LIVING_ROOM) {
+            hotspots.add(Hotspot.inspectEvidence(
+                    "inspect_body_condition",
+                    0.42f,
+                    0.38f,
+                    0.18f,
+                    0.28f,
+                    "E01_BODY_CONDITION_REPORT"
+            ));
+        }
+
+        if (id == RoomId.KITCHEN_SIDE_AREA) {
+            hotspots.add(Hotspot.inspectEvidence(
+                    "inspect_thermostat_ac_log",
+                    0.44f,
+                    0.26f,
+                    0.18f,
+                    0.26f,
+                    "E02_THERMOSTAT_AC_LOG"
+            ));
+        }
+
+        if (id == RoomId.OFFICE_DEVICE_CORNER) {
+            hotspots.add(Hotspot.openTerminal(
+                    "open_office_terminal",
+                    0.42f,
+                    0.26f,
+                    0.20f,
+                    0.28f
+            ));
+        }
 
         return new RoomDefinition(id, displayName, backgroundTexturePath, hotspots);
     }

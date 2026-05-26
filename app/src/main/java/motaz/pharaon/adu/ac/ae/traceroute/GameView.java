@@ -5,9 +5,10 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import motaz.pharaon.adu.ac.ae.traceroute.core.GameUiEventListener;
 import motaz.pharaon.adu.ac.ae.traceroute.engine.gl.GLRenderer;
 
-public class GameView extends GLSurfaceView {
+public class GameView extends GLSurfaceView implements GameUiEventListener {
     /*
      * Purpose:
      * - Native Android view that hosts the OpenGL ES game surface.
@@ -27,6 +28,7 @@ public class GameView extends GLSurfaceView {
      */
 
     private GLRenderer renderer;
+    private GameUiEventListener uiEventListener;
 
     public GameView(Context context) {
         super(context);
@@ -41,9 +43,13 @@ public class GameView extends GLSurfaceView {
     private void init(Context context) {
         setEGLContextClientVersion(3);
         setPreserveEGLContextOnPause(true);
-        renderer = new GLRenderer(context);
+        renderer = new GLRenderer(context, this);
         setRenderer(renderer);
         setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+    }
+
+    public void setUiEventListener(GameUiEventListener uiEventListener) {
+        this.uiEventListener = uiEventListener;
     }
 
     @Override
@@ -61,6 +67,33 @@ public class GameView extends GLSurfaceView {
 
         queueEvent(() -> renderer.onTap(normalizedX, normalizedY));
         return true;
+    }
+
+    @Override
+    public void onOpenHandheldRequested() {
+        post(() -> {
+            if (uiEventListener != null) {
+                uiEventListener.onOpenHandheldRequested();
+            }
+        });
+    }
+
+    @Override
+    public void onOpenTerminalRequested() {
+        post(() -> {
+            if (uiEventListener != null) {
+                uiEventListener.onOpenTerminalRequested();
+            }
+        });
+    }
+
+    @Override
+    public void onEvidenceInspectionRequested(String evidenceId) {
+        post(() -> {
+            if (uiEventListener != null) {
+                uiEventListener.onEvidenceInspectionRequested(evidenceId);
+            }
+        });
     }
 
 }

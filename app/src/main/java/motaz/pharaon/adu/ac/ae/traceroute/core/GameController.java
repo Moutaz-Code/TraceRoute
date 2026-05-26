@@ -24,10 +24,12 @@ import motaz.pharaon.adu.ac.ae.traceroute.gameplay.world.WorldInvestigationScene
      * - GameShellFragment and handheld fragments for UI actions.
      */
 public class GameController {
+    private final GameRuntime gameRuntime;
     private Scene worldInvestigationScene;
 
-    public GameController(){
-        worldInvestigationScene = new WorldInvestigationScene();
+    public GameController(GameUiEventListener uiEventListener){
+        gameRuntime = GameRuntime.getInstance();
+        worldInvestigationScene = new WorldInvestigationScene(gameRuntime, uiEventListener);
     }
 
     public void update(float deltaTime) {

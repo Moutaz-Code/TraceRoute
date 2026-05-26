@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 
 import motaz.pharaon.adu.ac.ae.traceroute.GameView;
 import motaz.pharaon.adu.ac.ae.traceroute.R;
+import motaz.pharaon.adu.ac.ae.traceroute.core.GameUiEventListener;
 
 public class WorldInvestigationFragment extends Fragment {
     /*
@@ -41,6 +42,11 @@ public class WorldInvestigationFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         FrameLayout gameViewContainer = view.findViewById(R.id.game_view_container);
         gameView = new GameView(requireContext());
+
+        if (getParentFragment() instanceof GameUiEventListener) {
+            gameView.setUiEventListener((GameUiEventListener) getParentFragment());
+        }
+
         gameViewContainer.addView(
                 gameView,
                 new FrameLayout.LayoutParams(

@@ -1,5 +1,12 @@
 package motaz.pharaon.adu.ac.ae.traceroute.gameplay.evidence;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 public class EvidenceSystem {
     /*
      * Purpose:
@@ -20,4 +27,43 @@ public class EvidenceSystem {
      * - WorldInvestigationScene.
      * - HandheldFragment through HandheldController.
      */
+
+    private final Map<String, EvidenceItem> evidenceDefinitions;
+    private final Set<String> collectedEvidenceIds;
+
+    public EvidenceSystem() {
+        evidenceDefinitions = new LinkedHashMap<>();
+        collectedEvidenceIds = new LinkedHashSet<>();
+    }
+
+    public synchronized void registerEvidence(EvidenceItem evidenceItem) {
+        evidenceDefinitions.put(evidenceItem.getId(), evidenceItem);
+    }
+
+    public synchronized EvidenceItem collectEvidence(String evidenceId) {
+        EvidenceItem evidenceItem = evidenceDefinitions.get(evidenceId);
+        if (evidenceItem == null) {
+            return null;
+        }
+
+        collectedEvidenceIds.add(evidenceId);
+        return evidenceItem;
+    }
+
+    public synchronized boolean isCollected(String evidenceId) {
+        return collectedEvidenceIds.contains(evidenceId);
+    }
+
+    public synchronized List<EvidenceItem> getCollectedEvidence() {
+        List<EvidenceItem> collectedEvidence = new ArrayList<>();
+
+        for (String evidenceId : collectedEvidenceIds) {
+            EvidenceItem evidenceItem = evidenceDefinitions.get(evidenceId);
+            if (evidenceItem != null) {
+                collectedEvidence.add(evidenceItem);
+            }
+        }
+
+        return collectedEvidence;
+    }
 }

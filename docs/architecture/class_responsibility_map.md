@@ -72,6 +72,15 @@ Depends on:
 
 -   `GLRenderer`.
 
+Implements:
+
+-   `GameUiEventListener` as a bridge back to Android UI.
+
+Notes:
+
+-   Gameplay requests arrive from the GL/game thread.
+-   `GameView` posts those requests onto the Android UI thread before forwarding them to `GameShellFragment`.
+
 ### `GLRenderer`
 
 Purpose:
@@ -104,7 +113,31 @@ Depends on:
 
 -   `RoomNavigator`,
 -   `HotspotSystem`,
--   `GameController`.
+-   `GameUiEventListener`.
+
+Should:
+
+-   handle hotspot action routing,
+-   request UI surfaces through `GameUiEventListener`,
+-   avoid importing Fragment classes.
+
+### `GameUiEventListener`
+
+Purpose:
+
+-   Small bridge interface between gameplay actions and Android UI actions.
+
+Owns:
+
+-   open handheld request,
+-   open terminal request,
+-   evidence inspection request.
+
+Used by:
+
+-   `WorldInvestigationScene` to request UI,
+-   `GameView` to marshal callbacks to the UI thread,
+-   `GameShellFragment` to open actual fragments/dialogs.
 
 ## Rooms And Hotspots
 
@@ -187,12 +220,36 @@ Purpose:
 
 Owns:
 
--   evidence system,
+-   reference to `GameRuntime`,
+-   active scene,
+-   later: evidence system,
 -   thread system,
 -   timeline system,
 -   statement system,
 -   terminal session,
 -   current game state.
+
+### `GameRuntime`
+
+Purpose:
+
+-   Shared state for the current play session.
+
+Owns:
+
+-   `EvidenceSystem`,
+-   temporary hardcoded MVP content seed data.
+
+Used by:
+
+-   `GameController` and gameplay scenes for updates,
+-   `HandheldFragment` / `HandheldViewBinder` for display.
+
+Later:
+
+-   can be backed by `GameRepository`,
+-   can be populated by `DataLoader`,
+-   can load/save through persistence.
 
 ### `EvidenceItem`
 
@@ -200,11 +257,26 @@ Purpose:
 
 -   Runtime/data representation of evidence.
 
+Owns:
+
+-   stable id,
+-   title,
+-   category,
+-   source,
+-   player-facing summary,
+-   simplified technical note.
+
 ### `EvidenceSystem`
 
 Purpose:
 
 -   Tracks collected evidence and notifies other systems.
+
+Owns:
+
+-   registered evidence definitions,
+-   discovered evidence ids,
+-   collection lookup for handheld display.
 
 ### `InvestigationThread`
 
@@ -217,6 +289,22 @@ Purpose:
 Purpose:
 
 -   Unlocks observations and stabilized thread conclusions.
+
+Owns:
+
+-   active investigation thread definitions,
+-   evidence-to-observation progression,
+-   stabilized thread state.
+
+Current implemented thread:
+
+-   `T01_DEATH_WINDOW_INSTABILITY`
+
+Current progression:
+
+-   `E01_BODY_CONDITION_REPORT` unlocks the first observation,
+-   `E02_THERMOSTAT_AC_LOG` unlocks the second observation,
+-   collecting both stabilizes the thread.
 
 ### `TimelineEvent`
 
@@ -266,6 +354,12 @@ Purpose:
 
 -   Runtime state for terminal history and prompt state.
 
+Owns:
+
+-   visible terminal history,
+-   command submission history updates,
+-   clear behavior.
+
 ### `TerminalCommandProcessor`
 
 Purpose:
@@ -283,6 +377,14 @@ Should not:
 -   become a real shell,
 -   run arbitrary commands,
 -   require real cybersecurity knowledge from the player.
+
+Current starter commands:
+
+-   `HELP`
+-   `EVIDENCE`
+-   `BODY`
+-   `LOGS`
+-   `CLEAR`
 
 ## Handheld UI
 
@@ -319,6 +421,11 @@ Owns:
 -   selected tab/screen,
 -   requests for evidence/thread/timeline/statement data.
 
+Current screens:
+
+-   Evidence,
+-   Threads.
+
 Why not fragments for every tab:
 
 -   The project must show meaningful fragment usage, but every handheld tab does not need its own lifecycle.
@@ -336,6 +443,12 @@ Owns:
 -   simple render/bind methods,
 -   tab button wiring later.
 
+Currently renders:
+
+-   collected evidence cards,
+-   investigation thread cards,
+-   stabilized thread conclusion text.
+
 Why it exists:
 
 -   Fragments should not become giant UI classes.
@@ -352,6 +465,13 @@ Owns:
 -   terminal history display,
 -   command input widgets,
 -   command submit button wiring later.
+
+Currently binds:
+
+-   output history text,
+-   command input field,
+-   run button,
+-   send-action keyboard behavior.
 
 Why it exists:
 

@@ -9,6 +9,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import motaz.pharaon.adu.ac.ae.traceroute.core.GameController;
+import motaz.pharaon.adu.ac.ae.traceroute.core.GameUiEventListener;
 import motaz.pharaon.adu.ac.ae.traceroute.engine.render.RenderPipeline;
 
 /*
@@ -31,12 +32,14 @@ import motaz.pharaon.adu.ac.ae.traceroute.engine.render.RenderPipeline;
      */
 public class GLRenderer implements GLSurfaceView.Renderer {
     private final Context context;
+    private final GameUiEventListener uiEventListener;
     private GameController gameController;
     private RenderPipeline renderPipeline;
     private long lastFrameTimeNanos;
 
-    public GLRenderer(Context context) {
+    public GLRenderer(Context context, GameUiEventListener uiEventListener) {
         this.context = context.getApplicationContext();
+        this.uiEventListener = uiEventListener;
     }
 
     @Override
@@ -48,7 +51,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
         renderPipeline = new RenderPipeline();
         renderPipeline.initialize(context);
 
-        gameController = new GameController();
+        gameController = new GameController(uiEventListener);
 
         lastFrameTimeNanos = System.nanoTime();
     }

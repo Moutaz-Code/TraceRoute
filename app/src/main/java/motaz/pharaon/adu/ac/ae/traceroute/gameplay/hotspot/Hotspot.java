@@ -69,6 +69,64 @@ public class Hotspot {
         );
     }
 
+    public static Hotspot openHandheld(
+            String id,
+            float x,
+            float y,
+            float width,
+            float height
+    ) {
+        return new Hotspot(
+                id,
+                x,
+                y,
+                width,
+                height,
+                HotspotActionType.OPEN_HANDHELD,
+                null,
+                null
+        );
+    }
+
+    public static Hotspot openTerminal(
+            String id,
+            float x,
+            float y,
+            float width,
+            float height
+    ) {
+        return new Hotspot(
+                id,
+                x,
+                y,
+                width,
+                height,
+                HotspotActionType.OPEN_TERMINAL,
+                null,
+                null
+        );
+    }
+
+    public static Hotspot inspectEvidence(
+            String id,
+            float x,
+            float y,
+            float width,
+            float height,
+            String evidenceId
+    ) {
+        return new Hotspot(
+                id,
+                x,
+                y,
+                width,
+                height,
+                HotspotActionType.INSPECT_EVIDENCE,
+                null,
+                evidenceId
+        );
+    }
+
     public boolean contains(float tapX, float tapY) {
         return tapX >= x
                 && tapX <= x + width

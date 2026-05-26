@@ -13,6 +13,7 @@ Current architectural direction:
 -   OpenGL rendering lives inside `WorldInvestigationFragment` through `GameView`.
 -   Apartment rooms are data definitions, not Android `View` classes.
 -   Hotspots are normalized screen-space rectangles owned by room definitions.
+-   The handheld opens from a bottom-center world hotspot, with Android UI opened through `GameUiEventListener`.
 -   The handheld is one fragment-based Android UI overlay with ordinary internal views/controllers.
 -   The stylized terminal computer is a major mechanic and uses `TerminalFragment`.
 -   Game logic should live in gameplay/core systems, not inside fragment classes.

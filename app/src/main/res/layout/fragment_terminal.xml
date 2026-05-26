@@ -12,17 +12,54 @@
         android:id="@+id/terminal_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TERMINAL"
+        android:text="APARTMENT TERMINAL"
         android:textColor="#D6F5E3"
         android:textSize="18sp" />
 
-    <TextView
-        android:id="@+id/terminal_placeholder"
+    <ScrollView
+        android:id="@+id/terminal_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        android:layout_weight="1"
+        android:background="#0A191D"
+        android:padding="12dp">
+
+        <TextView
+            android:id="@+id/terminal_output"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#9FD8B4"
+            android:textSize="14sp" />
+
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/terminal_input_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="> awaiting command"
-        android:textColor="#9FD8B4"
-        android:textSize="14sp" />
+        android:layout_marginTop="14dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/terminal_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="command"
+            android:imeOptions="actionSend"
+            android:inputType="text"
+            android:singleLine="true"
+            android:textColor="#D6F5E3"
+            android:textColorHint="#5E8B73" />
+
+        <Button
+            android:id="@+id/terminal_submit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Run" />
+
+    </LinearLayout>
 
 </LinearLayout>

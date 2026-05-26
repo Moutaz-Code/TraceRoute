@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import androidx.fragment.app.DialogFragment;
 
 import motaz.pharaon.adu.ac.ae.traceroute.R;
+import motaz.pharaon.adu.ac.ae.traceroute.core.GameRuntime;
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.terminal.TerminalCommandProcessor;
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.terminal.TerminalSession;
 
 public class TerminalFragment extends DialogFragment {
     /*
@@ -30,8 +33,22 @@ public class TerminalFragment extends DialogFragment {
      * - HandheldFragment.
      */
 
+    private TerminalSession terminalSession;
+    private TerminalCommandProcessor commandProcessor;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_terminal, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        terminalSession = new TerminalSession();
+        commandProcessor = new TerminalCommandProcessor(GameRuntime.getInstance());
+
+        TerminalViewBinder viewBinder = new TerminalViewBinder(view);
+        viewBinder.bind(terminalSession, commandProcessor);
     }
 }

@@ -1,6 +1,9 @@
 package motaz.pharaon.adu.ac.ae.traceroute.gameplay.world;
 
 import motaz.pharaon.adu.ac.ae.traceroute.engine.render.RenderPipeline;
+import motaz.pharaon.adu.ac.ae.traceroute.core.GameRuntime;
+import motaz.pharaon.adu.ac.ae.traceroute.core.GameUiEventListener;
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.evidence.EvidenceItem;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.hotspot.Hotspot;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.hotspot.HotspotActionType;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.hotspot.HotspotSystem;
@@ -27,10 +30,14 @@ import motaz.pharaon.adu.ac.ae.traceroute.gameplay.scene.Scene;
         * - GameController.
         */
 public class WorldInvestigationScene implements Scene {
+    private final GameRuntime gameRuntime;
+    private final GameUiEventListener uiEventListener;
     private final RoomNavigator roomNavigator;
     private final HotspotSystem hotspotSystem;
 
-    public WorldInvestigationScene() {
+    public WorldInvestigationScene(GameRuntime gameRuntime, GameUiEventListener uiEventListener) {
+        this.gameRuntime = gameRuntime;
+        this.uiEventListener = uiEventListener;
         roomNavigator = new RoomNavigator();
         hotspotSystem = new HotspotSystem();
     }
@@ -63,6 +70,20 @@ public class WorldInvestigationScene implements Scene {
 
         if (hotspot.getActionType() == HotspotActionType.NAVIGATE_ROOM) {
             roomNavigator.goToRoom(hotspot.getTargetRoomId());
+        } else if (hotspot.getActionType() == HotspotActionType.OPEN_HANDHELD) {
+            if (uiEventListener != null) {
+                uiEventListener.onOpenHandheldRequested();
+            }
+        } else if (hotspot.getActionType() == HotspotActionType.OPEN_TERMINAL) {
+            if (uiEventListener != null) {
+                uiEventListener.onOpenTerminalRequested();
+            }
+        } else if (hotspot.getActionType() == HotspotActionType.INSPECT_EVIDENCE) {
+            EvidenceItem evidenceItem = gameRuntime.collectEvidence(hotspot.getPayloadId());
+            if (uiEventListener != null) {
+                String evidenceId = evidenceItem != null ? evidenceItem.getId() : hotspot.getPayloadId();
+                uiEventListener.onEvidenceInspectionRequested(evidenceId);
+            }
         }
     }
 
@@ -76,6 +97,12 @@ public class WorldInvestigationScene implements Scene {
             renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.15f, 0.65f, 0.95f, 0.18f);
         } else if ("nav_next".equals(hotspot.getId())) {
             renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.95f, 0.55f, 0.20f, 0.18f);
+        } else if (hotspot.getActionType() == HotspotActionType.OPEN_HANDHELD) {
+            renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.75f, 0.95f, 0.80f, 0.24f);
+        } else if (hotspot.getActionType() == HotspotActionType.OPEN_TERMINAL) {
+            renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.30f, 0.95f, 0.70f, 0.28f);
+        } else if (hotspot.getActionType() == HotspotActionType.INSPECT_EVIDENCE) {
+            renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.95f, 0.85f, 0.25f, 0.28f);
         }
     }
 

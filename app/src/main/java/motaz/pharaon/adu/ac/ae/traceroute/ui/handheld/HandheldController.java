@@ -18,4 +18,18 @@ public class HandheldController {
      * Used by:
      * - HandheldFragment.
      */
+
+    private HandheldScreen selectedScreen;
+
+    public HandheldController() {
+        selectedScreen = HandheldScreen.EVIDENCE;
+    }
+
+    public HandheldScreen getSelectedScreen() {
+        return selectedScreen;
+    }
+
+    public void selectScreen(HandheldScreen selectedScreen) {
+        this.selectedScreen = selectedScreen;
+    }
 }

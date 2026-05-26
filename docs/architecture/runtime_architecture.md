@@ -217,6 +217,100 @@ Current hotspot actions:
 
 The first implemented action is `NAVIGATE_ROOM`.
 
+The handheld device is opened from a bottom-center hotspot strip, inspired by games where a player raises a device from the bottom of the screen. This should remain the primary world-to-handheld interaction:
+
+-   the world stays visible until the player taps the strip,
+-   the strip opens `HandheldFragment`,
+-   Android UI owns the actual overlay,
+-   gameplay only requests the overlay through `GameUiEventListener`.
+
+The OpenGL/game layer should not directly open fragments. Requests flow through:
+
+```text
+WorldInvestigationScene
+  GameUiEventListener
+    GameView
+      GameShellFragment
+```
+
+This keeps gameplay logic separate from Android UI mechanics while still allowing hotspots to open major UI surfaces.
+
+Implemented hotspot action examples:
+
+-   side zones navigate between rooms,
+-   bottom-center strip opens the handheld,
+-   living-room evidence hotspot requests evidence inspection,
+-   office hotspot opens the terminal dialog.
+
+## Runtime State
+
+`GameRuntime` is the current shared play-session state object.
+
+It exists because:
+
+-   OpenGL gameplay runs through `GameController` and `WorldInvestigationScene`,
+-   Android UI fragments need to display the same evidence/thread/timeline state,
+-   fragments should not own gameplay state directly,
+-   the project does not yet have full repository/save-state plumbing.
+
+Current runtime flow for evidence:
+
+```text
+WorldInvestigationScene
+  EvidenceSystem.collectEvidence(id)
+    GameRuntime
+      EvidenceSystem
+
+HandheldFragment
+  HandheldViewBinder
+    GameRuntime
+      EvidenceSystem.getCollectedEvidence()
+```
+
+This is acceptable for the early MVP foundation. Later, `GameRuntime` can be backed by `GameRepository`, `DataLoader`, and save/load persistence.
+
+The first implemented evidence item is:
+
+-   `E01_BODY_CONDITION_REPORT`
+-   `E02_THERMOSTAT_AC_LOG`
+
+The first evidence display surface is:
+
+-   `HandheldFragment` evidence list.
+
+## Investigation Thread Loop
+
+The first implemented deduction loop is:
+
+```text
+Collect E01_BODY_CONDITION_REPORT
+  ThreadSystem unlocks Death Window observation 1
+
+Collect E02_THERMOSTAT_AC_LOG
+  ThreadSystem unlocks Death Window observation 2
+
+If both are collected
+  Death Window Instability becomes stabilized
+```
+
+This creates the first playable version of the intended "soft confirmation deduction" model:
+
+-   the player discovers clues in the world,
+-   the system records them as evidence,
+-   investigation threads update automatically,
+-   the handheld explains the evolving line of reasoning.
+
+The handheld currently has two working tabs:
+
+-   Evidence
+-   Threads
+
+Later tabs should include:
+
+-   Timeline
+-   Statements
+-   Terminal entry point if desired.
+
 ## Terminal Mechanic
 
 The terminal is a major mechanic.
@@ -239,7 +333,25 @@ The terminal should support authored interactions like:
 -   query device activity,
 -   reveal metadata,
 -   unlock evidence,
--   update investigation threads.
+  -   update investigation threads.
+
+Current MVP terminal boundary:
+
+-   terminal commands are authored, not freeform,
+-   unknown commands return a readable fallback,
+-   commands do not execute real device or shell operations,
+-   command results may read `GameRuntime` state,
+-   later commands may unlock evidence/thread observations through gameplay systems.
+
+Implemented starter commands:
+
+-   `HELP`
+-   `EVIDENCE`
+-   `BODY`
+-   `LOGS`
+-   `CLEAR`
+
+`TerminalSession` owns visible history. `TerminalCommandProcessor` owns command interpretation. `TerminalViewBinder` owns Android view binding.
 
 ## Data And Persistence
 

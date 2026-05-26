@@ -4,15 +4,18 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import motaz.pharaon.adu.ac.ae.traceroute.R;
+import motaz.pharaon.adu.ac.ae.traceroute.core.GameUiEventListener;
 import motaz.pharaon.adu.ac.ae.traceroute.ui.handheld.HandheldFragment;
 import motaz.pharaon.adu.ac.ae.traceroute.ui.terminal.TerminalFragment;
 import motaz.pharaon.adu.ac.ae.traceroute.ui.world.WorldInvestigationFragment;
 
-public class GameShellFragment extends Fragment {
+public class GameShellFragment extends Fragment implements GameUiEventListener {
     /*
      * Purpose:
      * - Root fragment for the playable game shell.
@@ -32,6 +35,9 @@ public class GameShellFragment extends Fragment {
      * - MainActivity.
      */
 
+    private static final String HANDHELD_TAG = "handheld";
+    private static final String TERMINAL_TAG = "terminal";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_game_shell, container, false);
@@ -50,14 +56,46 @@ public class GameShellFragment extends Fragment {
     }
 
     public void openHandheld() {
-        getChildFragmentManager()
+        FragmentManager fragmentManager = getChildFragmentManager();
+        if (fragmentManager.findFragmentByTag(HANDHELD_TAG) != null) {
+            return;
+        }
+
+        fragmentManager
                 .beginTransaction()
-                .replace(R.id.overlay_fragment_container, new HandheldFragment())
-                .addToBackStack("handheld")
+                .replace(R.id.overlay_fragment_container, new HandheldFragment(), HANDHELD_TAG)
+                .addToBackStack(HANDHELD_TAG)
                 .commit();
     }
 
     public void openTerminal() {
-        new TerminalFragment().show(getChildFragmentManager(), "terminal");
+        if (getChildFragmentManager().findFragmentByTag(TERMINAL_TAG) != null) {
+            return;
+        }
+
+        new TerminalFragment().show(getChildFragmentManager(), TERMINAL_TAG);
+    }
+
+    @Override
+    public void onOpenHandheldRequested() {
+        openHandheld();
+    }
+
+    @Override
+    public void onOpenTerminalRequested() {
+        openTerminal();
+    }
+
+    @Override
+    public void onEvidenceInspectionRequested(String evidenceId) {
+        if (!isAdded()) {
+            return;
+        }
+
+        Toast.makeText(
+                requireContext(),
+                "Evidence inspected: " + evidenceId,
+                Toast.LENGTH_SHORT
+        ).show();
     }
 }
