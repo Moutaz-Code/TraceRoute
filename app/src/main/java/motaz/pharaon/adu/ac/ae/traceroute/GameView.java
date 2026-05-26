@@ -3,6 +3,7 @@ package motaz.pharaon.adu.ac.ae.traceroute;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 
 import motaz.pharaon.adu.ac.ae.traceroute.engine.gl.GLRenderer;
 
@@ -25,6 +26,8 @@ public class GameView extends GLSurfaceView {
      * - WorldInvestigationFragment.
      */
 
+    private GLRenderer renderer;
+
     public GameView(Context context) {
         super(context);
         init(context);
@@ -38,8 +41,26 @@ public class GameView extends GLSurfaceView {
     private void init(Context context) {
         setEGLContextClientVersion(3);
         setPreserveEGLContextOnPause(true);
-        setRenderer(new GLRenderer(context));
+        renderer = new GLRenderer(context);
+        setRenderer(renderer);
         setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() != MotionEvent.ACTION_UP) {
+            return true;
+        }
+
+        if (getWidth() == 0 || getHeight() == 0) {
+            return true;
+        }
+
+        final float normalizedX = event.getX() / getWidth();
+        final float normalizedY = event.getY() / getHeight();
+
+        queueEvent(() -> renderer.onTap(normalizedX, normalizedY));
+        return true;
     }
 
 }

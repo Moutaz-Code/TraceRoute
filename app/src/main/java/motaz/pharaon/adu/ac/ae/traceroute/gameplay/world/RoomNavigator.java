@@ -25,10 +25,18 @@ public class RoomNavigator {
     private static final String PLACEHOLDER_ROOM_TEXTURE = "textures/scenes/room_test.png";
 
     private final Map<RoomId, RoomDefinition> rooms;
+    private final RoomId[] roomOrder;
     private RoomId currentRoomId;
 
     public RoomNavigator() {
         rooms = new EnumMap<>(RoomId.class);
+        roomOrder = new RoomId[] {
+                RoomId.LIVING_ROOM,
+                RoomId.ENTRY_SMART_LOCK,
+                RoomId.KITCHEN_SIDE_AREA,
+                RoomId.OFFICE_DEVICE_CORNER,
+                RoomId.CCTV_WINDOW_OPTIONAL
+        };
 
         addRoom(new RoomDefinition(
                 RoomId.LIVING_ROOM,
@@ -73,7 +81,33 @@ public class RoomNavigator {
         }
     }
 
+    public void goToNextRoom() {
+        int currentIndex = getCurrentRoomIndex();
+        int nextIndex = (currentIndex + 1) % roomOrder.length;
+        currentRoomId = roomOrder[nextIndex];
+    }
+
+    public void goToPreviousRoom() {
+        int currentIndex = getCurrentRoomIndex();
+        int previousIndex = currentIndex - 1;
+        if (previousIndex < 0) {
+            previousIndex = roomOrder.length - 1;
+        }
+
+        currentRoomId = roomOrder[previousIndex];
+    }
+
     private void addRoom(RoomDefinition roomDefinition) {
         rooms.put(roomDefinition.getId(), roomDefinition);
+    }
+
+    private int getCurrentRoomIndex() {
+        for (int i = 0; i < roomOrder.length; i++) {
+            if (roomOrder[i] == currentRoomId) {
+                return i;
+            }
+        }
+
+        return 0;
     }
 }

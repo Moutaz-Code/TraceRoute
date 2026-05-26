@@ -39,7 +39,7 @@ public class ColoredQuad {
                 .asFloatBuffer();
     }
 
-    public void draw(float x, float y, float width, float height) {
+    public void draw(float x, float y, float width, float height, float r, float g, float b, float a) {
         float left = x;
         float right = x + width;
         float bottom = y;
@@ -61,7 +61,7 @@ public class ColoredQuad {
         vertexBuffer.position(0);
 
         shaderProgram.use();
-        shaderProgram.setUniform4f("uColor", 0.7f, 0.8f, 0.25f, 1.0f);
+        shaderProgram.setUniform4f("uColor", r, g, b, a);
 
         GLES30.glEnableVertexAttribArray(0);
         GLES30.glVertexAttribPointer(

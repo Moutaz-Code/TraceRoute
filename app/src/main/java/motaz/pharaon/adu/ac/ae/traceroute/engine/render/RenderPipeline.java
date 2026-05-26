@@ -8,7 +8,7 @@ import java.util.Map;
 import motaz.pharaon.adu.ac.ae.traceroute.engine.gl.Texture;
 
 public class RenderPipeline {
-    private static final float ROOM_BACKGROUND_SAFE_SCALE = 0.94f;
+    private static final float ROOM_BACKGROUND_SAFE_SCALE = 0.96f;
 
     private DebugQuad debugQuad;
     private ColoredQuad coloredQuad;
@@ -45,7 +45,7 @@ public class RenderPipeline {
     }
 
     public void drawColorQuad(float x, float y, float width, float height, float r, float g, float b, float a) {
-        coloredQuad.draw(x, y, width, height);
+        coloredQuad.draw(x, y, width, height, r, g, b, a);
     }
 
     public void drawRoomBackground(String texturePath) {

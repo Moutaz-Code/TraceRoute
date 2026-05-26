@@ -38,5 +38,8 @@ public class GameController {
         worldInvestigationScene.render(renderPipeline);
     }
 
+    public void onTap(float normalizedX, float normalizedY) {
+        worldInvestigationScene.onTap(normalizedX, normalizedY);
+    }
 
 }

@@ -42,6 +42,9 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     @Override
     public void onSurfaceCreated(GL10 unused, EGLConfig eglConfig) {
         GLES30.glClearColor(0.5f, 0.2f, 0.6f, 1.0f);
+        GLES30.glEnable(GLES30.GL_BLEND);
+        GLES30.glBlendFunc(GLES30.GL_SRC_ALPHA, GLES30.GL_ONE_MINUS_SRC_ALPHA);
+
         renderPipeline = new RenderPipeline();
         renderPipeline.initialize(context);
 
@@ -67,5 +70,11 @@ public class GLRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceChanged(GL10 unused, int width, int height) {
         GLES30.glViewport(0, 0, width, height);
         renderPipeline.resize(width, height);
+    }
+
+    public void onTap(float normalizedX, float normalizedY) {
+        if (gameController != null) {
+            gameController.onTap(normalizedX, normalizedY);
+        }
     }
 }
