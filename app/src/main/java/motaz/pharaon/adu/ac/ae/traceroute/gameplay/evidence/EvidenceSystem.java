@@ -50,6 +50,10 @@ public class EvidenceSystem {
         return evidenceItem;
     }
 
+    public synchronized EvidenceItem getEvidence(String evidenceId) {
+        return evidenceDefinitions.get(evidenceId);
+    }
+
     public synchronized boolean isCollected(String evidenceId) {
         return collectedEvidenceIds.contains(evidenceId);
     }
@@ -69,5 +73,9 @@ public class EvidenceSystem {
 
     public synchronized List<String> getCollectedEvidenceIds() {
         return new ArrayList<>(collectedEvidenceIds);
+    }
+
+    public synchronized List<String> getAllEvidenceIds() {
+        return new ArrayList<>(evidenceDefinitions.keySet());
     }
 }

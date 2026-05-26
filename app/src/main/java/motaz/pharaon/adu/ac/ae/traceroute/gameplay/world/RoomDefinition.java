@@ -33,6 +33,7 @@ public class RoomDefinition {
     private final String debugHotspotHint;
     private final String backgroundTexturePath;
     private final List<Hotspot> hotspots;
+    private final List<VisualAnnotation> visualAnnotations;
 
     public RoomDefinition(
             RoomId id,
@@ -40,7 +41,8 @@ public class RoomDefinition {
             String debugContextText,
             String debugHotspotHint,
             String backgroundTexturePath,
-            List<Hotspot> hotspots
+            List<Hotspot> hotspots,
+            List<VisualAnnotation> visualAnnotations
     ) {
         this.id = id;
         this.displayName = displayName;
@@ -48,6 +50,7 @@ public class RoomDefinition {
         this.debugHotspotHint = debugHotspotHint;
         this.backgroundTexturePath = backgroundTexturePath;
         this.hotspots = Collections.unmodifiableList(new ArrayList<>(hotspots));
+        this.visualAnnotations = Collections.unmodifiableList(new ArrayList<>(visualAnnotations));
     }
 
     public RoomId getId() {
@@ -72,5 +75,9 @@ public class RoomDefinition {
 
     public List<Hotspot> getHotspots() {
         return hotspots;
+    }
+
+    public List<VisualAnnotation> getVisualAnnotations() {
+        return visualAnnotations;
     }
 }

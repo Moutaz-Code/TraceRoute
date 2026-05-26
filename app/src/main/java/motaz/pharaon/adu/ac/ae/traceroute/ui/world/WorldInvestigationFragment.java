@@ -6,12 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import motaz.pharaon.adu.ac.ae.traceroute.GameView;
 import motaz.pharaon.adu.ac.ae.traceroute.R;
 import motaz.pharaon.adu.ac.ae.traceroute.core.GameUiEventListener;
+import motaz.pharaon.adu.ac.ae.traceroute.core.GameRuntime;
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.world.RoomDefinition;
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.world.RoomId;
 
 public class WorldInvestigationFragment extends Fragment implements GameUiEventListener {
     /*
@@ -35,6 +40,14 @@ public class WorldInvestigationFragment extends Fragment implements GameUiEventL
     private TextView roomTitleText;
     private TextView roomContextText;
     private TextView roomHotspotText;
+    private TextView currentLeadText;
+    private View debugOverlayView;
+    private View debugToolRow;
+    private TextView debugPanelToggle;
+    private TextView debugOverlayToggle;
+    private WorldDebugOverlayBinder debugOverlayBinder;
+    private boolean debugOverlayVisible;
+    private boolean debugToolsVisible;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,6 +61,20 @@ public class WorldInvestigationFragment extends Fragment implements GameUiEventL
         roomTitleText = view.findViewById(R.id.debug_room_title);
         roomContextText = view.findViewById(R.id.debug_room_context);
         roomHotspotText = view.findViewById(R.id.debug_label_room_hotspot);
+        currentLeadText = view.findViewById(R.id.debug_current_lead);
+        debugOverlayView = view.findViewById(R.id.debug_visualization_overlay);
+        debugToolRow = view.findViewById(R.id.debug_tool_row);
+        debugPanelToggle = view.findViewById(R.id.debug_panel_toggle);
+        debugOverlayToggle = view.findViewById(R.id.debug_overlay_toggle);
+        debugOverlayBinder = new WorldDebugOverlayBinder((FrameLayout) debugOverlayView);
+        debugOverlayVisible = true;
+        debugToolsVisible = false;
+        debugPanelToggle.setOnClickListener(toggle -> toggleDebugTools());
+        debugOverlayToggle.setOnClickListener(toggle -> toggleDebugOverlay());
+        view.findViewById(R.id.debug_reset_run).setOnClickListener(reset -> confirmResetPlaythrough());
+        view.findViewById(R.id.debug_unlock_core).setOnClickListener(unlock -> unlockCoreEvidenceForDebug());
+        renderCurrentLead();
+
         gameView = new GameView(requireContext());
         gameView.setUiEventListener(this);
 
@@ -95,6 +122,7 @@ public class WorldInvestigationFragment extends Fragment implements GameUiEventL
 
     @Override
     public void onEvidenceInspectionRequested(String evidenceId) {
+        renderCurrentLead();
         if (getParentFragment() instanceof GameUiEventListener) {
             ((GameUiEventListener) getParentFragment()).onEvidenceInspectionRequested(evidenceId);
         }
@@ -113,5 +141,64 @@ public class WorldInvestigationFragment extends Fragment implements GameUiEventL
         if (roomHotspotText != null) {
             roomHotspotText.setText(hotspotHint);
         }
+
+        if (debugOverlayBinder != null) {
+            debugOverlayBinder.render(findCurrentRoomDefinition());
+        }
+
+        renderCurrentLead();
+    }
+
+    private void toggleDebugTools() {
+        debugToolsVisible = !debugToolsVisible;
+        debugToolRow.setVisibility(debugToolsVisible ? View.VISIBLE : View.GONE);
+        debugPanelToggle.setText(debugToolsVisible ? "Debug -" : "Debug");
+    }
+
+    private void toggleDebugOverlay() {
+        debugOverlayVisible = !debugOverlayVisible;
+        debugOverlayView.setVisibility(debugOverlayVisible ? View.VISIBLE : View.GONE);
+        debugOverlayToggle.setText(debugOverlayVisible ? "Overlay On" : "Overlay Off");
+
+        if (debugOverlayVisible && debugOverlayBinder != null) {
+            debugOverlayBinder.render(findCurrentRoomDefinition());
+        }
+    }
+
+    private void confirmResetPlaythrough() {
+        new AlertDialog.Builder(requireContext())
+                .setTitle("Reset investigation?")
+                .setMessage("This clears collected evidence, current room, and final timeline progress.")
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Reset", (dialog, which) -> {
+                    GameRuntime.resetPlaythrough(requireContext().getApplicationContext());
+                    if (requireActivity() != null) {
+                        requireActivity().recreate();
+                    }
+                })
+                .show();
+    }
+
+    private void unlockCoreEvidenceForDebug() {
+        GameRuntime.getInstance().debugCollectAllEvidence();
+        renderCurrentLead();
+        Toast.makeText(requireContext(), "Core evidence unlocked.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void renderCurrentLead() {
+        if (currentLeadText != null) {
+            currentLeadText.setText("Lead: " + GameRuntime.getInstance().getCurrentLead());
+        }
+    }
+
+    private RoomDefinition findCurrentRoomDefinition() {
+        RoomId currentRoomId = GameRuntime.getInstance().getCurrentRoomId();
+        for (RoomDefinition roomDefinition : GameRuntime.getInstance().getRoomDefinitions()) {
+            if (roomDefinition.getId() == currentRoomId) {
+                return roomDefinition;
+            }
+        }
+
+        return null;
     }
 }

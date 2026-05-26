@@ -29,6 +29,7 @@ public class TerminalViewBinder {
      */
 
     private final ScrollView scrollView;
+    private final TextView titleText;
     private final TextView outputText;
     private final Button messagesButton;
     private final Button laptopButton;
@@ -38,6 +39,7 @@ public class TerminalViewBinder {
 
     public TerminalViewBinder(View rootView) {
         scrollView = rootView.findViewById(R.id.terminal_scroll);
+        titleText = rootView.findViewById(R.id.terminal_title);
         outputText = rootView.findViewById(R.id.terminal_output);
         messagesButton = rootView.findViewById(R.id.terminal_command_messages);
         laptopButton = rootView.findViewById(R.id.terminal_command_laptop);
@@ -47,6 +49,11 @@ public class TerminalViewBinder {
     }
 
     public void bind(TerminalSession terminalSession, TerminalCommandProcessor commandProcessor) {
+        titleText.setText(terminalSession.getTitle());
+        messagesButton.setText(terminalSession.getPanelLabel("messages", "Messages"));
+        laptopButton.setText(terminalSession.getPanelLabel("activity", "Activity"));
+        filesButton.setText(terminalSession.getPanelLabel("files", "Files"));
+        draftButton.setText(terminalSession.getPanelLabel("draft", "Draft"));
         render(terminalSession);
 
         messagesButton.setOnClickListener(view -> submitCommand("messages", terminalSession, commandProcessor));

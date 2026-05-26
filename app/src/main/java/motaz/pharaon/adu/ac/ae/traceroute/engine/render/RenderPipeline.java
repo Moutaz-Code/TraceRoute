@@ -3,7 +3,9 @@ package motaz.pharaon.adu.ac.ae.traceroute.engine.render;
 import android.content.Context;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import motaz.pharaon.adu.ac.ae.traceroute.engine.gl.Texture;
 
@@ -16,6 +18,7 @@ public class RenderPipeline {
     private TexturedQuad texturedQuad;
     private Context context;
     private Map<String, Texture> textureCache;
+    private Set<String> failedTexturePaths;
 
     private int viewportWidth;
     private int viewportHeight;
@@ -25,6 +28,7 @@ public class RenderPipeline {
         // Initialize shaders, load textures, set up any necessary OpenGL state.
         this.context = context.getApplicationContext();
         textureCache = new HashMap<>();
+        failedTexturePaths = new HashSet<>();
 
         debugQuad = new DebugQuad();
         coloredQuad = new ColoredQuad();
@@ -50,11 +54,13 @@ public class RenderPipeline {
 
     public void drawRoomBackground(String texturePath) {
         if (texturePath == null || viewportWidth == 0 || viewportHeight == 0) {
+            drawMissingTextureFallback();
             return;
         }
 
         Texture roomTexture = getTexture(texturePath);
         if (roomTexture == null) {
+            drawMissingTextureFallback();
             return;
         }
 
@@ -85,12 +91,25 @@ public class RenderPipeline {
     }
 
     private Texture getTexture(String texturePath) {
+        if (texturePath.trim().isEmpty() || failedTexturePaths.contains(texturePath)) {
+            return null;
+        }
+
         Texture texture = textureCache.get(texturePath);
         if (texture == null) {
-            texture = Texture.fromAsset(context, texturePath);
-            textureCache.put(texturePath, texture);
+            try {
+                texture = Texture.fromAsset(context, texturePath);
+                textureCache.put(texturePath, texture);
+            } catch (RuntimeException exception) {
+                failedTexturePaths.add(texturePath);
+                return null;
+            }
         }
 
         return texture;
+    }
+
+    private void drawMissingTextureFallback() {
+        drawColorQuad(-1.0f, -1.0f, 2.0f, 2.0f, 0.035f, 0.043f, 0.055f, 1.0f);
     }
 }

@@ -1,6 +1,7 @@
 package motaz.pharaon.adu.ac.ae.traceroute.gameplay.world;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,10 @@ public class RoomNavigator {
     private RoomId currentRoomId;
 
     public RoomNavigator() {
+        this(null);
+    }
+
+    public RoomNavigator(List<RoomDefinition> loadedRooms) {
         rooms = new EnumMap<>(RoomId.class);
         roomOrder = new RoomId[] {
                 RoomId.LIVING_ROOM,
@@ -41,6 +46,14 @@ public class RoomNavigator {
                 RoomId.OFFICE_DEVICE_CORNER,
                 RoomId.CCTV_WINDOW_OPTIONAL
         };
+
+        if (loadedRooms != null && !loadedRooms.isEmpty()) {
+            for (RoomDefinition roomDefinition : loadedRooms) {
+                addRoom(roomDefinition);
+            }
+            currentRoomId = RoomId.LIVING_ROOM;
+            return;
+        }
 
         addRoom(buildRoom(
                 RoomId.LIVING_ROOM,
@@ -233,7 +246,8 @@ public class RoomNavigator {
                 debugContextText,
                 debugHotspotHint,
                 backgroundTexturePath,
-                hotspots
+                hotspots,
+                Collections.emptyList()
         );
     }
 

@@ -1,6 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dialogue_root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:background="#05080A"
+    android:minWidth="320dp"
+    android:orientation="vertical"
+    android:padding="22dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/dialogue_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Final Confrontation"
+        android:textColor="#D6F5E3"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/dialogue_progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:text="1 / 1"
+        android:textColor="#5E8B73"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/dialogue_speaker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:text="Speaker"
+        android:textColor="#F5DA7A"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/dialogue_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:lineSpacingExtra="3dp"
+        android:text="Dialogue line"
+        android:textColor="#E6EEE8"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/dialogue_next_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Next" />
+
+</LinearLayout>

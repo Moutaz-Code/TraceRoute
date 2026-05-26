@@ -8,6 +8,8 @@ import java.util.List;
 
 import motaz.pharaon.adu.ac.ae.traceroute.data.db.GameContract;
 import motaz.pharaon.adu.ac.ae.traceroute.data.db.GameDatabase;
+import motaz.pharaon.adu.ac.ae.traceroute.data.loader.DataLoader;
+import motaz.pharaon.adu.ac.ae.traceroute.data.model.GameContent;
 
 public class GameRepository {
     /*
@@ -32,9 +34,16 @@ public class GameRepository {
     private static final String TRUE_VALUE = "true";
 
     private final GameDatabase gameDatabase;
+    private final DataLoader dataLoader;
 
     public GameRepository(Context context) {
-        gameDatabase = new GameDatabase(context.getApplicationContext());
+        Context applicationContext = context.getApplicationContext();
+        gameDatabase = new GameDatabase(applicationContext);
+        dataLoader = new DataLoader(applicationContext);
+    }
+
+    public GameContent loadGameContent() {
+        return dataLoader.loadGameContent();
     }
 
     public GameSaveState loadPlayState(String defaultRoomId) {

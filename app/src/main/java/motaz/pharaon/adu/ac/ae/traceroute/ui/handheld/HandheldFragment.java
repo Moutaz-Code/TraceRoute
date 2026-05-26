@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import motaz.pharaon.adu.ac.ae.traceroute.R;
 import motaz.pharaon.adu.ac.ae.traceroute.core.GameRuntime;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.timeline.TimelineSystem;
+import motaz.pharaon.adu.ac.ae.traceroute.ui.dialogue.DialogueFragment;
 
 public class HandheldFragment extends Fragment {
     /*
@@ -30,8 +31,20 @@ public class HandheldFragment extends Fragment {
      * - GameShellFragment.
      */
 
+    private static final String ARG_FOCUSED_EVIDENCE_ID = "focused_evidence_id";
+
     private HandheldController handheldController;
     private HandheldViewBinder viewBinder;
+    private String focusedEvidenceId;
+    private static final String DIALOGUE_TAG = "final_confrontation";
+
+    public static HandheldFragment newInstance(String focusedEvidenceId) {
+        HandheldFragment fragment = new HandheldFragment();
+        Bundle arguments = new Bundle();
+        arguments.putString(ARG_FOCUSED_EVIDENCE_ID, focusedEvidenceId);
+        fragment.setArguments(arguments);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,12 +54,18 @@ public class HandheldFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (getArguments() != null) {
+            focusedEvidenceId = getArguments().getString(ARG_FOCUSED_EVIDENCE_ID);
+        }
 
         view.findViewById(R.id.handheld_close_button).setOnClickListener(closeButton -> {
             getParentFragmentManager().popBackStack();
         });
 
         handheldController = new HandheldController();
+        if (focusedEvidenceId != null && !focusedEvidenceId.trim().isEmpty()) {
+            handheldController.selectScreen(HandheldScreen.EVIDENCE);
+        }
         viewBinder = new HandheldViewBinder(view);
 
         view.findViewById(R.id.handheld_evidence_tab).setOnClickListener(tab -> {
@@ -78,6 +97,9 @@ public class HandheldFragment extends Fragment {
     }
 
     private void renderSelectedScreen() {
+        viewBinder.renderTabState(handheldController.getSelectedScreen());
+        renderCurrentLead();
+
         if (handheldController.getSelectedScreen() == HandheldScreen.FINAL_TIMELINE) {
             renderFinalTimeline();
         } else if (handheldController.getSelectedScreen() == HandheldScreen.STATEMENTS) {
@@ -87,12 +109,16 @@ public class HandheldFragment extends Fragment {
         } else if (handheldController.getSelectedScreen() == HandheldScreen.THREADS) {
             viewBinder.renderThreads(GameRuntime.getInstance().getThreadSystem().getInvestigationThreads());
         } else {
-            viewBinder.renderEvidence(GameRuntime.getInstance().getEvidenceSystem().getCollectedEvidence());
+            viewBinder.renderEvidence(
+                    GameRuntime.getInstance().getEvidenceSystem().getCollectedEvidence(),
+                    focusedEvidenceId
+            );
         }
     }
 
     private void renderFinalTimeline() {
         TimelineSystem timelineSystem = GameRuntime.getInstance().getTimelineSystem();
+        renderCurrentLead();
         viewBinder.renderFinalTimeline(
                 timelineSystem.getSelectedFinalTimelineEvents(),
                 timelineSystem.getAvailableFinalTimelineEvents(),
@@ -113,7 +139,18 @@ public class HandheldFragment extends Fragment {
                         GameRuntime.getInstance().savePlayState();
                         renderFinalTimeline();
                     }
+
+                    @Override
+                    public void onConfrontationRequested() {
+                        if (getParentFragmentManager().findFragmentByTag(DIALOGUE_TAG) == null) {
+                            new DialogueFragment().show(getParentFragmentManager(), DIALOGUE_TAG);
+                        }
+                    }
                 }
         );
+    }
+
+    private void renderCurrentLead() {
+        viewBinder.renderCurrentLead(GameRuntime.getInstance().getCurrentLead());
     }
 }

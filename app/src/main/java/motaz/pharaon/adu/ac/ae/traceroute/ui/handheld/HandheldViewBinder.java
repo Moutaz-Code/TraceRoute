@@ -3,6 +3,7 @@ package motaz.pharaon.adu.ac.ae.traceroute.ui.handheld;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -14,6 +15,7 @@ import motaz.pharaon.adu.ac.ae.traceroute.gameplay.investigation.InvestigationTh
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.statement.SuspectStatement;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.timeline.FinalTimelineEvent;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.timeline.TimelineEvent;
+import motaz.pharaon.adu.ac.ae.traceroute.ui.AssetImageLoader;
 
 public class HandheldViewBinder {
     /*
@@ -36,23 +38,53 @@ public class HandheldViewBinder {
 
     private final View rootView;
     private final TextView titleText;
+    private final TextView leadText;
     private final TextView emptyText;
     private final LinearLayout contentList;
+    private final Button evidenceTab;
+    private final Button threadsTab;
+    private final Button timelineTab;
+    private final Button statementsTab;
+    private final Button finalTimelineTab;
 
     public interface FinalTimelineSelectionListener {
         void onFinalTimelineEventSelected(String eventId);
 
         void onFinalTimelineResetRequested();
+
+        void onConfrontationRequested();
     }
 
     public HandheldViewBinder(View rootView) {
         this.rootView = rootView;
         titleText = rootView.findViewById(R.id.handheld_title);
+        leadText = rootView.findViewById(R.id.handheld_current_lead);
         emptyText = rootView.findViewById(R.id.handheld_empty_text);
         contentList = rootView.findViewById(R.id.handheld_evidence_list);
+        evidenceTab = rootView.findViewById(R.id.handheld_evidence_tab);
+        threadsTab = rootView.findViewById(R.id.handheld_threads_tab);
+        timelineTab = rootView.findViewById(R.id.handheld_timeline_tab);
+        statementsTab = rootView.findViewById(R.id.handheld_statements_tab);
+        finalTimelineTab = rootView.findViewById(R.id.handheld_final_timeline_tab);
+    }
+
+    public void renderTabState(HandheldScreen selectedScreen) {
+        styleTab(evidenceTab, selectedScreen == HandheldScreen.EVIDENCE);
+        styleTab(threadsTab, selectedScreen == HandheldScreen.THREADS);
+        styleTab(timelineTab, selectedScreen == HandheldScreen.TIMELINE);
+        styleTab(statementsTab, selectedScreen == HandheldScreen.STATEMENTS);
+        styleTab(finalTimelineTab, selectedScreen == HandheldScreen.FINAL_TIMELINE);
+    }
+
+    public void renderCurrentLead(String currentLead) {
+        leadText.setText("Lead: " + currentLead);
     }
 
     public void renderEvidence(List<EvidenceItem> collectedEvidence) {
+        renderEvidence(collectedEvidence, null);
+    }
+
+    public void renderEvidence(List<EvidenceItem> collectedEvidence, String focusedEvidenceId) {
         titleText.setText("HANDHELD // EVIDENCE");
         contentList.removeAllViews();
 
@@ -64,7 +96,17 @@ public class HandheldViewBinder {
             return;
         }
 
+        EvidenceItem focusedEvidence = findEvidence(collectedEvidence, focusedEvidenceId);
+        if (focusedEvidence != null) {
+            contentList.addView(createSectionLabel("Latest inspection"));
+            contentList.addView(createEvidenceView(focusedEvidence));
+            contentList.addView(createSectionLabel("Collected evidence"));
+        }
+
         for (EvidenceItem evidenceItem : collectedEvidence) {
+            if (focusedEvidence != null && focusedEvidence.getId().equals(evidenceItem.getId())) {
+                continue;
+            }
             contentList.addView(createEvidenceView(evidenceItem));
         }
     }
@@ -162,6 +204,12 @@ public class HandheldViewBinder {
             for (FinalTimelineEvent availableEvent : availableEvents) {
                 contentList.addView(createAvailableFinalTimelineEventButton(availableEvent, selectionListener));
             }
+        } else {
+            Button confrontButton = new Button(rootView.getContext());
+            confrontButton.setText("Confront Partner");
+            confrontButton.setAllCaps(false);
+            confrontButton.setOnClickListener(view -> selectionListener.onConfrontationRequested());
+            contentList.addView(confrontButton);
         }
     }
 
@@ -190,6 +238,8 @@ public class HandheldViewBinder {
         metadata.setTextSize(12);
         card.addView(metadata);
 
+        card.addView(createEvidenceImageView(evidenceItem));
+
         TextView summary = new TextView(rootView.getContext());
         summary.setText(evidenceItem.getPlayerSummary());
         summary.setTextColor(Color.rgb(230, 238, 232));
@@ -205,6 +255,51 @@ public class HandheldViewBinder {
         card.addView(technicalNote);
 
         return card;
+    }
+
+    private View createEvidenceImageView(EvidenceItem evidenceItem) {
+        ImageView imageView = new ImageView(rootView.getContext());
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setBackgroundColor(Color.rgb(18, 35, 39));
+
+        LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                dp(132)
+        );
+        imageParams.setMargins(0, dp(12), 0, 0);
+        imageView.setLayoutParams(imageParams);
+
+        String preferredPath = evidenceItem.getDetailAssetPath();
+        if (!AssetImageLoader.loadInto(imageView, preferredPath)) {
+            AssetImageLoader.loadInto(imageView, evidenceItem.getThumbnailAssetPath());
+        }
+
+        return imageView;
+    }
+
+    private EvidenceItem findEvidence(List<EvidenceItem> evidenceItems, String evidenceId) {
+        if (evidenceItems == null || evidenceId == null || evidenceId.trim().isEmpty()) {
+            return null;
+        }
+
+        for (EvidenceItem evidenceItem : evidenceItems) {
+            if (evidenceId.equals(evidenceItem.getId())) {
+                return evidenceItem;
+            }
+        }
+
+        return null;
+    }
+
+    private void styleTab(Button button, boolean selected) {
+        button.setAllCaps(false);
+        button.setTextColor(selected ? Color.rgb(5, 8, 10) : Color.rgb(214, 245, 227));
+        button.setBackgroundColor(selected ? Color.rgb(245, 218, 122) : Color.rgb(18, 35, 39));
+    }
+
+    private int dp(int value) {
+        float density = rootView.getResources().getDisplayMetrics().density;
+        return Math.round(value * density);
     }
 
     private View createThreadView(InvestigationThread investigationThread) {
@@ -333,7 +428,7 @@ public class HandheldViewBinder {
 
         if (suspectStatement.isContradicted()) {
             TextView contradiction = new TextView(rootView.getContext());
-            contradiction.setText("CONTRADICTION: " + suspectStatement.getContradictionText());
+            contradiction.setText("STATUS: " + suspectStatement.getContradictionText());
             contradiction.setTextColor(Color.rgb(245, 218, 122));
             contradiction.setTextSize(13);
             contradiction.setPadding(0, 12, 0, 0);

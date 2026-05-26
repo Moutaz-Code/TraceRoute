@@ -25,6 +25,8 @@ public class EvidenceItem {
     private final String source;
     private final String playerSummary;
     private final String technicalNote;
+    private final String thumbnailAssetPath;
+    private final String detailAssetPath;
 
     public EvidenceItem(
             String id,
@@ -34,12 +36,36 @@ public class EvidenceItem {
             String playerSummary,
             String technicalNote
     ) {
+        this(
+                id,
+                title,
+                category,
+                source,
+                playerSummary,
+                technicalNote,
+                "",
+                ""
+        );
+    }
+
+    public EvidenceItem(
+            String id,
+            String title,
+            String category,
+            String source,
+            String playerSummary,
+            String technicalNote,
+            String thumbnailAssetPath,
+            String detailAssetPath
+    ) {
         this.id = id;
         this.title = title;
         this.category = category;
         this.source = source;
         this.playerSummary = playerSummary;
         this.technicalNote = technicalNote;
+        this.thumbnailAssetPath = thumbnailAssetPath;
+        this.detailAssetPath = detailAssetPath;
     }
 
     public String getId() {
@@ -64,5 +90,13 @@ public class EvidenceItem {
 
     public String getTechnicalNote() {
         return technicalNote;
+    }
+
+    public String getThumbnailAssetPath() {
+        return thumbnailAssetPath;
+    }
+
+    public String getDetailAssetPath() {
+        return detailAssetPath;
     }
 }

@@ -1,0 +1,708 @@
+{
+  "evidence": [
+    {
+      "id": "E01_BODY_CONDITION_REPORT",
+      "title": "Body Condition Report",
+      "category": "Physical / forensic",
+      "source": "Living Room / Body Scene",
+      "playerSummary": "The body condition does not cleanly match a death after 21:00.",
+      "technicalNote": "Cooling and stiffness are inconsistent with the apparent late activity window.",
+      "thumbnailAssetPath": "textures/evidence/e01_body_condition_thumb.png",
+      "detailAssetPath": "textures/evidence/e01_body_condition_detail.png"
+    },
+    {
+      "id": "E02_THERMOSTAT_AC_LOG",
+      "title": "Thermostat / AC Log",
+      "category": "Digital / environmental",
+      "source": "Kitchen / Side Area",
+      "playerSummary": "The apartment was cooled unusually after the real murder window began.",
+      "technicalNote": "AC dropped sharply at 19:34, which can distort body-temperature interpretation.",
+      "thumbnailAssetPath": "textures/evidence/e02_thermostat_ac_log_thumb.png",
+      "detailAssetPath": "textures/evidence/e02_thermostat_ac_log_detail.png"
+    },
+    {
+      "id": "E03_BROKEN_VASE_DISTURBED_TABLE",
+      "title": "Broken Vase / Disturbed Table",
+      "category": "Physical",
+      "source": "Living Room / Body Scene",
+      "playerSummary": "There was a short localized struggle near the body.",
+      "technicalNote": "The disturbance is concentrated, suggesting an impulsive escalation rather than a long fight.",
+      "thumbnailAssetPath": "textures/evidence/e03_broken_vase_disturbed_table_thumb.png",
+      "detailAssetPath": "textures/evidence/e03_broken_vase_disturbed_table_detail.png"
+    },
+    {
+      "id": "E04_BLOOD_MARKED_COMPANY_AWARD",
+      "title": "Blood-Marked Company Award",
+      "category": "Physical",
+      "source": "Living Room / Body Scene",
+      "playerSummary": "The company award is likely the murder weapon.",
+      "technicalNote": "Blood marking and impact position connect the object to the fatal struggle.",
+      "thumbnailAssetPath": "textures/evidence/e04_blood_marked_company_award_thumb.png",
+      "detailAssetPath": "textures/evidence/e04_blood_marked_company_award_detail.png"
+    },
+    {
+      "id": "E05_SMART_LOCK_ENTRY_EXIT_LOG",
+      "title": "Smart-Lock Entry / Exit Log",
+      "category": "Digital / access",
+      "source": "Entry / Smart-Lock Area",
+      "playerSummary": "The partner arrived at 19:05 and exited at 19:42.",
+      "technicalNote": "The access log looks clean, but it only clears him if the victim was alive later.",
+      "thumbnailAssetPath": "textures/evidence/e05_smart_lock_entry_exit_log_thumb.png",
+      "detailAssetPath": "textures/evidence/e05_smart_lock_entry_exit_log_detail.png"
+    },
+    {
+      "id": "E06_SCHEDULED_VICTIM_MESSAGE",
+      "title": "Scheduled Victim Message",
+      "category": "Digital / communication",
+      "source": "Office terminal",
+      "playerSummary": "A message sent at 21:07 appears to show the victim was alive, but metadata suggests it was scheduled.",
+      "technicalNote": "The message was queued before delivery, so the send time is not proof of manual activity.",
+      "thumbnailAssetPath": "textures/evidence/e06_scheduled_victim_message_thumb.png",
+      "detailAssetPath": "textures/evidence/e06_scheduled_victim_message_detail.png"
+    },
+    {
+      "id": "E07_LAPTOP_SESSION_METADATA",
+      "title": "Laptop Session Metadata",
+      "category": "Digital / device activity",
+      "source": "Office terminal",
+      "playerSummary": "Laptop activity continued after the likely death time, but the interaction pattern looks automated.",
+      "technicalNote": "Session metadata shows repeated timed actions rather than varied manual input.",
+      "thumbnailAssetPath": "textures/evidence/e07_laptop_session_metadata_thumb.png",
+      "detailAssetPath": "textures/evidence/e07_laptop_session_metadata_detail.png"
+    },
+    {
+      "id": "E08_ROUTER_ADMIN_ACCESS_RECORD",
+      "title": "Router / Admin Access Record",
+      "category": "Digital / network",
+      "source": "Office terminal",
+      "playerSummary": "A trusted admin-level session accessed apartment systems around the staging period.",
+      "technicalNote": "The session had privileged access to networked apartment devices, not just ordinary remote viewing.",
+      "thumbnailAssetPath": "textures/evidence/e08_router_admin_access_record_thumb.png",
+      "detailAssetPath": "textures/evidence/e08_router_admin_access_record_detail.png"
+    },
+    {
+      "id": "E09_WIFE_REMOTE_ACCESS_LOG",
+      "title": "Wife Remote Access Log",
+      "category": "Digital / access",
+      "source": "Entry / Smart-Lock Area",
+      "playerSummary": "The wife remotely checked apartment systems at 20:18, after the true murder window.",
+      "technicalNote": "The access is real, but it falls inside the false post-death window and does not explain the earlier violence.",
+      "thumbnailAssetPath": "textures/evidence/e09_wife_remote_access_log_thumb.png",
+      "detailAssetPath": "textures/evidence/e09_wife_remote_access_log_detail.png"
+    },
+    {
+      "id": "E10_CCTV_OUTAGE_NOTE",
+      "title": "CCTV Outage Note",
+      "category": "Digital / security",
+      "source": "CCTV / Window Angle",
+      "playerSummary": "A building camera outage at 20:40 makes security look suspicious inside the false window.",
+      "technicalNote": "The outage complicates the record, but it occurs after the true murder and does not create the staged device activity.",
+      "thumbnailAssetPath": "textures/evidence/e10_cctv_outage_note_thumb.png",
+      "detailAssetPath": "textures/evidence/e10_cctv_outage_note_detail.png"
+    },
+    {
+      "id": "E12_ACCESS_DATA_SALE_FILE",
+      "title": "Access-Data Sale File",
+      "category": "Digital / motive",
+      "source": "Office terminal",
+      "playerSummary": "Victim and partner were involved in illegal access-data activity.",
+      "technicalNote": "The file lists paid transfers tied to apartment-system access data.",
+      "thumbnailAssetPath": "textures/evidence/e12_access_data_sale_file_thumb.png",
+      "detailAssetPath": "textures/evidence/e12_access_data_sale_file_detail.png"
+    },
+    {
+      "id": "E13_VICTIM_DRAFT_DISCLOSURE_EMAIL",
+      "title": "Victim Draft Disclosure Email",
+      "category": "Digital / motive",
+      "source": "Office terminal",
+      "playerSummary": "Victim intended to expose or withdraw from the illegal operation.",
+      "technicalNote": "The unsent draft names the operation and implies the partner would be legally exposed.",
+      "thumbnailAssetPath": "textures/evidence/e13_victim_draft_disclosure_email_thumb.png",
+      "detailAssetPath": "textures/evidence/e13_victim_draft_disclosure_email_detail.png"
+    }
+  ],
+  "threads": [
+    {
+      "id": "T01_DEATH_WINDOW_INSTABILITY",
+      "name": "Death Window Instability",
+      "coreQuestion": "When did the victim actually die?",
+      "stabilizedConclusion": "The death window was distorted. The victim likely died before the post-21:00 activity."
+    },
+    {
+      "id": "T02_POSTMORTEM_ACTIVITY",
+      "name": "Postmortem Activity",
+      "coreQuestion": "Why did the victim appear active after death?",
+      "stabilizedConclusion": "The victim's digital activity was artificially continued after death."
+    },
+    {
+      "id": "T03_APARTMENT_ACCESS",
+      "name": "Apartment Access",
+      "coreQuestion": "Who could affect the apartment physically or remotely?",
+      "stabilizedConclusion": "Several people had suspicious access, but the full manipulation required trusted technical privileges."
+    },
+    {
+      "id": "T04_DATA_SALE_MOTIVE",
+      "name": "Data-Sale Motive",
+      "coreQuestion": "Why would the partner escalate to violence?",
+      "stabilizedConclusion": "The victim was preparing to expose an illegal operation the partner depended on."
+    },
+    {
+      "id": "T05_SCENE_DISTURBANCE",
+      "name": "Scene Disturbance",
+      "coreQuestion": "Was this planned, staged, or impulsive?",
+      "stabilizedConclusion": "The killing was an impulsive escalation followed by a calculated cover-up."
+    }
+  ],
+  "timelineEvents": [
+    {
+      "id": "TL01_POST_21_ACTIVITY_UNRELIABLE",
+      "displayTime": "After 21:00",
+      "title": "Victim Activity Window",
+      "initialInterpretation": "Message and laptop activity initially suggest the victim was alive after 21:00.",
+      "resolvedInterpretation": "Physical evidence and environmental logs make the post-21:00 activity unreliable as proof of life."
+    }
+  ],
+  "finalTimelineEvents": [
+    {
+      "id": "FT08_SCHEDULED_MESSAGE_SENDS",
+      "orderIndex": 8,
+      "displayTime": "21:07",
+      "title": "Scheduled message sends",
+      "summary": "The late message is delivered, but it is no longer proof the victim was alive."
+    },
+    {
+      "id": "FT05_PARTNER_EXITS",
+      "orderIndex": 5,
+      "displayTime": "19:42",
+      "title": "Partner exits",
+      "summary": "The partner leaves after staging the apartment systems."
+    },
+    {
+      "id": "FT03_MURDER_OCCURS",
+      "orderIndex": 3,
+      "displayTime": "19:27",
+      "title": "Murder occurs",
+      "summary": "The argument turns violent in the living room."
+    },
+    {
+      "id": "FT09_BODY_DISCOVERED",
+      "orderIndex": 9,
+      "displayTime": "22:30",
+      "title": "Body discovered",
+      "summary": "Security finds the body during the welfare check."
+    },
+    {
+      "id": "FT01_PARTNER_ARRIVES",
+      "orderIndex": 1,
+      "displayTime": "19:05",
+      "title": "Partner arrives",
+      "summary": "The business partner enters for a private meeting."
+    },
+    {
+      "id": "FT06_WIFE_REMOTE_ACCESS",
+      "orderIndex": 6,
+      "displayTime": "20:18",
+      "title": "Wife remote access",
+      "summary": "The wife checks apartment systems after the victim is already dead."
+    },
+    {
+      "id": "FT04_STAGING_BEGINS",
+      "orderIndex": 4,
+      "displayTime": "19:34",
+      "title": "AC and smart-home staging begins",
+      "summary": "Cooling and automated activity start shaping the false death window."
+    },
+    {
+      "id": "FT07_CCTV_OUTAGE",
+      "orderIndex": 7,
+      "displayTime": "20:40",
+      "title": "CCTV outage",
+      "summary": "The camera outage complicates the record but does not explain the murder."
+    },
+    {
+      "id": "FT02_ARGUMENT_ESCALATES",
+      "orderIndex": 2,
+      "displayTime": "19:18",
+      "title": "Argument escalates",
+      "summary": "The victim says he intends to expose the access-data operation."
+    }
+  ],
+  "statements": [
+    {
+      "id": "S01_PARTNER_STATEMENT",
+      "speaker": "Business Partner",
+      "claim": "We argued, but he was alive when I left. He was already back at his laptop.",
+      "suspiciousDetail": "His claim depends on the victim being alive after the 19:42 exit.",
+      "contradictionText": "The stabilized death-window contradiction weakens his claimed alibi."
+    },
+    {
+      "id": "S02_WIFE_STATEMENT",
+      "speaker": "Elena Voss",
+      "claim": "I checked the apartment system because he stopped answering. I never went there.",
+      "suspiciousDetail": "Her remote access sits inside the original false death window.",
+      "contradictionText": "Resolved: her access happened after the true murder window and does not explain the staged continuity."
+    },
+    {
+      "id": "S03_SECURITY_STATEMENT",
+      "speaker": "Building Security",
+      "claim": "The camera issue was maintenance. I checked on him because the system flagged irregular activity.",
+      "suspiciousDetail": "The outage timing makes security look close to the apparent death window.",
+      "contradictionText": "Resolved: the outage complicates the record, but the murder and staging began earlier."
+    }
+  ],
+  "rooms": [
+    {
+      "id": "LIVING_ROOM",
+      "displayName": "Living Room / Body Scene",
+      "debugContextText": "Victim: Adrian Voss. Physical clues define the real violence.",
+      "debugHotspotHint": "Body / vase / company award",
+      "backgroundTexturePath": "textures/scenes/room_test.png",
+      "visualAnnotations": [
+        {
+          "id": "vis_living_sofa",
+          "label": "low sofa / seating line",
+          "x": 0.08,
+          "y": 0.26,
+          "width": 0.22,
+          "height": 0.12
+        },
+        {
+          "id": "vis_living_body_outline",
+          "label": "body outline staging area",
+          "x": 0.32,
+          "y": 0.66,
+          "width": 0.34,
+          "height": 0.10
+        },
+        {
+          "id": "vis_living_window",
+          "label": "dark balcony window",
+          "x": 0.68,
+          "y": 0.12,
+          "width": 0.22,
+          "height": 0.12
+        }
+      ],
+      "hotspots": [
+        {
+          "id": "nav_previous",
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.18,
+          "height": 1.0,
+          "actionType": "NAVIGATE_ROOM",
+          "targetRoomId": "CCTV_WINDOW_OPTIONAL"
+        },
+        {
+          "id": "nav_next",
+          "x": 0.82,
+          "y": 0.0,
+          "width": 0.18,
+          "height": 1.0,
+          "actionType": "NAVIGATE_ROOM",
+          "targetRoomId": "ENTRY_SMART_LOCK"
+        },
+        {
+          "id": "open_handheld_bottom_strip",
+          "x": 0.34,
+          "y": 0.88,
+          "width": 0.32,
+          "height": 0.10,
+          "actionType": "OPEN_HANDHELD"
+        },
+        {
+          "id": "inspect_body_condition",
+          "x": 0.36,
+          "y": 0.38,
+          "width": 0.12,
+          "height": 0.28,
+          "actionType": "INSPECT_EVIDENCE",
+          "payloadId": "E01_BODY_CONDITION_REPORT"
+        },
+        {
+          "id": "inspect_broken_vase",
+          "x": 0.50,
+          "y": 0.42,
+          "width": 0.12,
+          "height": 0.22,
+          "actionType": "INSPECT_EVIDENCE",
+          "payloadId": "E03_BROKEN_VASE_DISTURBED_TABLE"
+        },
+        {
+          "id": "inspect_company_award",
+          "x": 0.64,
+          "y": 0.42,
+          "width": 0.12,
+          "height": 0.22,
+          "actionType": "INSPECT_EVIDENCE",
+          "payloadId": "E04_BLOOD_MARKED_COMPANY_AWARD"
+        }
+      ]
+    },
+    {
+      "id": "ENTRY_SMART_LOCK",
+      "displayName": "Entry / Smart-Lock Area",
+      "debugContextText": "Visitor log: Marcus Hale entered 19:05 and exited 19:42.",
+      "debugHotspotHint": "Smart-lock access log",
+      "backgroundTexturePath": "textures/scenes/room_test.png",
+      "visualAnnotations": [
+        {
+          "id": "vis_entry_door",
+          "label": "front door",
+          "x": 0.12,
+          "y": 0.18,
+          "width": 0.20,
+          "height": 0.14
+        },
+        {
+          "id": "vis_entry_console",
+          "label": "entry console",
+          "x": 0.62,
+          "y": 0.54,
+          "width": 0.20,
+          "height": 0.10
+        }
+      ],
+      "hotspots": [
+        {
+          "id": "nav_previous",
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.18,
+          "height": 1.0,
+          "actionType": "NAVIGATE_ROOM",
+          "targetRoomId": "LIVING_ROOM"
+        },
+        {
+          "id": "nav_next",
+          "x": 0.82,
+          "y": 0.0,
+          "width": 0.18,
+          "height": 1.0,
+          "actionType": "NAVIGATE_ROOM",
+          "targetRoomId": "KITCHEN_SIDE_AREA"
+        },
+        {
+          "id": "open_handheld_bottom_strip",
+          "x": 0.34,
+          "y": 0.88,
+          "width": 0.32,
+          "height": 0.10,
+          "actionType": "OPEN_HANDHELD"
+        },
+        {
+          "id": "inspect_smart_lock_log",
+          "x": 0.42,
+          "y": 0.28,
+          "width": 0.18,
+          "height": 0.30,
+          "actionType": "INSPECT_EVIDENCE",
+          "payloadId": "E05_SMART_LOCK_ENTRY_EXIT_LOG"
+        },
+        {
+          "id": "inspect_wife_remote_access_log",
+          "x": 0.62,
+          "y": 0.28,
+          "width": 0.16,
+          "height": 0.26,
+          "actionType": "INSPECT_EVIDENCE",
+          "payloadId": "E09_WIFE_REMOTE_ACCESS_LOG"
+        }
+      ]
+    },
+    {
+      "id": "KITCHEN_SIDE_AREA",
+      "displayName": "Kitchen / Side Area",
+      "debugContextText": "Environmental systems contradict the apparent late death window.",
+      "debugHotspotHint": "Thermostat / AC log",
+      "backgroundTexturePath": "textures/scenes/room_test.png",
+      "visualAnnotations": [
+        {
+          "id": "vis_kitchen_counter",
+          "label": "counter surface",
+          "x": 0.08,
+          "y": 0.54,
+          "width": 0.30,
+          "height": 0.10
+        },
+        {
+          "id": "vis_kitchen_ac_vent",
+          "label": "AC vent direction",
+          "x": 0.58,
+          "y": 0.10,
+          "width": 0.24,
+          "height": 0.10
+        }
+      ],
+      "hotspots": [
+        {
+          "id": "nav_previous",
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.18,
+          "height": 1.0,
+          "actionType": "NAVIGATE_ROOM",
+          "targetRoomId": "ENTRY_SMART_LOCK"
+        },
+        {
+          "id": "nav_next",
+          "x": 0.82,
+          "y": 0.0,
+          "width": 0.18,
+          "height": 1.0,
+          "actionType": "NAVIGATE_ROOM",
+          "targetRoomId": "OFFICE_DEVICE_CORNER"
+        },
+        {
+          "id": "open_handheld_bottom_strip",
+          "x": 0.34,
+          "y": 0.88,
+          "width": 0.32,
+          "height": 0.10,
+          "actionType": "OPEN_HANDHELD"
+        },
+        {
+          "id": "inspect_thermostat_ac_log",
+          "x": 0.44,
+          "y": 0.26,
+          "width": 0.18,
+          "height": 0.26,
+          "actionType": "INSPECT_EVIDENCE",
+          "payloadId": "E02_THERMOSTAT_AC_LOG"
+        }
+      ]
+    },
+    {
+      "id": "OFFICE_DEVICE_CORNER",
+      "displayName": "Office / Device Corner",
+      "debugContextText": "Victim laptop and network devices expose staging and motive.",
+      "debugHotspotHint": "Victim laptop / router record",
+      "backgroundTexturePath": "textures/scenes/room_test.png",
+      "visualAnnotations": [
+        {
+          "id": "vis_office_desk",
+          "label": "desk cluster",
+          "x": 0.28,
+          "y": 0.56,
+          "width": 0.32,
+          "height": 0.12
+        },
+        {
+          "id": "vis_office_cable_run",
+          "label": "network cable run",
+          "x": 0.62,
+          "y": 0.58,
+          "width": 0.24,
+          "height": 0.09
+        }
+      ],
+      "hotspots": [
+        {
+          "id": "nav_previous",
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.18,
+          "height": 1.0,
+          "actionType": "NAVIGATE_ROOM",
+          "targetRoomId": "KITCHEN_SIDE_AREA"
+        },
+        {
+          "id": "nav_next",
+          "x": 0.82,
+          "y": 0.0,
+          "width": 0.18,
+          "height": 1.0,
+          "actionType": "NAVIGATE_ROOM",
+          "targetRoomId": "CCTV_WINDOW_OPTIONAL"
+        },
+        {
+          "id": "open_handheld_bottom_strip",
+          "x": 0.34,
+          "y": 0.88,
+          "width": 0.32,
+          "height": 0.10,
+          "actionType": "OPEN_HANDHELD"
+        },
+        {
+          "id": "open_victim_laptop",
+          "x": 0.42,
+          "y": 0.26,
+          "width": 0.20,
+          "height": 0.28,
+          "actionType": "OPEN_TERMINAL"
+        },
+        {
+          "id": "inspect_router_admin_record",
+          "x": 0.66,
+          "y": 0.28,
+          "width": 0.14,
+          "height": 0.24,
+          "actionType": "INSPECT_EVIDENCE",
+          "payloadId": "E08_ROUTER_ADMIN_ACCESS_RECORD"
+        }
+      ]
+    },
+    {
+      "id": "CCTV_WINDOW_OPTIONAL",
+      "displayName": "CCTV / Window Angle",
+      "debugContextText": "Building security context. Useful later for staff suspicion.",
+      "debugHotspotHint": "CCTV outage placeholder",
+      "backgroundTexturePath": "textures/scenes/room_test.png",
+      "visualAnnotations": [
+        {
+          "id": "vis_cctv_window",
+          "label": "window sightline",
+          "x": 0.22,
+          "y": 0.18,
+          "width": 0.28,
+          "height": 0.12
+        },
+        {
+          "id": "vis_cctv_hall_angle",
+          "label": "hall camera angle",
+          "x": 0.54,
+          "y": 0.36,
+          "width": 0.24,
+          "height": 0.12
+        }
+      ],
+      "hotspots": [
+        {
+          "id": "nav_previous",
+          "x": 0.0,
+          "y": 0.0,
+          "width": 0.18,
+          "height": 1.0,
+          "actionType": "NAVIGATE_ROOM",
+          "targetRoomId": "OFFICE_DEVICE_CORNER"
+        },
+        {
+          "id": "nav_next",
+          "x": 0.82,
+          "y": 0.0,
+          "width": 0.18,
+          "height": 1.0,
+          "actionType": "NAVIGATE_ROOM",
+          "targetRoomId": "LIVING_ROOM"
+        },
+        {
+          "id": "open_handheld_bottom_strip",
+          "x": 0.34,
+          "y": 0.88,
+          "width": 0.32,
+          "height": 0.10,
+          "actionType": "OPEN_HANDHELD"
+        },
+        {
+          "id": "inspect_cctv_outage_note",
+          "x": 0.54,
+          "y": 0.36,
+          "width": 0.24,
+          "height": 0.12,
+          "actionType": "INSPECT_EVIDENCE",
+          "payloadId": "E10_CCTV_OUTAGE_NOTE"
+        }
+      ]
+    }
+  ],
+  "terminal": {
+    "title": "VICTIM LAPTOP // ADRIAN VOSS",
+    "introLines": [
+      "VICTIM LAPTOP // ADRIAN VOSS",
+      "Select a recovered laptop panel."
+    ],
+    "panels": [
+      {
+        "command": "messages",
+        "label": "Messages",
+        "evidenceId": "E06_SCHEDULED_VICTIM_MESSAGE",
+        "aliases": [
+          "message"
+        ],
+        "outputLines": [
+          "Message timestamp: 21:07",
+          "Delivery state: sent",
+          "Metadata flag: scheduled before delivery",
+          "Finding: this message is not reliable proof the victim was alive at 21:07."
+        ]
+      },
+      {
+        "command": "activity",
+        "label": "Activity",
+        "evidenceId": "E07_LAPTOP_SESSION_METADATA",
+        "aliases": [
+          "laptop"
+        ],
+        "outputLines": [
+          "Session activity: 21:16",
+          "Input pattern: repeated timed actions",
+          "Finding: activity pattern resembles automation, not normal human use."
+        ]
+      },
+      {
+        "command": "files",
+        "label": "Files",
+        "evidenceId": "E12_ACCESS_DATA_SALE_FILE",
+        "aliases": [
+          "file"
+        ],
+        "outputLines": [
+          "File: ledger_access_export.dat",
+          "Status: hidden archive recovered",
+          "Finding: sale records connect the company to illegal apartment-system access data."
+        ]
+      },
+      {
+        "command": "draft",
+        "label": "Draft",
+        "evidenceId": "E13_VICTIM_DRAFT_DISCLOSURE_EMAIL",
+        "aliases": [
+          "email"
+        ],
+        "outputLines": [
+          "Draft status: unsent",
+          "Recipient: legal counsel / regulator",
+          "Finding: victim intended to expose the access-data operation."
+        ]
+      }
+    ]
+  },
+  "finalConfrontation": {
+    "id": "D_FINAL_PARTNER_CONFRONTATION",
+    "title": "Final Confrontation",
+    "lines": [
+      {
+        "speaker": "Investigator",
+        "text": "The late activity was not proof of life. It was continuity staged after the killing."
+      },
+      {
+        "speaker": "Marcus Hale",
+        "text": "You are building a story out of logs you barely understand."
+      },
+      {
+        "speaker": "Investigator",
+        "text": "The logs are exactly the problem. The thermostat shifted at 19:34. The laptop repeated timed actions. The 21:07 message was scheduled."
+      },
+      {
+        "speaker": "Marcus Hale",
+        "text": "He was going to destroy everything. He was going to hand it all over."
+      },
+      {
+        "speaker": "Investigator",
+        "text": "You entered at 19:05. The argument escalated. He died before your clean exit became useful."
+      },
+      {
+        "speaker": "Marcus Hale",
+        "text": "I only needed time. Just enough time for everyone to look later."
+      },
+      {
+        "speaker": "Investigator",
+        "text": "That is what gives you away. You did not erase the timeline. You made it too precise."
+      }
+    ]
+  },
+  "caseCompletion": {
+    "title": "Case Closed",
+    "body": "The false timeline collapses. Marcus Hale killed Adrian Voss earlier than the systems implied, then used precise machine records to make a dead man appear active. The remaining suspects were suspicious because the manipulated window made them matter."
+  }
+}

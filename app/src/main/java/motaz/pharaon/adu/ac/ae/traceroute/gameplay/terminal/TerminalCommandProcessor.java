@@ -3,6 +3,8 @@ package motaz.pharaon.adu.ac.ae.traceroute.gameplay.terminal;
 import java.util.Locale;
 
 import motaz.pharaon.adu.ac.ae.traceroute.core.GameRuntime;
+import motaz.pharaon.adu.ac.ae.traceroute.data.model.TerminalContent;
+import motaz.pharaon.adu.ac.ae.traceroute.data.model.TerminalPanel;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.evidence.EvidenceItem;
 
 public class TerminalCommandProcessor {
@@ -24,81 +26,67 @@ public class TerminalCommandProcessor {
      * - TerminalFragment.
      */
 
-    private final GameRuntime gameRuntime;
+    public interface EvidenceCollector {
+        EvidenceItem collectEvidence(String evidenceId);
+    }
+
+    private final EvidenceCollector evidenceCollector;
+    private final TerminalContent terminalContent;
 
     public TerminalCommandProcessor(GameRuntime gameRuntime) {
-        this.gameRuntime = gameRuntime;
+        this(
+                gameRuntime == null ? TerminalContent.empty() : gameRuntime.getTerminalContent(),
+                evidenceId -> gameRuntime == null ? null : gameRuntime.collectEvidence(evidenceId)
+        );
+    }
+
+    public TerminalCommandProcessor(TerminalContent terminalContent, EvidenceCollector evidenceCollector) {
+        this.terminalContent = terminalContent == null
+                ? TerminalContent.empty()
+                : terminalContent;
+        this.evidenceCollector = evidenceCollector;
     }
 
     public String process(String command) {
         String normalizedCommand = command.trim().toLowerCase(Locale.US);
 
-        switch (normalizedCommand) {
-            case "help":
-                return "Laptop panels: MESSAGES, ACTIVITY, FILES, DRAFT, CLEAR";
-            case "message":
-            case "messages":
-                return buildMessagesOutput();
-            case "activity":
-            case "laptop":
-                return buildLaptopOutput();
-            case "file":
-            case "files":
-                return buildFilesOutput();
-            case "draft":
-            case "email":
-                return buildDraftOutput();
-            default:
-                return "Unknown authored command. Type HELP.";
+        if ("help".equals(normalizedCommand)) {
+            return buildHelpOutput();
         }
+
+        TerminalPanel terminalPanel = terminalContent.findPanel(normalizedCommand);
+        if (terminalPanel == null) {
+            return "Unknown authored command. Type HELP.";
+        }
+
+        return buildPanelOutput(terminalPanel);
     }
 
-    private String buildMessagesOutput() {
-        EvidenceItem evidenceItem = gameRuntime.collectEvidence("E06_SCHEDULED_VICTIM_MESSAGE");
-        if (evidenceItem == null) {
-            return "Message metadata unavailable.";
+    private String buildHelpOutput() {
+        StringBuilder builder = new StringBuilder("Laptop panels:");
+        for (TerminalPanel panel : terminalContent.getPanels()) {
+            builder.append(' ').append(panel.getLabel().toUpperCase(Locale.US));
         }
 
-        return evidenceItem.getId() + "\n"
-                + "Message timestamp: 21:07\n"
-                + "Delivery state: sent\n"
-                + "Metadata flag: scheduled before delivery\n"
-                + "Finding: this message is not reliable proof the victim was alive at 21:07.";
+        builder.append(" CLEAR");
+        return builder.toString();
     }
 
-    private String buildLaptopOutput() {
-        EvidenceItem evidenceItem = gameRuntime.collectEvidence("E07_LAPTOP_SESSION_METADATA");
+    private String buildPanelOutput(TerminalPanel terminalPanel) {
+        EvidenceItem evidenceItem = evidenceCollector == null
+                ? null
+                : evidenceCollector.collectEvidence(terminalPanel.getEvidenceId());
         if (evidenceItem == null) {
-            return "Laptop session metadata unavailable.";
+            return terminalPanel.getLabel() + " unavailable.";
         }
 
-        return evidenceItem.getId() + "\n"
-                + "Session activity: 21:16\n"
-                + "Input pattern: repeated timed actions\n"
-                + "Finding: activity pattern resembles automation, not normal human use.";
-    }
+        StringBuilder builder = new StringBuilder();
+        builder.append(evidenceItem.getId()).append(" // ").append(evidenceItem.getTitle());
 
-    private String buildFilesOutput() {
-        EvidenceItem evidenceItem = gameRuntime.collectEvidence("E12_ACCESS_DATA_SALE_FILE");
-        if (evidenceItem == null) {
-            return "Access-data files unavailable.";
+        for (String outputLine : terminalPanel.getOutputLines()) {
+            builder.append('\n').append(outputLine);
         }
 
-        return evidenceItem.getId() + "\n"
-                + "File: ledger_access_export.dat\n"
-                + "Status: hidden archive recovered\n"
-                + "Finding: sale records connect the company to illegal apartment-system access data.";
-    }
-
-    private String buildDraftOutput() {
-        EvidenceItem evidenceItem = gameRuntime.collectEvidence("E13_VICTIM_DRAFT_DISCLOSURE_EMAIL");
-        if (evidenceItem == null) {
-            return "Draft disclosure email unavailable.";
-        }
-
-        return evidenceItem.getId() + "\n"
-                + "Draft status: unsent\n"
-                + "Recipient: legal counsel / regulator\n"
-                + "Finding: victim intended to expose the access-data operation.";
+        return builder.toString();
     }
 }

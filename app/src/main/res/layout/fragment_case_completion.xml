@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/case_completion_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#05080A"
+    android:minWidth="320dp"
+    android:orientation="vertical"
+    android:padding="22dp">
+
+    <TextView
+        android:id="@+id/case_completion_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Case Closed"
+        android:textColor="#D6F5E3"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/case_completion_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:lineSpacingExtra="3dp"
+        android:text="Completion"
+        android:textColor="#E6EEE8"
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/case_completion_return_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="22dp"
+        android:text="Return to Apartment" />
+
+    <Button
+        android:id="@+id/case_completion_reset_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Reset Run" />
+
+</LinearLayout>

@@ -9,6 +9,98 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <FrameLayout
+        android:id="@+id/debug_visualization_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="false"
+        android:focusable="false" />
+
+    <LinearLayout
+        android:id="@+id/debug_control_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="20dp"
+        android:background="#CC05080A"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/debug_panel_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#F5DA7A"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="10dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="8dp"
+            android:text="Debug"
+            android:textColor="#05080A"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:id="@+id/debug_tool_row"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/debug_overlay_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#14272D"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="10dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="8dp"
+                android:text="Overlay On"
+                android:textColor="#D6F5E3"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/debug_reset_run"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="#14272D"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="10dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="8dp"
+                android:text="Reset Run"
+                android:textColor="#D6F5E3"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/debug_unlock_core"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="#14272D"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="10dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="8dp"
+                android:text="Unlock Core"
+                android:textColor="#D6F5E3"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
     <LinearLayout
         android:id="@+id/debug_room_context_panel"
         android:layout_width="wrap_content"
@@ -39,61 +131,24 @@
             android:textColor="#9FD8B4"
             android:textSize="12sp" />
 
+        <TextView
+            android:id="@+id/debug_label_room_hotspot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Focus"
+            android:textColor="#F5DA7A"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/debug_current_lead"
+            android:layout_width="260dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Lead"
+            android:textColor="#E6EEE8"
+            android:textSize="12sp" />
+
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/debug_label_previous_room"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="start|center_vertical"
-        android:layout_marginStart="18dp"
-        android:background="#AA05080A"
-        android:clickable="false"
-        android:focusable="false"
-        android:padding="8dp"
-        android:text="PREV ROOM"
-        android:textColor="#D6F5E3"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/debug_label_next_room"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|center_vertical"
-        android:layout_marginEnd="18dp"
-        android:background="#AA05080A"
-        android:clickable="false"
-        android:focusable="false"
-        android:padding="8dp"
-        android:text="NEXT ROOM"
-        android:textColor="#D6F5E3"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/debug_label_room_hotspot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="#AA05080A"
-        android:clickable="false"
-        android:focusable="false"
-        android:padding="8dp"
-        android:text="ROOM HOTSPOT"
-        android:textColor="#F5DA7A"
-        android:textSize="12sp" />
-
-    <TextView
-        android:id="@+id/debug_label_handheld"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:layout_marginBottom="20dp"
-        android:background="#AA05080A"
-        android:clickable="false"
-        android:focusable="false"
-        android:padding="8dp"
-        android:text="HANDHELD"
-        android:textColor="#D6F5E3"
-        android:textSize="12sp" />
 
 </FrameLayout>

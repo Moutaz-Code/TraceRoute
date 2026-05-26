@@ -38,7 +38,7 @@ public class WorldInvestigationScene implements Scene {
     public WorldInvestigationScene(GameRuntime gameRuntime, GameUiEventListener uiEventListener) {
         this.gameRuntime = gameRuntime;
         this.uiEventListener = uiEventListener;
-        roomNavigator = new RoomNavigator();
+        roomNavigator = new RoomNavigator(gameRuntime.getRoomDefinitions());
         roomNavigator.goToRoom(gameRuntime.getCurrentRoomId());
         hotspotSystem = new HotspotSystem();
         publishRoomContext();

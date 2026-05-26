@@ -45,7 +45,7 @@ public class TerminalFragment extends DialogFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        terminalSession = new TerminalSession();
+        terminalSession = new TerminalSession(GameRuntime.getInstance().getTerminalContent());
         commandProcessor = new TerminalCommandProcessor(GameRuntime.getInstance());
 
         TerminalViewBinder viewBinder = new TerminalViewBinder(view);

@@ -3,6 +3,9 @@ package motaz.pharaon.adu.ac.ae.traceroute.gameplay.terminal;
 import java.util.ArrayList;
 import java.util.List;
 
+import motaz.pharaon.adu.ac.ae.traceroute.data.model.TerminalContent;
+import motaz.pharaon.adu.ac.ae.traceroute.data.model.TerminalPanel;
+
 public class TerminalSession {
     /*
      * Purpose:
@@ -23,11 +26,14 @@ public class TerminalSession {
      */
 
     private final List<String> history;
+    private final TerminalContent terminalContent;
 
-    public TerminalSession() {
+    public TerminalSession(TerminalContent terminalContent) {
+        this.terminalContent = terminalContent == null
+                ? TerminalContent.empty()
+                : terminalContent;
         history = new ArrayList<>();
-        history.add("VICTIM LAPTOP // ADRIAN VOSS");
-        history.add("Select a recovered laptop panel.");
+        restoreIntro();
     }
 
     public void submitCommand(String command, TerminalCommandProcessor commandProcessor) {
@@ -55,8 +61,21 @@ public class TerminalSession {
         return builder.toString().trim();
     }
 
+    public String getTitle() {
+        return terminalContent.getTitle();
+    }
+
+    public String getPanelLabel(String command, String fallback) {
+        TerminalPanel panel = terminalContent.findPanel(command);
+        return panel == null ? fallback : panel.getLabel();
+    }
+
     private void clear() {
+        restoreIntro();
+    }
+
+    private void restoreIntro() {
         history.clear();
-        history.add("VICTIM LAPTOP // ADRIAN VOSS");
+        history.addAll(terminalContent.getIntroLines());
     }
 }

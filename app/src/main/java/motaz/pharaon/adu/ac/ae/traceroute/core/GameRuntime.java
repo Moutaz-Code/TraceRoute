@@ -2,10 +2,15 @@ package motaz.pharaon.adu.ac.ae.traceroute.core;
 
 import android.content.Context;
 
+import motaz.pharaon.adu.ac.ae.traceroute.data.model.GameContent;
+import motaz.pharaon.adu.ac.ae.traceroute.data.model.CaseCompletion;
+import motaz.pharaon.adu.ac.ae.traceroute.data.model.DialogueScript;
+import motaz.pharaon.adu.ac.ae.traceroute.data.model.TerminalContent;
 import motaz.pharaon.adu.ac.ae.traceroute.data.repository.GameRepository;
 import motaz.pharaon.adu.ac.ae.traceroute.data.repository.GameSaveState;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.evidence.EvidenceItem;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.evidence.EvidenceSystem;
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.guidance.GuidanceSystem;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.investigation.InvestigationThread;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.investigation.ThreadSystem;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.statement.StatementSystem;
@@ -13,7 +18,12 @@ import motaz.pharaon.adu.ac.ae.traceroute.gameplay.statement.SuspectStatement;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.timeline.FinalTimelineEvent;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.timeline.TimelineEvent;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.timeline.TimelineSystem;
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.world.RoomDefinition;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.world.RoomId;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class GameRuntime {
     /*
@@ -41,6 +51,11 @@ public class GameRuntime {
     private final ThreadSystem threadSystem;
     private final TimelineSystem timelineSystem;
     private final StatementSystem statementSystem;
+    private final GuidanceSystem guidanceSystem;
+    private List<RoomDefinition> roomDefinitions;
+    private TerminalContent terminalContent;
+    private DialogueScript finalConfrontationScript;
+    private CaseCompletion caseCompletion;
     private GameRepository gameRepository;
     private RoomId currentRoomId;
     private boolean savedStateLoaded;
@@ -51,12 +66,14 @@ public class GameRuntime {
         threadSystem = new ThreadSystem();
         timelineSystem = new TimelineSystem();
         statementSystem = new StatementSystem();
+        guidanceSystem = new GuidanceSystem();
+        roomDefinitions = Collections.emptyList();
+        terminalContent = TerminalContent.empty();
+        finalConfrontationScript = DialogueScript.empty();
+        caseCompletion = CaseCompletion.empty();
         currentRoomId = RoomId.LIVING_ROOM;
         savedStateLoaded = false;
-        seedEvidence();
-        seedThreads();
-        seedTimeline();
-        seedStatements();
+        registerStaticContent(loadStaticContent(gameRepository));
         restorePlayStateIfAvailable();
     }
 
@@ -79,6 +96,12 @@ public class GameRuntime {
         return instance;
     }
 
+    public static synchronized void resetPlaythrough(Context context) {
+        GameRepository gameRepository = new GameRepository(context.getApplicationContext());
+        gameRepository.clearPlayState();
+        instance = new GameRuntime(gameRepository);
+    }
+
     public EvidenceSystem getEvidenceSystem() {
         return evidenceSystem;
     }
@@ -95,8 +118,36 @@ public class GameRuntime {
         return statementSystem;
     }
 
+    public List<RoomDefinition> getRoomDefinitions() {
+        return Collections.unmodifiableList(roomDefinitions);
+    }
+
+    public DialogueScript getFinalConfrontationScript() {
+        return finalConfrontationScript;
+    }
+
+    public TerminalContent getTerminalContent() {
+        return terminalContent;
+    }
+
+    public CaseCompletion getCaseCompletion() {
+        return caseCompletion;
+    }
+
+    public String getCurrentLead() {
+        return guidanceSystem.getCurrentLead(evidenceSystem, threadSystem, timelineSystem);
+    }
+
     public EvidenceItem collectEvidence(String evidenceId) {
         return collectEvidenceInternal(evidenceId, true);
+    }
+
+    public void debugCollectAllEvidence() {
+        for (String evidenceId : evidenceSystem.getAllEvidenceIds()) {
+            collectEvidenceInternal(evidenceId, false);
+        }
+
+        savePlayState();
     }
 
     public RoomId getCurrentRoomId() {
@@ -171,203 +222,38 @@ public class GameRuntime {
         }
     }
 
-    private void seedEvidence() {
-        evidenceSystem.registerEvidence(new EvidenceItem(
-                "E01_BODY_CONDITION_REPORT",
-                "Body Condition Report",
-                "Physical / forensic",
-                "Living Room / Body Scene",
-                "The body condition does not cleanly match a death after 21:00.",
-                "Cooling and stiffness are inconsistent with the apparent late activity window."
-        ));
-        evidenceSystem.registerEvidence(new EvidenceItem(
-                "E02_THERMOSTAT_AC_LOG",
-                "Thermostat / AC Log",
-                "Digital / environmental",
-                "Kitchen / Side Area",
-                "The apartment was cooled unusually after the real murder window began.",
-                "AC dropped sharply at 19:34, which can distort body-temperature interpretation."
-        ));
-        evidenceSystem.registerEvidence(new EvidenceItem(
-                "E03_BROKEN_VASE_DISTURBED_TABLE",
-                "Broken Vase / Disturbed Table",
-                "Physical",
-                "Living Room / Body Scene",
-                "There was a short localized struggle near the body.",
-                "The disturbance is concentrated, suggesting an impulsive escalation rather than a long fight."
-        ));
-        evidenceSystem.registerEvidence(new EvidenceItem(
-                "E04_BLOOD_MARKED_COMPANY_AWARD",
-                "Blood-Marked Company Award",
-                "Physical",
-                "Living Room / Body Scene",
-                "The company award is likely the murder weapon.",
-                "Blood marking and impact position connect the object to the fatal struggle."
-        ));
-        evidenceSystem.registerEvidence(new EvidenceItem(
-                "E05_SMART_LOCK_ENTRY_EXIT_LOG",
-                "Smart-Lock Entry / Exit Log",
-                "Digital / access",
-                "Entry / Smart-Lock Area",
-                "The partner arrived at 19:05 and exited at 19:42.",
-                "The access log looks clean, but it only clears him if the victim was alive later."
-        ));
-        evidenceSystem.registerEvidence(new EvidenceItem(
-                "E06_SCHEDULED_VICTIM_MESSAGE",
-                "Scheduled Victim Message",
-                "Digital / communication",
-                "Office terminal",
-                "A message sent at 21:07 appears to show the victim was alive, but metadata suggests it was scheduled.",
-                "The message was queued before delivery, so the send time is not proof of manual activity."
-        ));
-        evidenceSystem.registerEvidence(new EvidenceItem(
-                "E07_LAPTOP_SESSION_METADATA",
-                "Laptop Session Metadata",
-                "Digital / device activity",
-                "Office terminal",
-                "Laptop activity continued after the likely death time, but the interaction pattern looks automated.",
-                "Session metadata shows repeated timed actions rather than varied manual input."
-        ));
-        evidenceSystem.registerEvidence(new EvidenceItem(
-                "E08_ROUTER_ADMIN_ACCESS_RECORD",
-                "Router / Admin Access Record",
-                "Digital / network",
-                "Office terminal",
-                "A trusted admin-level session accessed apartment systems around the staging period.",
-                "The session had privileged access to networked apartment devices, not just ordinary remote viewing."
-        ));
-        evidenceSystem.registerEvidence(new EvidenceItem(
-                "E12_ACCESS_DATA_SALE_FILE",
-                "Access-Data Sale File",
-                "Digital / motive",
-                "Office terminal",
-                "Victim and partner were involved in illegal access-data activity.",
-                "The file lists paid transfers tied to apartment-system access data."
-        ));
-        evidenceSystem.registerEvidence(new EvidenceItem(
-                "E13_VICTIM_DRAFT_DISCLOSURE_EMAIL",
-                "Victim Draft Disclosure Email",
-                "Digital / motive",
-                "Office terminal",
-                "Victim intended to expose or withdraw from the illegal operation.",
-                "The unsent draft names the operation and implies the partner would be legally exposed."
-        ));
+    private GameContent loadStaticContent(GameRepository gameRepository) {
+        if (gameRepository == null) {
+            return GameContent.empty();
+        }
+
+        return gameRepository.loadGameContent();
     }
 
-    private void seedThreads() {
-        threadSystem.registerThread(new InvestigationThread(
-                "T01_DEATH_WINDOW_INSTABILITY",
-                "Death Window Instability",
-                "When did the victim actually die?",
-                "The death window was distorted. The victim likely died before the post-21:00 activity."
-        ));
-        threadSystem.registerThread(new InvestigationThread(
-                "T02_POSTMORTEM_ACTIVITY",
-                "Postmortem Activity",
-                "Why did the victim appear active after death?",
-                "The victim's digital activity was artificially continued after death."
-        ));
-        threadSystem.registerThread(new InvestigationThread(
-                "T03_APARTMENT_ACCESS",
-                "Apartment Access",
-                "Who could affect the apartment physically or remotely?",
-                "Several people had suspicious access, but the full manipulation required trusted technical privileges."
-        ));
-        threadSystem.registerThread(new InvestigationThread(
-                "T04_DATA_SALE_MOTIVE",
-                "Data-Sale Motive",
-                "Why would the partner escalate to violence?",
-                "The victim was preparing to expose an illegal operation the partner depended on."
-        ));
-        threadSystem.registerThread(new InvestigationThread(
-                "T05_SCENE_DISTURBANCE",
-                "Scene Disturbance",
-                "Was this planned, staged, or impulsive?",
-                "The killing was an impulsive escalation followed by a calculated cover-up."
-        ));
-    }
+    private void registerStaticContent(GameContent gameContent) {
+        for (EvidenceItem evidenceItem : gameContent.getEvidenceItems()) {
+            evidenceSystem.registerEvidence(evidenceItem);
+        }
 
-    private void seedTimeline() {
-        timelineSystem.registerEvent(new TimelineEvent(
-                "TL01_POST_21_ACTIVITY_UNRELIABLE",
-                "After 21:00",
-                "Victim Activity Window",
-                "Message and laptop activity initially suggest the victim was alive after 21:00.",
-                "Physical evidence and environmental logs make the post-21:00 activity unreliable as proof of life."
-        ));
+        for (InvestigationThread investigationThread : gameContent.getInvestigationThreads()) {
+            threadSystem.registerThread(investigationThread);
+        }
 
-        timelineSystem.registerFinalTimelineEvent(new FinalTimelineEvent(
-                "FT08_SCHEDULED_MESSAGE_SENDS",
-                8,
-                "21:07",
-                "Scheduled message sends",
-                "The late message is delivered, but it is no longer proof the victim was alive."
-        ));
-        timelineSystem.registerFinalTimelineEvent(new FinalTimelineEvent(
-                "FT05_PARTNER_EXITS",
-                5,
-                "19:42",
-                "Partner exits",
-                "The partner leaves after staging the apartment systems."
-        ));
-        timelineSystem.registerFinalTimelineEvent(new FinalTimelineEvent(
-                "FT03_MURDER_OCCURS",
-                3,
-                "19:27",
-                "Murder occurs",
-                "The argument turns violent in the living room."
-        ));
-        timelineSystem.registerFinalTimelineEvent(new FinalTimelineEvent(
-                "FT09_BODY_DISCOVERED",
-                9,
-                "22:30",
-                "Body discovered",
-                "Security finds the body during the welfare check."
-        ));
-        timelineSystem.registerFinalTimelineEvent(new FinalTimelineEvent(
-                "FT01_PARTNER_ARRIVES",
-                1,
-                "19:05",
-                "Partner arrives",
-                "The business partner enters for a private meeting."
-        ));
-        timelineSystem.registerFinalTimelineEvent(new FinalTimelineEvent(
-                "FT06_WIFE_REMOTE_ACCESS",
-                6,
-                "20:18",
-                "Wife remote access",
-                "The wife checks apartment systems after the victim is already dead."
-        ));
-        timelineSystem.registerFinalTimelineEvent(new FinalTimelineEvent(
-                "FT04_STAGING_BEGINS",
-                4,
-                "19:34",
-                "AC and smart-home staging begins",
-                "Cooling and automated activity start shaping the false death window."
-        ));
-        timelineSystem.registerFinalTimelineEvent(new FinalTimelineEvent(
-                "FT07_CCTV_OUTAGE",
-                7,
-                "20:40",
-                "CCTV outage",
-                "The camera outage complicates the record but does not explain the murder."
-        ));
-        timelineSystem.registerFinalTimelineEvent(new FinalTimelineEvent(
-                "FT02_ARGUMENT_ESCALATES",
-                2,
-                "19:18",
-                "Argument escalates",
-                "The victim says he intends to expose the access-data operation."
-        ));
-    }
+        for (TimelineEvent timelineEvent : gameContent.getTimelineEvents()) {
+            timelineSystem.registerEvent(timelineEvent);
+        }
 
-    private void seedStatements() {
-        statementSystem.registerStatement(new SuspectStatement(
-                "S01_PARTNER_STATEMENT",
-                "Business Partner",
-                "We argued, but he was alive when I left. He was already back at his laptop.",
-                "His claim depends on the victim being alive after the 19:42 exit.",
-                "The stabilized death-window contradiction weakens his claimed alibi."
-        ));
+        for (FinalTimelineEvent finalTimelineEvent : gameContent.getFinalTimelineEvents()) {
+            timelineSystem.registerFinalTimelineEvent(finalTimelineEvent);
+        }
+
+        for (SuspectStatement suspectStatement : gameContent.getSuspectStatements()) {
+            statementSystem.registerStatement(suspectStatement);
+        }
+
+        roomDefinitions = new ArrayList<>(gameContent.getRoomDefinitions());
+        terminalContent = gameContent.getTerminalContent();
+        finalConfrontationScript = gameContent.getFinalConfrontationScript();
+        caseCompletion = gameContent.getCaseCompletion();
     }
 }
