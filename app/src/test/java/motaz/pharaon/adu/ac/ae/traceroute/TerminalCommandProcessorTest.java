@@ -23,13 +23,16 @@ public class TerminalCommandProcessorTest {
                 buildTerminalContent(),
                 evidenceId -> {
                     collectedEvidenceIds.add(evidenceId);
-                    return new EvidenceItem(
-                            evidenceId,
-                            "Scheduled Victim Message",
-                            "Digital",
-                            "Terminal",
-                            "Summary",
-                            "Note"
+                    return new TerminalCommandProcessor.EvidenceCollectionResult(
+                            new EvidenceItem(
+                                    evidenceId,
+                                    "Scheduled Victim Message",
+                                    "Digital",
+                                    "Terminal",
+                                    "Summary",
+                                    "Note"
+                            ),
+                            false
                     );
                 }
         );
@@ -38,14 +41,37 @@ public class TerminalCommandProcessorTest {
 
         assertTrue(collectedEvidenceIds.contains("E06_SCHEDULED_VICTIM_MESSAGE"));
         assertTrue(output.contains("E06_SCHEDULED_VICTIM_MESSAGE // Scheduled Victim Message"));
+        assertTrue(output.contains("Status: evidence added to handheld."));
         assertTrue(output.contains("Metadata flag: scheduled before delivery"));
+    }
+
+    @Test
+    public void authoredPanelCommandCanReportAlreadyCollectedEvidence() {
+        TerminalCommandProcessor processor = new TerminalCommandProcessor(
+                buildTerminalContent(),
+                evidenceId -> new TerminalCommandProcessor.EvidenceCollectionResult(
+                        new EvidenceItem(
+                                evidenceId,
+                                "Scheduled Victim Message",
+                                "Digital",
+                                "Terminal",
+                                "Summary",
+                                "Note"
+                        ),
+                        true
+                )
+        );
+
+        String output = processor.process("messages");
+
+        assertTrue(output.contains("Status: evidence already in handheld."));
     }
 
     @Test
     public void helpListsAuthoredPanels() {
         TerminalCommandProcessor processor = new TerminalCommandProcessor(
                 buildTerminalContent(),
-                evidenceId -> null
+                evidenceId -> new TerminalCommandProcessor.EvidenceCollectionResult(null, false)
         );
 
         assertEquals("Laptop panels: MESSAGES CLEAR", processor.process("help"));
@@ -58,7 +84,7 @@ public class TerminalCommandProcessorTest {
                 buildTerminalContent(),
                 evidenceId -> {
                     collectedEvidenceIds.add(evidenceId);
-                    return null;
+                    return new TerminalCommandProcessor.EvidenceCollectionResult(null, false);
                 }
         );
 
@@ -66,6 +92,23 @@ public class TerminalCommandProcessorTest {
 
         assertTrue(collectedEvidenceIds.isEmpty());
         assertEquals("Unknown authored command. Type HELP.", output);
+    }
+
+    @Test
+    public void nullAndBlankCommandsReturnUnknownWithoutCollectingEvidence() {
+        Set<String> collectedEvidenceIds = new LinkedHashSet<>();
+        TerminalCommandProcessor processor = new TerminalCommandProcessor(
+                buildTerminalContent(),
+                evidenceId -> {
+                    collectedEvidenceIds.add(evidenceId);
+                    return new TerminalCommandProcessor.EvidenceCollectionResult(null, false);
+                }
+        );
+
+        assertEquals("Unknown authored command. Type HELP.", processor.process(null));
+        assertEquals("Unknown authored command. Type HELP.", processor.process(""));
+        assertEquals("Unknown authored command. Type HELP.", processor.process("   "));
+        assertTrue(collectedEvidenceIds.isEmpty());
     }
 
     private TerminalContent buildTerminalContent() {

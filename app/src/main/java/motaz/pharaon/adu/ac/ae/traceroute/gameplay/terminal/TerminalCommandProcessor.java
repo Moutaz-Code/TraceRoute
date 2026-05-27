@@ -27,8 +27,28 @@ public class TerminalCommandProcessor {
      */
 
     public interface EvidenceCollector {
-        EvidenceItem collectEvidence(String evidenceId);
+        EvidenceCollectionResult collectEvidence(String evidenceId);
     }
+
+    public static class EvidenceCollectionResult {
+        private final EvidenceItem evidenceItem;
+        private final boolean alreadyCollected;
+
+        public EvidenceCollectionResult(EvidenceItem evidenceItem, boolean alreadyCollected) {
+            this.evidenceItem = evidenceItem;
+            this.alreadyCollected = alreadyCollected;
+        }
+
+        public EvidenceItem getEvidenceItem() {
+            return evidenceItem;
+        }
+
+        public boolean isAlreadyCollected() {
+            return alreadyCollected;
+        }
+    }
+
+    private static final String UNKNOWN_COMMAND_RESPONSE = "Unknown authored command. Type HELP.";
 
     private final EvidenceCollector evidenceCollector;
     private final TerminalContent terminalContent;
@@ -36,7 +56,17 @@ public class TerminalCommandProcessor {
     public TerminalCommandProcessor(GameRuntime gameRuntime) {
         this(
                 gameRuntime == null ? TerminalContent.empty() : gameRuntime.getTerminalContent(),
-                evidenceId -> gameRuntime == null ? null : gameRuntime.collectEvidence(evidenceId)
+                evidenceId -> {
+                    if (gameRuntime == null) {
+                        return new EvidenceCollectionResult(null, false);
+                    }
+
+                    boolean alreadyCollected = gameRuntime.getEvidenceSystem().isCollected(evidenceId);
+                    return new EvidenceCollectionResult(
+                            gameRuntime.collectEvidence(evidenceId),
+                            alreadyCollected
+                    );
+                }
         );
     }
 
@@ -48,7 +78,13 @@ public class TerminalCommandProcessor {
     }
 
     public String process(String command) {
-        String normalizedCommand = command.trim().toLowerCase(Locale.US);
+        String normalizedCommand = command == null
+                ? ""
+                : command.trim().toLowerCase(Locale.US);
+
+        if (normalizedCommand.isEmpty()) {
+            return UNKNOWN_COMMAND_RESPONSE;
+        }
 
         if ("help".equals(normalizedCommand)) {
             return buildHelpOutput();
@@ -56,7 +92,7 @@ public class TerminalCommandProcessor {
 
         TerminalPanel terminalPanel = terminalContent.findPanel(normalizedCommand);
         if (terminalPanel == null) {
-            return "Unknown authored command. Type HELP.";
+            return UNKNOWN_COMMAND_RESPONSE;
         }
 
         return buildPanelOutput(terminalPanel);
@@ -73,15 +109,19 @@ public class TerminalCommandProcessor {
     }
 
     private String buildPanelOutput(TerminalPanel terminalPanel) {
-        EvidenceItem evidenceItem = evidenceCollector == null
+        EvidenceCollectionResult collectionResult = evidenceCollector == null
                 ? null
                 : evidenceCollector.collectEvidence(terminalPanel.getEvidenceId());
+        EvidenceItem evidenceItem = collectionResult == null ? null : collectionResult.getEvidenceItem();
         if (evidenceItem == null) {
             return terminalPanel.getLabel() + " unavailable.";
         }
 
         StringBuilder builder = new StringBuilder();
         builder.append(evidenceItem.getId()).append(" // ").append(evidenceItem.getTitle());
+        builder.append('\n').append(collectionResult.isAlreadyCollected()
+                ? "Status: evidence already in handheld."
+                : "Status: evidence added to handheld.");
 
         for (String outputLine : terminalPanel.getOutputLines()) {
             builder.append('\n').append(outputLine);

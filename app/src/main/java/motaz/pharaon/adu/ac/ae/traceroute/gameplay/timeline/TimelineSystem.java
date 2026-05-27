@@ -149,25 +149,46 @@ public class TimelineSystem {
 
     public void restoreFinalTimelineState(List<String> selectedEventIds, boolean completed) {
         selectedFinalTimelineEventIds.clear();
+        finalTimelineCompleted = false;
+        boolean alreadyUnlockedByCoreState = finalTimelineUnlocked;
 
-        for (String eventId : selectedEventIds) {
-            if (finalTimelineEvents.containsKey(eventId) && !selectedFinalTimelineEventIds.contains(eventId)) {
+        boolean restoreInputValid = selectedEventIds != null;
+        if (selectedEventIds != null) {
+            for (String eventId : selectedEventIds) {
+                if (!finalTimelineEvents.containsKey(eventId) || selectedFinalTimelineEventIds.contains(eventId)) {
+                    restoreInputValid = false;
+                    continue;
+                }
                 selectedFinalTimelineEventIds.add(eventId);
             }
+        } else {
+            restoreInputValid = false;
         }
 
-        finalTimelineCompleted = completed;
+        restoreInputValid = restoreInputValid && isSelectedOrderPrefixCorrect();
+        boolean restoreCompleted = completed
+                && restoreInputValid
+                && !finalTimelineEvents.isEmpty()
+                && selectedFinalTimelineEventIds.size() == finalTimelineEvents.size()
+                && isSelectedOrderCorrect();
 
-        if (finalTimelineCompleted) {
+        if (restoreCompleted) {
+            finalTimelineCompleted = true;
             finalTimelineUnlocked = true;
             finalTimelineFeedback = "Timeline stabilized. The partner killed earlier, staged continuity, and left behind the false death window.";
-        } else if (!selectedFinalTimelineEventIds.isEmpty()) {
+        } else if (restoreInputValid && !completed && !selectedFinalTimelineEventIds.isEmpty()) {
             finalTimelineUnlocked = true;
             finalTimelineFeedback = "Selected "
                     + selectedFinalTimelineEventIds.size()
                     + " of "
                     + finalTimelineEvents.size()
                     + " events.";
+        } else {
+            selectedFinalTimelineEventIds.clear();
+            finalTimelineUnlocked = alreadyUnlockedByCoreState;
+            finalTimelineFeedback = alreadyUnlockedByCoreState
+                    ? "Core threads stabilized. Order the final sequence."
+                    : "Stabilize the core investigation threads to unlock the final sequence.";
         }
     }
 
@@ -225,6 +246,17 @@ public class TimelineSystem {
     }
 
     private boolean isSelectedOrderCorrect() {
+        for (int index = 0; index < selectedFinalTimelineEventIds.size(); index++) {
+            FinalTimelineEvent finalTimelineEvent = finalTimelineEvents.get(selectedFinalTimelineEventIds.get(index));
+            if (finalTimelineEvent == null || finalTimelineEvent.getOrderIndex() != index + 1) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean isSelectedOrderPrefixCorrect() {
         for (int index = 0; index < selectedFinalTimelineEventIds.size(); index++) {
             FinalTimelineEvent finalTimelineEvent = finalTimelineEvents.get(selectedFinalTimelineEventIds.get(index));
             if (finalTimelineEvent == null || finalTimelineEvent.getOrderIndex() != index + 1) {

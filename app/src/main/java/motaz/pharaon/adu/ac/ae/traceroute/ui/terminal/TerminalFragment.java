@@ -49,6 +49,6 @@ public class TerminalFragment extends DialogFragment {
         commandProcessor = new TerminalCommandProcessor(GameRuntime.getInstance());
 
         TerminalViewBinder viewBinder = new TerminalViewBinder(view);
-        viewBinder.bind(terminalSession, commandProcessor);
+        viewBinder.bind(terminalSession, commandProcessor, this::dismiss);
     }
 }

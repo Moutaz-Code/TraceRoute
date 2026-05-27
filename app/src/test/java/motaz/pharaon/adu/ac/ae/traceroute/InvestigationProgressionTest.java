@@ -2,6 +2,9 @@ package motaz.pharaon.adu.ac.ae.traceroute;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.evidence.EvidenceItem;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.evidence.EvidenceSystem;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.investigation.InvestigationThread;
@@ -86,6 +89,65 @@ public class InvestigationProgressionTest {
 
         assertTrue(harness.timelineSystem.isFinalTimelineCompleted());
         assertEquals(2, harness.timelineSystem.getSelectedFinalTimelineEventIds().size());
+    }
+
+    @Test
+    public void finalTimelineRestoreRejectsCompletedFlagWithoutCompleteCorrectSequence() {
+        ProgressionHarness harness = new ProgressionHarness();
+
+        harness.timelineSystem.restoreFinalTimelineState(
+                Collections.singletonList("FT02_ARGUMENT_ESCALATES"),
+                true
+        );
+
+        assertFalse(harness.timelineSystem.isFinalTimelineCompleted());
+        assertFalse(harness.timelineSystem.isFinalTimelineUnlocked());
+        assertEquals(0, harness.timelineSystem.getSelectedFinalTimelineEventIds().size());
+
+        harness.collectAllCoreEvidence();
+
+        assertTrue(harness.timelineSystem.isFinalTimelineUnlocked());
+        assertFalse(harness.timelineSystem.isFinalTimelineCompleted());
+    }
+
+    @Test
+    public void finalTimelineRestoreRejectsCorruptSelections() {
+        ProgressionHarness harness = new ProgressionHarness();
+
+        harness.timelineSystem.restoreFinalTimelineState(
+                Arrays.asList("FT02_ARGUMENT_ESCALATES", "FT01_PARTNER_ARRIVES"),
+                true
+        );
+
+        assertFalse(harness.timelineSystem.isFinalTimelineCompleted());
+        assertFalse(harness.timelineSystem.isFinalTimelineUnlocked());
+        assertEquals(0, harness.timelineSystem.getSelectedFinalTimelineEventIds().size());
+    }
+
+    @Test
+    public void finalTimelineRestoreAcceptsCompleteCorrectSequence() {
+        ProgressionHarness harness = new ProgressionHarness();
+
+        harness.timelineSystem.restoreFinalTimelineState(
+                Arrays.asList("FT01_PARTNER_ARRIVES", "FT02_ARGUMENT_ESCALATES"),
+                true
+        );
+
+        assertTrue(harness.timelineSystem.isFinalTimelineCompleted());
+        assertTrue(harness.timelineSystem.isFinalTimelineUnlocked());
+        assertEquals(2, harness.timelineSystem.getSelectedFinalTimelineEventIds().size());
+    }
+
+    @Test
+    public void finalTimelineRestorePreservesCoreUnlockWhenNoSelectionWasSaved() {
+        ProgressionHarness harness = new ProgressionHarness();
+        harness.collectAllCoreEvidence();
+
+        harness.timelineSystem.restoreFinalTimelineState(Collections.emptyList(), false);
+
+        assertTrue(harness.timelineSystem.isFinalTimelineUnlocked());
+        assertFalse(harness.timelineSystem.isFinalTimelineCompleted());
+        assertEquals(0, harness.timelineSystem.getSelectedFinalTimelineEventIds().size());
     }
 
     private static class ProgressionHarness {

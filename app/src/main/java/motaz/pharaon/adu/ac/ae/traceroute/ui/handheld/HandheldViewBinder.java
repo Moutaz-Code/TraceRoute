@@ -77,7 +77,7 @@ public class HandheldViewBinder {
     }
 
     public void renderCurrentLead(String currentLead) {
-        leadText.setText("Lead: " + currentLead);
+        leadText.setText("CURRENT LEAD\n" + currentLead);
     }
 
     public void renderEvidence(List<EvidenceItem> collectedEvidence) {

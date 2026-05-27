@@ -27,20 +27,44 @@
         android:orientation="vertical"
         android:padding="8dp">
 
-        <TextView
-            android:id="@+id/debug_panel_toggle"
+        <LinearLayout
+            android:id="@+id/debug_chip_row"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#F5DA7A"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingStart="10dp"
-            android:paddingTop="8dp"
-            android:paddingEnd="10dp"
-            android:paddingBottom="8dp"
-            android:text="Debug"
-            android:textColor="#05080A"
-            android:textSize="12sp" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/debug_panel_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#F5DA7A"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="10dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="8dp"
+                android:text="Debug"
+                android:textColor="#05080A"
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/demo_mode_toggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="#14272D"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="10dp"
+                android:paddingTop="8dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="8dp"
+                android:text="Demo Mode"
+                android:textColor="#D6F5E3"
+                android:textSize="12sp" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/debug_tool_row"

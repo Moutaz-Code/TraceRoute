@@ -1,5 +1,6 @@
 package motaz.pharaon.adu.ac.ae.traceroute.ui.terminal;
 
+import android.graphics.Color;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ public class TerminalViewBinder {
     private final ScrollView scrollView;
     private final TextView titleText;
     private final TextView outputText;
+    private final Button closeButton;
     private final Button messagesButton;
     private final Button laptopButton;
     private final Button clearButton;
@@ -41,6 +43,7 @@ public class TerminalViewBinder {
         scrollView = rootView.findViewById(R.id.terminal_scroll);
         titleText = rootView.findViewById(R.id.terminal_title);
         outputText = rootView.findViewById(R.id.terminal_output);
+        closeButton = rootView.findViewById(R.id.terminal_close_button);
         messagesButton = rootView.findViewById(R.id.terminal_command_messages);
         laptopButton = rootView.findViewById(R.id.terminal_command_laptop);
         clearButton = rootView.findViewById(R.id.terminal_command_clear);
@@ -48,12 +51,14 @@ public class TerminalViewBinder {
         draftButton = rootView.findViewById(R.id.terminal_command_draft);
     }
 
-    public void bind(TerminalSession terminalSession, TerminalCommandProcessor commandProcessor) {
+    public void bind(
+            TerminalSession terminalSession,
+            TerminalCommandProcessor commandProcessor,
+            Runnable closeCallback
+    ) {
         titleText.setText(terminalSession.getTitle());
-        messagesButton.setText(terminalSession.getPanelLabel("messages", "Messages"));
-        laptopButton.setText(terminalSession.getPanelLabel("activity", "Activity"));
-        filesButton.setText(terminalSession.getPanelLabel("files", "Files"));
-        draftButton.setText(terminalSession.getPanelLabel("draft", "Draft"));
+        closeButton.setAllCaps(false);
+        closeButton.setOnClickListener(view -> closeCallback.run());
         render(terminalSession);
 
         messagesButton.setOnClickListener(view -> submitCommand("messages", terminalSession, commandProcessor));
@@ -74,6 +79,30 @@ public class TerminalViewBinder {
 
     private void render(TerminalSession terminalSession) {
         outputText.setText(terminalSession.getVisibleHistory());
+        renderPanelButton(messagesButton, terminalSession, "messages", "Messages");
+        renderPanelButton(laptopButton, terminalSession, "activity", "Activity");
+        renderPanelButton(filesButton, terminalSession, "files", "Files");
+        renderPanelButton(draftButton, terminalSession, "draft", "Draft");
+        styleUtilityButton(clearButton);
         scrollView.post(() -> scrollView.fullScroll(View.FOCUS_DOWN));
+    }
+
+    private void renderPanelButton(
+            Button button,
+            TerminalSession terminalSession,
+            String command,
+            String fallback
+    ) {
+        boolean read = terminalSession.isPanelRead(command);
+        button.setAllCaps(false);
+        button.setText(terminalSession.getPanelLabel(command, fallback) + (read ? " (read)" : ""));
+        button.setTextColor(read ? Color.rgb(5, 8, 10) : Color.rgb(214, 245, 227));
+        button.setBackgroundColor(read ? Color.rgb(245, 218, 122) : Color.rgb(18, 35, 39));
+    }
+
+    private void styleUtilityButton(Button button) {
+        button.setAllCaps(false);
+        button.setTextColor(Color.rgb(214, 245, 227));
+        button.setBackgroundColor(Color.rgb(20, 39, 45));
     }
 }

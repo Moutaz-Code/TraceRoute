@@ -41,13 +41,16 @@ public class WorldInvestigationFragment extends Fragment implements GameUiEventL
     private TextView roomContextText;
     private TextView roomHotspotText;
     private TextView currentLeadText;
+    private View roomContextPanel;
     private View debugOverlayView;
     private View debugToolRow;
     private TextView debugPanelToggle;
+    private TextView demoModeToggle;
     private TextView debugOverlayToggle;
     private WorldDebugOverlayBinder debugOverlayBinder;
     private boolean debugOverlayVisible;
     private boolean debugToolsVisible;
+    private boolean demoModeEnabled;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -62,14 +65,18 @@ public class WorldInvestigationFragment extends Fragment implements GameUiEventL
         roomContextText = view.findViewById(R.id.debug_room_context);
         roomHotspotText = view.findViewById(R.id.debug_label_room_hotspot);
         currentLeadText = view.findViewById(R.id.debug_current_lead);
+        roomContextPanel = view.findViewById(R.id.debug_room_context_panel);
         debugOverlayView = view.findViewById(R.id.debug_visualization_overlay);
         debugToolRow = view.findViewById(R.id.debug_tool_row);
         debugPanelToggle = view.findViewById(R.id.debug_panel_toggle);
+        demoModeToggle = view.findViewById(R.id.demo_mode_toggle);
         debugOverlayToggle = view.findViewById(R.id.debug_overlay_toggle);
         debugOverlayBinder = new WorldDebugOverlayBinder((FrameLayout) debugOverlayView);
         debugOverlayVisible = true;
         debugToolsVisible = false;
+        demoModeEnabled = false;
         debugPanelToggle.setOnClickListener(toggle -> toggleDebugTools());
+        demoModeToggle.setOnClickListener(toggle -> setDemoModeEnabled(!demoModeEnabled));
         debugOverlayToggle.setOnClickListener(toggle -> toggleDebugOverlay());
         view.findViewById(R.id.debug_reset_run).setOnClickListener(reset -> confirmResetPlaythrough());
         view.findViewById(R.id.debug_unlock_core).setOnClickListener(unlock -> unlockCoreEvidenceForDebug());
@@ -150,6 +157,10 @@ public class WorldInvestigationFragment extends Fragment implements GameUiEventL
     }
 
     private void toggleDebugTools() {
+        if (demoModeEnabled) {
+            setDemoModeEnabled(false);
+        }
+
         debugToolsVisible = !debugToolsVisible;
         debugToolRow.setVisibility(debugToolsVisible ? View.VISIBLE : View.GONE);
         debugPanelToggle.setText(debugToolsVisible ? "Debug -" : "Debug");
@@ -157,12 +168,33 @@ public class WorldInvestigationFragment extends Fragment implements GameUiEventL
 
     private void toggleDebugOverlay() {
         debugOverlayVisible = !debugOverlayVisible;
-        debugOverlayView.setVisibility(debugOverlayVisible ? View.VISIBLE : View.GONE);
+        debugOverlayView.setVisibility(debugOverlayVisible && !demoModeEnabled ? View.VISIBLE : View.GONE);
         debugOverlayToggle.setText(debugOverlayVisible ? "Overlay On" : "Overlay Off");
 
+        if (debugOverlayVisible && !demoModeEnabled && debugOverlayBinder != null) {
+            debugOverlayBinder.render(findCurrentRoomDefinition());
+        }
+    }
+
+    private void setDemoModeEnabled(boolean enabled) {
+        demoModeEnabled = enabled;
+        demoModeToggle.setText(demoModeEnabled ? "Dev Mode" : "Demo Mode");
+
+        if (demoModeEnabled) {
+            debugToolsVisible = false;
+            debugToolRow.setVisibility(View.GONE);
+            debugPanelToggle.setText("Debug");
+            debugOverlayView.setVisibility(View.GONE);
+            roomContextPanel.setVisibility(View.GONE);
+            return;
+        }
+
+        debugOverlayView.setVisibility(debugOverlayVisible ? View.VISIBLE : View.GONE);
+        roomContextPanel.setVisibility(View.VISIBLE);
         if (debugOverlayVisible && debugOverlayBinder != null) {
             debugOverlayBinder.render(findCurrentRoomDefinition());
         }
+        renderCurrentLead();
     }
 
     private void confirmResetPlaythrough() {

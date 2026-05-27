@@ -1,7 +1,9 @@
 package motaz.pharaon.adu.ac.ae.traceroute.gameplay.terminal;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 
 import motaz.pharaon.adu.ac.ae.traceroute.data.model.TerminalContent;
 import motaz.pharaon.adu.ac.ae.traceroute.data.model.TerminalPanel;
@@ -26,6 +28,7 @@ public class TerminalSession {
      */
 
     private final List<String> history;
+    private final Set<String> readPanelCommands;
     private final TerminalContent terminalContent;
 
     public TerminalSession(TerminalContent terminalContent) {
@@ -33,6 +36,7 @@ public class TerminalSession {
                 ? TerminalContent.empty()
                 : terminalContent;
         history = new ArrayList<>();
+        readPanelCommands = new LinkedHashSet<>();
         restoreIntro();
     }
 
@@ -49,6 +53,11 @@ public class TerminalSession {
 
         history.add("> " + trimmedCommand);
         history.add(commandProcessor.process(trimmedCommand));
+
+        TerminalPanel terminalPanel = terminalContent.findPanel(trimmedCommand);
+        if (terminalPanel != null) {
+            readPanelCommands.add(terminalPanel.getCommand());
+        }
     }
 
     public String getVisibleHistory() {
@@ -68,6 +77,11 @@ public class TerminalSession {
     public String getPanelLabel(String command, String fallback) {
         TerminalPanel panel = terminalContent.findPanel(command);
         return panel == null ? fallback : panel.getLabel();
+    }
+
+    public boolean isPanelRead(String command) {
+        TerminalPanel panel = terminalContent.findPanel(command);
+        return panel != null && readPanelCommands.contains(panel.getCommand());
     }
 
     private void clear() {
