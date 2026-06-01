@@ -12,8 +12,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import motaz.pharaon.adu.ac.ae.traceroute.data.model.TerminalContent;
-import motaz.pharaon.adu.ac.ae.traceroute.data.model.TerminalPanel;
+import motaz.pharaon.adu.ac.ae.traceroute.data.model.LaptopContent;
+import motaz.pharaon.adu.ac.ae.traceroute.data.model.LaptopPanel;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.evidence.EvidenceItem;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.evidence.EvidenceSystem;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.guidance.GuidanceSystem;
@@ -21,7 +21,7 @@ import motaz.pharaon.adu.ac.ae.traceroute.gameplay.investigation.InvestigationTh
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.investigation.ThreadSystem;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.statement.StatementSystem;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.statement.SuspectStatement;
-import motaz.pharaon.adu.ac.ae.traceroute.gameplay.terminal.TerminalCommandProcessor;
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.laptop.LaptopPanelProcessor;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.timeline.FinalTimelineEvent;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.timeline.TimelineEvent;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.timeline.TimelineSystem;
@@ -33,23 +33,23 @@ class MvpCaseFixture {
     final StatementSystem statementSystem;
 
     private final GuidanceSystem guidanceSystem;
-    private final TerminalContent terminalContent;
+    private final LaptopContent laptopContent;
     private final List<FinalTimelineEvent> finalTimelineEvents;
 
-    private MvpCaseFixture(TerminalContent terminalContent, List<FinalTimelineEvent> finalTimelineEvents) {
+    private MvpCaseFixture(LaptopContent laptopContent, List<FinalTimelineEvent> finalTimelineEvents) {
         evidenceSystem = new EvidenceSystem();
         threadSystem = new ThreadSystem();
         timelineSystem = new TimelineSystem();
         statementSystem = new StatementSystem();
         guidanceSystem = new GuidanceSystem();
-        this.terminalContent = terminalContent;
+        this.laptopContent = laptopContent;
         this.finalTimelineEvents = finalTimelineEvents;
     }
 
     static MvpCaseFixture load() throws Exception {
         JSONObject root = loadCaseJson();
         MvpCaseFixture fixture = new MvpCaseFixture(
-                parseTerminalContent(root.getJSONObject("terminal")),
+                parseLaptopContent(root.getJSONObject("laptop")),
                 parseFinalTimelineEvents(root.getJSONArray("finalTimelineEvents"))
         );
 
@@ -76,10 +76,10 @@ class MvpCaseFixture {
         return evidenceItem;
     }
 
-    TerminalCommandProcessor createTerminalCommandProcessor() {
-        return new TerminalCommandProcessor(terminalContent, evidenceId -> {
+    LaptopPanelProcessor createLaptopPanelProcessor() {
+        return new LaptopPanelProcessor(laptopContent, evidenceId -> {
             boolean alreadyCollected = evidenceSystem.isCollected(evidenceId);
-            return new TerminalCommandProcessor.EvidenceCollectionResult(
+            return new LaptopPanelProcessor.EvidenceCollectionResult(
                     collect(evidenceId),
                     alreadyCollected
             );
@@ -204,25 +204,24 @@ class MvpCaseFixture {
         return events;
     }
 
-    private static TerminalContent parseTerminalContent(JSONObject object) throws Exception {
-        return new TerminalContent(
+    private static LaptopContent parseLaptopContent(JSONObject object) throws Exception {
+        return new LaptopContent(
                 object.getString("title"),
                 parseStringArray(object.getJSONArray("introLines")),
-                parseTerminalPanels(object.getJSONArray("panels"))
+                parseLaptopPanels(object.getJSONArray("panels"))
         );
     }
 
-    private static List<TerminalPanel> parseTerminalPanels(JSONArray array) throws Exception {
-        List<TerminalPanel> panels = new ArrayList<>();
+    private static List<LaptopPanel> parseLaptopPanels(JSONArray array) throws Exception {
+        List<LaptopPanel> panels = new ArrayList<>();
 
         for (int index = 0; index < array.length(); index++) {
             JSONObject item = array.getJSONObject(index);
-            panels.add(new TerminalPanel(
-                    item.getString("command"),
+            panels.add(new LaptopPanel(
+                    item.getString("panelId"),
                     item.getString("label"),
                     item.getString("evidenceId"),
-                    parseStringArray(item.optJSONArray("aliases")),
-                    parseStringArray(item.getJSONArray("outputLines"))
+                    parseStringArray(item.getJSONArray("contentLines"))
             ));
         }
 

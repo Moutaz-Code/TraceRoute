@@ -26,7 +26,7 @@ public class WorldInvestigationFragment extends Fragment implements GameUiEventL
      * Responsibilities:
      * - Own the GameView lifecycle.
      * - Place the GLSurfaceView inside a fragment so the project satisfies the fragment requirement.
-     * - Stay focused on world rendering/input; handheld and terminal UI are separate fragments.
+     * - Stay focused on world rendering/input; handheld and laptop UI are separate fragments.
      *
      * Depends on:
      * - GameView for OpenGL rendering and touch capture.
@@ -121,9 +121,9 @@ public class WorldInvestigationFragment extends Fragment implements GameUiEventL
     }
 
     @Override
-    public void onOpenTerminalRequested() {
+    public void onOpenLaptopRequested() {
         if (getParentFragment() instanceof GameUiEventListener) {
-            ((GameUiEventListener) getParentFragment()).onOpenTerminalRequested();
+            ((GameUiEventListener) getParentFragment()).onOpenLaptopRequested();
         }
     }
 

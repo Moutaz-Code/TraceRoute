@@ -18,15 +18,15 @@ MainActivity
             ThreadSystem
             TimelineSystem
             StatementSystem
-            TerminalSession
+            LaptopSession
 
     HandheldFragment
       HandheldController
       HandheldViewBinder
       regular Android views for evidence / threads / timeline / statements / final timeline
 
-    TerminalFragment
-      TerminalViewBinder
+    LaptopFragment
+      LaptopViewBinder
 ```
 
 ## Layer Responsibilities
@@ -45,7 +45,7 @@ It should not:
 
 -   own evidence logic,
 -   own room navigation,
--   parse terminal commands,
+-   open authored laptop panels,
 -   render OpenGL objects directly.
 
 ### Fragment UI Layer
@@ -59,7 +59,7 @@ Important fragments:
 -   `GameShellFragment`: root game shell.
 -   `WorldInvestigationFragment`: hosts the OpenGL `GameView`.
 -   `HandheldFragment`: one overlay for forensic device screens.
--   `TerminalFragment`: stylized victim laptop popup.
+-   `LaptopFragment`: stylized victim laptop popup.
 
 Inside `HandheldFragment`, use ordinary Android views and `HandheldController` for:
 
@@ -81,7 +81,7 @@ Fragments should not:
 -   contain the case clue chain,
 -   directly modify SQLite,
 -   own final deduction logic,
--   parse terminal commands.
+-   open authored laptop panels.
 
 Use plain Java classes/controllers when a feature does not need its own Android lifecycle.
 
@@ -116,7 +116,7 @@ Use Android Views for:
 -   thread text,
 -   timeline cards,
 -   suspect statement cards,
--   terminal text/input,
+-   laptop screen text and panel buttons,
 -   buttons and touch controls around the OpenGL view.
 
 Do not create a new Fragment for every UI panel unless that panel needs independent lifecycle or back-stack behavior.
@@ -125,7 +125,7 @@ Helpful plain Java UI helpers:
 
 -   `HandheldController`: selected handheld screen and UI state.
 -   `HandheldViewBinder`: binds handheld Android Views.
--   `TerminalViewBinder`: binds terminal Android Views.
+-   `LaptopViewBinder`: binds laptop Android Views.
 
 ### OpenGL Layer
 
@@ -160,7 +160,7 @@ Game systems should own the actual game state.
 -   investigation threads,
 -   timeline state,
 -   suspect statements,
--   terminal interactions,
+-   laptop interactions,
 -   save/load.
 
 This keeps the MVP readable and prevents fragments from becoming giant logic classes.
@@ -226,7 +226,7 @@ Current hotspot actions:
 -   `NAVIGATE_ROOM`
 -   `INSPECT_EVIDENCE`
 -   `OPEN_HANDHELD`
--   `OPEN_TERMINAL`
+-   `OPEN_LAPTOP`
 -   `SHOW_FLAVOR_TEXT`
 
 The first implemented action is `NAVIGATE_ROOM`.
@@ -254,7 +254,7 @@ Implemented hotspot action examples:
 -   side zones navigate between rooms,
 -   bottom-center strip opens the handheld,
 -   living-room evidence hotspot requests evidence inspection,
--   office hotspot opens the terminal dialog.
+-   office hotspot opens the laptop dialog.
 
 ## Runtime State
 
@@ -433,9 +433,9 @@ The handheld currently has five working tabs:
 -   Statements
 -   Final Timeline
 
-## Terminal Mechanic
+## Victim Laptop Mechanic
 
-The terminal is a major mechanic.
+The victim laptop is a major mechanic.
 
 Current diegetic role:
 
@@ -445,61 +445,61 @@ Current diegetic role:
 It should be treated as:
 
 -   a `DialogFragment` for UI,
--   a `TerminalSession` for runtime state,
--   a `TerminalCommandProcessor` for authored command handling.
+-   a `LaptopSession` for runtime screen state,
+-   a `LaptopPanelProcessor` for opening authored panels.
 
 It should not become:
 
--   a full shell simulation,
--   a freeform parser,
+-   a command line or shell,
+-   a freeform text parser,
 -   a separate game mode disconnected from evidence and threads.
 
 The victim laptop should support authored interactions like:
 
--   inspect victim messages,
--   query laptop/device activity,
--   inspect recovered files,
--   inspect draft email,
+-   open victim messages,
+-   review laptop/device activity,
+-   open recovered files,
+-   open the draft email,
 -   reveal metadata,
 -   unlock evidence,
 -   update investigation threads.
 
 Current MVP laptop boundary:
 
--   laptop panels are authored, not freeform,
--   unknown commands return a readable fallback,
--   commands do not execute real device or shell operations,
--   command results may read `GameRuntime` state,
--   later commands may unlock evidence/thread observations through gameplay systems.
+-   panels are authored, and the player opens them by tapping buttons,
+-   there is no typed command input,
+-   opening a panel does not execute real device or shell operations,
+-   a panel's content may read `GameRuntime` state,
+-   opening a panel may unlock evidence/thread observations through gameplay systems,
 -   the laptop should not use the native Android soft keyboard during normal play.
 
 Implemented victim laptop panels:
 
--   `MESSAGES`
--   `ACTIVITY` / `LAPTOP`
--   `FILES`
--   `DRAFT`
--   `CLEAR`
+-   `Messages`
+-   `Activity`
+-   `Files`
+-   `Draft`
+-   `Clear` (returns the screen to its starting view)
 
-`TerminalSession` owns visible history. `TerminalCommandProcessor` owns command interpretation. `TerminalViewBinder` owns Android view binding.
+`LaptopSession` owns the visible screen state. `LaptopPanelProcessor` opens authored panels and returns their content. `LaptopViewBinder` owns Android view binding.
 
-For the current graybox, laptop panels are exposed as ordinary Android buttons. Later, replace these with authored game-art buttons, a custom diegetic keypad, or an asset-backed laptop interface. Do not return to a native text-entry keyboard unless there is a deliberate accessibility/debug mode.
+For the current graybox, laptop panels are exposed as ordinary Android buttons. Later, replace these with authored game-art buttons or an asset-backed laptop interface. Do not add a native text-entry keyboard unless there is a deliberate accessibility/debug mode.
 
-The `MESSAGES` command currently discovers:
+The `Messages` panel currently discovers:
 
 -   `E06_SCHEDULED_VICTIM_MESSAGE`
 
-The `LAPTOP` command currently discovers:
+The `Activity` panel currently discovers:
 
 -   `E07_LAPTOP_SESSION_METADATA`
 
 These clues advance the `Postmortem Activity` thread. Collecting both stabilizes the thread.
 
-The `FILES` command currently discovers:
+The `Files` panel currently discovers:
 
 -   `E12_ACCESS_DATA_SALE_FILE`
 
-The `DRAFT` command currently discovers:
+The `Draft` panel currently discovers:
 
 -   `E13_VICTIM_DRAFT_DISCLOSURE_EMAIL`
 
@@ -538,11 +538,11 @@ Design meaning:
 The current motive flow is:
 
 ```text
-Run FILES in terminal
+Open Files on the laptop
   Collect E12_ACCESS_DATA_SALE_FILE
   Data-Sale Motive observes illegal access-data operation
 
-Run DRAFT in terminal
+Open Draft on the laptop
   Collect E13_VICTIM_DRAFT_DISCLOSURE_EMAIL
   Data-Sale Motive observes victim intended to expose the operation
 
@@ -588,7 +588,7 @@ Static content:
 -   thread definitions,
 -   timeline events,
 -   suspect statements,
--   terminal command scripts.
+-   laptop panel content.
 
 Save state:
 
@@ -627,7 +627,7 @@ All persistence should be accessed through `GameRepository`.
 6.  Add evidence collection through `EvidenceSystem`.
 7.  Add `HandheldFragment` with evidence screen.
 8.  Add thread/timeline/statement screens.
-9.  Add `TerminalFragment` and terminal command state.
+9.  Add `LaptopFragment` and laptop panel state.
 10. Add final timeline ordering inside `HandheldFragment` or as a simple overlay view.
 11. Add save/load for evidence, threads, statements, current room, and final timeline state.
 12. Polish visuals/audio.

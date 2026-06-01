@@ -223,7 +223,7 @@ public class RoomNavigator {
         }
 
         if (id == RoomId.OFFICE_DEVICE_CORNER) {
-            hotspots.add(Hotspot.openTerminal(
+            hotspots.add(Hotspot.openLaptop(
                     "open_victim_laptop",
                     0.42f,
                     0.26f,

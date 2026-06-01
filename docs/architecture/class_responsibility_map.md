@@ -20,7 +20,7 @@ Should not own:
 -   gameplay logic,
 -   evidence state,
 -   room navigation,
--   terminal command handling.
+-   laptop panel handling.
 
 ### `GameShellFragment`
 
@@ -32,13 +32,13 @@ Owns:
 
 -   world fragment container,
 -   overlay fragment container,
--   terminal dialog launching.
+-   laptop dialog launching.
 
 Depends on:
 
 -   `WorldInvestigationFragment`,
 -   `HandheldFragment`,
--   `TerminalFragment`.
+-   `LaptopFragment`.
 
 ## World / Rendering
 
@@ -130,7 +130,7 @@ Purpose:
 Owns:
 
 -   open handheld request,
--   open terminal request,
+-   open laptop request,
 -   evidence inspection request.
 
 Used by:
@@ -178,7 +178,7 @@ Owns:
 -   normalized screen-space rectangle,
 -   action type,
 -   optional target room id,
--   optional payload id for evidence/terminal/flavor content later.
+-   optional payload id for evidence/laptop/flavor content later.
 
 ### `HotspotActionType`
 
@@ -191,7 +191,7 @@ Examples:
 -   inspect evidence,
 -   navigate room,
 -   open handheld,
--   open terminal,
+-   open laptop,
 -   show flavor text.
 
 ### `HotspotSystem`
@@ -226,7 +226,7 @@ Owns:
 -   thread system,
 -   timeline system,
 -   statement system,
--   terminal session,
+-   laptop session,
 -   current game state.
 
 ### `GameRuntime`
@@ -437,9 +437,9 @@ Current progression:
 -   `E05_SMART_LOCK_ENTRY_EXIT_LOG` unlocks the partner statement,
 -   stabilized post-21:00 timeline contradiction marks the statement contradicted.
 
-## Terminal Mechanic
+## Victim Laptop Mechanic
 
-### `TerminalFragment`
+### `LaptopFragment`
 
 Purpose:
 
@@ -447,58 +447,58 @@ Purpose:
 
 Owns:
 
--   laptop display widgets,
+-   laptop screen widgets,
 -   authored laptop panel buttons.
 
 Depends on:
 
--   `TerminalSession`,
--   `TerminalCommandProcessor`.
+-   `LaptopSession`,
+-   `LaptopPanelProcessor`.
 
-### `TerminalSession`
+### `LaptopSession`
 
 Purpose:
 
--   Runtime state for victim laptop history/panel output.
+-   Runtime state for the victim laptop screen.
 
 Owns:
 
--   visible terminal history,
--   command submission history updates,
--   clear behavior.
+-   the visible laptop screen text,
+-   which panels have been opened (read state),
+-   clear/return-to-home behavior.
 
-### `TerminalCommandProcessor`
+### `LaptopPanelProcessor`
 
 Purpose:
 
--   Handles authored victim-laptop panel commands.
+-   Opens an authored victim-laptop panel when its button is tapped.
 
 Should:
 
--   parse simple commands,
--   return readable output,
+-   look up the panel by id,
+-   return its readable content,
 -   trigger evidence/thread unlocks through `GameController`.
 
 Should not:
 
--   become a real shell,
--   run arbitrary commands,
+-   become a command line or shell,
+-   accept typed/arbitrary input,
 -   require real cybersecurity knowledge from the player.
 
-Current starter commands:
+Current panels:
 
--   `MESSAGES`
--   `ACTIVITY` / `LAPTOP`
--   `FILES`
--   `DRAFT`
--   `CLEAR`
+-   `Messages`
+-   `Activity`
+-   `Files`
+-   `Draft`
+-   `Clear`
 
 Current gameplay side effect:
 
--   `MESSAGES` collects `E06_SCHEDULED_VICTIM_MESSAGE`.
--   `LAPTOP` collects `E07_LAPTOP_SESSION_METADATA`.
--   `FILES` collects `E12_ACCESS_DATA_SALE_FILE`.
--   `DRAFT` collects `E13_VICTIM_DRAFT_DISCLOSURE_EMAIL`.
+-   `Messages` collects `E06_SCHEDULED_VICTIM_MESSAGE`.
+-   `Activity` collects `E07_LAPTOP_SESSION_METADATA`.
+-   `Files` collects `E12_ACCESS_DATA_SALE_FILE`.
+-   `Draft` collects `E13_VICTIM_DRAFT_DISCLOSURE_EMAIL`.
 
 Note:
 
@@ -578,27 +578,27 @@ Why it exists:
 -   Fragments should not become giant UI classes.
 -   Views are still the actual widgets the player sees and taps.
 
-### `TerminalViewBinder`
+### `LaptopViewBinder`
 
 Purpose:
 
--   Plain Java helper for Android Views inside `TerminalFragment`.
+-   Plain Java helper for Android Views inside `LaptopFragment`.
 
 Owns:
 
--   victim laptop output display,
+-   victim laptop screen display,
 -   authored panel buttons.
 
 Currently binds:
 
--   output history text,
+-   laptop screen text,
 -   authored laptop panel buttons,
 -   no native Android soft keyboard.
 
 Why it exists:
 
 -   The laptop should feel like a stylized computer UI built from normal Android Views.
--   Terminal state and command parsing stay in `TerminalSession` and `TerminalCommandProcessor`.
+-   Laptop screen state and panel opening stay in `LaptopSession` and `LaptopPanelProcessor`.
 
 ## Persistence
 

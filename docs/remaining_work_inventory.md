@@ -10,7 +10,7 @@ The project now has a playable graybox MVP spine:
 - Five authored room definitions.
 - Hotspots and visual debug annotations.
 - Evidence collection.
-- Terminal panels.
+- Laptop panels.
 - Handheld evidence, threads, timeline, statements, and final timeline screens.
 - Current-lead guidance.
 - Final confrontation.
@@ -22,21 +22,21 @@ The project now has a playable graybox MVP spine:
 ## Progress Notes
 
 - 2026-05-27: Began the recommended manual-test support / UX cleanup pass from this file.
-- 2026-05-27: Added initial terminal close/collection/read feedback, clearer handheld current-lead treatment, and a world demo/dev mode toggle. These still need manual device validation.
+- 2026-05-27: Added initial laptop close/collection/read feedback, clearer handheld current-lead treatment, and a world demo/dev mode toggle. These still need manual device validation.
 
 ## MVP-Critical Work Left
 
 - Run full manual testing on emulator/device:
   - Room navigation.
   - Every hotspot.
-  - Terminal panels.
+  - Laptop panels.
   - Handheld tabs.
   - Final timeline.
   - Confrontation.
   - Completion.
   - Reset.
 - Fix touch-zone drift after manual testing, especially after real art replaces `room_test.png`.
-- Make terminal UX cleaner:
+- Make laptop UX cleaner:
   - Close/return affordance.
   - Clearer evidence-collected feedback.
   - Already-read or already-collected panel state.
@@ -79,7 +79,7 @@ The project now has a playable graybox MVP spine:
 - Add minimal onboarding beats:
   - Tap amber hotspots.
   - Open handheld.
-  - Use terminal.
+  - Use the laptop.
   - Order final timeline.
 
 ## Art / Asset Work Left
@@ -93,7 +93,7 @@ The project now has a playable graybox MVP spine:
 - Create evidence thumbnails and detail images for every evidence item.
 - Create UI art:
   - Handheld shell.
-  - Terminal shell.
+  - Laptop shell.
   - Final timeline controls.
   - Dialogue/completion treatment.
   - Buttons, tabs, frames, icons.
@@ -111,7 +111,7 @@ The project now has a playable graybox MVP spine:
 - Add ambient apartment loop.
 - Add evidence discovery sound.
 - Add thread stabilization sound.
-- Add terminal panel/button sound.
+- Add laptop panel/button sound.
 - Add final timeline success/failure sounds.
 - Add confrontation/completion stingers if desired.
 - Add volume/settings controls only if scope allows.
@@ -189,7 +189,7 @@ The project now has a playable graybox MVP spine:
 
 Manual-test support plus UX cleanup:
 
-- Terminal close/feedback.
+- Laptop close/feedback.
 - Handheld readability.
 - Clean demo-mode/debug toggle.
 - Keep the art/asset production list parked until the project is ready for that pass.

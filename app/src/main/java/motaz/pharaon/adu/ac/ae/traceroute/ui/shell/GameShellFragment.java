@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentManager;
 import motaz.pharaon.adu.ac.ae.traceroute.R;
 import motaz.pharaon.adu.ac.ae.traceroute.core.GameUiEventListener;
 import motaz.pharaon.adu.ac.ae.traceroute.ui.handheld.HandheldFragment;
-import motaz.pharaon.adu.ac.ae.traceroute.ui.terminal.TerminalFragment;
+import motaz.pharaon.adu.ac.ae.traceroute.ui.laptop.LaptopFragment;
 import motaz.pharaon.adu.ac.ae.traceroute.ui.world.WorldInvestigationFragment;
 
 public class GameShellFragment extends Fragment implements GameUiEventListener {
@@ -21,20 +21,20 @@ public class GameShellFragment extends Fragment implements GameUiEventListener {
      * Responsibilities:
      * - Host the world investigation fragment.
      * - Host overlay fragments such as handheld screens.
-     * - Open the terminal popup as a DialogFragment.
+     * - Open the laptop popup as a DialogFragment.
      * - Keep MainActivity thin and fragment-mandate compliant.
      *
      * Depends on:
      * - WorldInvestigationFragment for OpenGL apartment interaction.
      * - HandheldFragment for evidence/threads/timeline UI.
-     * - TerminalFragment for the stylized computer terminal popup.
+     * - LaptopFragment for the stylized victim-laptop popup.
      *
      * Used by:
      * - MainActivity.
      */
 
     private static final String HANDHELD_TAG = "handheld";
-    private static final String TERMINAL_TAG = "terminal";
+    private static final String LAPTOP_TAG = "laptop";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -74,12 +74,12 @@ public class GameShellFragment extends Fragment implements GameUiEventListener {
                 .commit();
     }
 
-    public void openTerminal() {
-        if (getChildFragmentManager().findFragmentByTag(TERMINAL_TAG) != null) {
+    public void openLaptop() {
+        if (getChildFragmentManager().findFragmentByTag(LAPTOP_TAG) != null) {
             return;
         }
 
-        new TerminalFragment().show(getChildFragmentManager(), TERMINAL_TAG);
+        new LaptopFragment().show(getChildFragmentManager(), LAPTOP_TAG);
     }
 
     @Override
@@ -88,8 +88,8 @@ public class GameShellFragment extends Fragment implements GameUiEventListener {
     }
 
     @Override
-    public void onOpenTerminalRequested() {
-        openTerminal();
+    public void onOpenLaptopRequested() {
+        openLaptop();
     }
 
     @Override

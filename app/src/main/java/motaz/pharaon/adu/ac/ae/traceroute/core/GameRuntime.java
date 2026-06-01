@@ -5,7 +5,7 @@ import android.content.Context;
 import motaz.pharaon.adu.ac.ae.traceroute.data.model.GameContent;
 import motaz.pharaon.adu.ac.ae.traceroute.data.model.CaseCompletion;
 import motaz.pharaon.adu.ac.ae.traceroute.data.model.DialogueScript;
-import motaz.pharaon.adu.ac.ae.traceroute.data.model.TerminalContent;
+import motaz.pharaon.adu.ac.ae.traceroute.data.model.LaptopContent;
 import motaz.pharaon.adu.ac.ae.traceroute.data.repository.GameRepository;
 import motaz.pharaon.adu.ac.ae.traceroute.data.repository.GameSaveState;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.evidence.EvidenceItem;
@@ -53,7 +53,7 @@ public class GameRuntime {
     private final StatementSystem statementSystem;
     private final GuidanceSystem guidanceSystem;
     private List<RoomDefinition> roomDefinitions;
-    private TerminalContent terminalContent;
+    private LaptopContent laptopContent;
     private DialogueScript finalConfrontationScript;
     private CaseCompletion caseCompletion;
     private GameRepository gameRepository;
@@ -68,7 +68,7 @@ public class GameRuntime {
         statementSystem = new StatementSystem();
         guidanceSystem = new GuidanceSystem();
         roomDefinitions = Collections.emptyList();
-        terminalContent = TerminalContent.empty();
+        laptopContent = LaptopContent.empty();
         finalConfrontationScript = DialogueScript.empty();
         caseCompletion = CaseCompletion.empty();
         currentRoomId = RoomId.LIVING_ROOM;
@@ -126,8 +126,8 @@ public class GameRuntime {
         return finalConfrontationScript;
     }
 
-    public TerminalContent getTerminalContent() {
-        return terminalContent;
+    public LaptopContent getLaptopContent() {
+        return laptopContent;
     }
 
     public CaseCompletion getCaseCompletion() {
@@ -252,7 +252,7 @@ public class GameRuntime {
         }
 
         roomDefinitions = new ArrayList<>(gameContent.getRoomDefinitions());
-        terminalContent = gameContent.getTerminalContent();
+        laptopContent = gameContent.getLaptopContent();
         finalConfrontationScript = gameContent.getFinalConfrontationScript();
         caseCompletion = gameContent.getCaseCompletion();
     }

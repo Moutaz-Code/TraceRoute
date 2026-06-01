@@ -9,15 +9,15 @@ import motaz.pharaon.adu.ac.ae.traceroute.gameplay.world.WorldInvestigationScene
      * - Central coordinator for MVP game logic.
      *
      * Responsibilities:
-     * - Own the current runtime systems: rooms, evidence, threads, timeline, statements, terminal, and save state.
+     * - Own the current runtime systems: rooms, evidence, threads, timeline, statements, laptop, and save state.
      * - Translate player actions into system updates.
-     * - Decide when handheld screens, terminal popup, or final timeline ordering should unlock.
+     * - Decide when handheld screens, laptop popup, or final timeline ordering should unlock.
      * - Keep Android Fragment classes from becoming gameplay logic containers.
      *
      * Depends on:
      * - GameRepository for static content and save/load.
      * - GameStateMachine for high-level mode state.
-     * - EvidenceSystem, ThreadSystem, TimelineSystem, StatementSystem, TerminalSession.
+     * - EvidenceSystem, ThreadSystem, TimelineSystem, StatementSystem, LaptopSession.
      *
      * Used by:
      * - GLRenderer for update/render coordination.

@@ -88,7 +88,7 @@ public class Hotspot {
         );
     }
 
-    public static Hotspot openTerminal(
+    public static Hotspot openLaptop(
             String id,
             float x,
             float y,
@@ -101,7 +101,7 @@ public class Hotspot {
                 y,
                 width,
                 height,
-                HotspotActionType.OPEN_TERMINAL,
+                HotspotActionType.OPEN_LAPTOP,
                 null,
                 null
         );

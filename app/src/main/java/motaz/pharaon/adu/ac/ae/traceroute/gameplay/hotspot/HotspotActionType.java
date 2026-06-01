@@ -21,6 +21,6 @@ public enum HotspotActionType {
     INSPECT_EVIDENCE,
     NAVIGATE_ROOM,
     OPEN_HANDHELD,
-    OPEN_TERMINAL,
+    OPEN_LAPTOP,
     SHOW_FLAVOR_TEXT
 }

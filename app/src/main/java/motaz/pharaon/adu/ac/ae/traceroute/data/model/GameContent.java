@@ -28,7 +28,7 @@ public class GameContent {
     private final List<FinalTimelineEvent> finalTimelineEvents;
     private final List<SuspectStatement> suspectStatements;
     private final List<RoomDefinition> roomDefinitions;
-    private final TerminalContent terminalContent;
+    private final LaptopContent laptopContent;
     private final DialogueScript finalConfrontationScript;
     private final CaseCompletion caseCompletion;
 
@@ -39,7 +39,7 @@ public class GameContent {
             List<FinalTimelineEvent> finalTimelineEvents,
             List<SuspectStatement> suspectStatements,
             List<RoomDefinition> roomDefinitions,
-            TerminalContent terminalContent,
+            LaptopContent laptopContent,
             DialogueScript finalConfrontationScript,
             CaseCompletion caseCompletion
     ) {
@@ -49,9 +49,9 @@ public class GameContent {
         this.finalTimelineEvents = immutableCopy(finalTimelineEvents);
         this.suspectStatements = immutableCopy(suspectStatements);
         this.roomDefinitions = immutableCopy(roomDefinitions);
-        this.terminalContent = terminalContent == null
-                ? TerminalContent.empty()
-                : terminalContent;
+        this.laptopContent = laptopContent == null
+                ? LaptopContent.empty()
+                : laptopContent;
         this.finalConfrontationScript = finalConfrontationScript == null
                 ? DialogueScript.empty()
                 : finalConfrontationScript;
@@ -68,7 +68,7 @@ public class GameContent {
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
-                TerminalContent.empty(),
+                LaptopContent.empty(),
                 DialogueScript.empty(),
                 CaseCompletion.empty()
         );
@@ -98,8 +98,8 @@ public class GameContent {
         return roomDefinitions;
     }
 
-    public TerminalContent getTerminalContent() {
-        return terminalContent;
+    public LaptopContent getLaptopContent() {
+        return laptopContent;
     }
 
     public DialogueScript getFinalConfrontationScript() {

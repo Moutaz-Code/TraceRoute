@@ -7,7 +7,7 @@ public class OverlayController {
      *
      * Responsibilities:
      * - Keep overlay decisions separate from MainActivity and gameplay systems.
-     * - Request opening/closing handheld screens, terminal popup, and final timeline ordering.
+     * - Request opening/closing handheld screens, laptop popup, and final timeline ordering.
      * - Later, provide a single place to enforce "only one major overlay at a time."
      *
      * Depends on:

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/terminal_root"
+    android:id="@+id/laptop_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="#05080A"
@@ -9,14 +9,14 @@
     android:padding="20dp">
 
     <LinearLayout
-        android:id="@+id/terminal_header"
+        android:id="@+id/laptop_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/terminal_title"
+            android:id="@+id/laptop_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -25,7 +25,7 @@
             android:textSize="18sp" />
 
         <Button
-            android:id="@+id/terminal_close_button"
+            android:id="@+id/laptop_close_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Close" />
@@ -33,7 +33,7 @@
     </LinearLayout>
 
     <ScrollView
-        android:id="@+id/terminal_scroll"
+        android:id="@+id/laptop_scroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="16dp"
@@ -42,7 +42,7 @@
         android:padding="12dp">
 
         <TextView
-            android:id="@+id/terminal_output"
+            android:id="@+id/laptop_screen"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="#9FD8B4"
@@ -51,7 +51,7 @@
     </ScrollView>
 
     <TextView
-        android:id="@+id/terminal_command_label"
+        android:id="@+id/laptop_panel_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="14dp"
@@ -60,7 +60,7 @@
         android:textSize="12sp" />
 
     <LinearLayout
-        android:id="@+id/terminal_command_row_one"
+        android:id="@+id/laptop_panel_row_one"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -68,14 +68,14 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/terminal_command_messages"
+            android:id="@+id/laptop_panel_messages"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Messages" />
 
         <Button
-            android:id="@+id/terminal_command_laptop"
+            android:id="@+id/laptop_panel_activity"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -83,7 +83,7 @@
             android:text="Activity" />
 
         <Button
-            android:id="@+id/terminal_command_files"
+            android:id="@+id/laptop_panel_files"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -93,7 +93,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/terminal_command_row_two"
+        android:id="@+id/laptop_panel_row_two"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -101,14 +101,14 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/terminal_command_draft"
+            android:id="@+id/laptop_panel_draft"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Draft" />
 
         <Button
-            android:id="@+id/terminal_command_clear"
+            android:id="@+id/laptop_panel_clear"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"

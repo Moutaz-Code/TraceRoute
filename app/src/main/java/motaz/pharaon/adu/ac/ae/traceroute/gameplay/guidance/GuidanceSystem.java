@@ -34,7 +34,7 @@ public class GuidanceSystem {
         }
 
         if (!isThreadStabilized(threadSystem, POSTMORTEM_ACTIVITY_THREAD_ID)) {
-            return "Use terminal Messages and Activity to test the postmortem activity.";
+            return "Use the laptop Messages and Activity to test the postmortem activity.";
         }
 
         if (!isThreadStabilized(threadSystem, APARTMENT_ACCESS_THREAD_ID)) {
@@ -42,7 +42,7 @@ public class GuidanceSystem {
         }
 
         if (!isThreadStabilized(threadSystem, DATA_SALE_MOTIVE_THREAD_ID)) {
-            return "Use terminal Files and Draft to establish motive.";
+            return "Use the laptop Files and Draft to establish motive.";
         }
 
         if (!isThreadStabilized(threadSystem, SCENE_DISTURBANCE_THREAD_ID)) {
