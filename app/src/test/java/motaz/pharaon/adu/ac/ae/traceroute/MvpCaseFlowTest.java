@@ -2,7 +2,7 @@ package motaz.pharaon.adu.ac.ae.traceroute;
 
 import org.junit.Test;
 
-import motaz.pharaon.adu.ac.ae.traceroute.gameplay.terminal.TerminalCommandProcessor;
+import motaz.pharaon.adu.ac.ae.traceroute.gameplay.laptop.LaptopPanelProcessor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -12,10 +12,10 @@ public class MvpCaseFlowTest {
     @Test
     public void authoredMvpCaseCompletesThroughExpectedDemoPath() throws Exception {
         MvpCaseFixture fixture = MvpCaseFixture.load();
-        TerminalCommandProcessor terminalCommandProcessor = fixture.createTerminalCommandProcessor();
+        LaptopPanelProcessor laptopPanelProcessor = fixture.createLaptopPanelProcessor();
 
         collectWorldEvidence(fixture);
-        runTerminalPanels(terminalCommandProcessor);
+        openLaptopPanels(laptopPanelProcessor);
 
         assertCoreThreadsStabilized(fixture);
         assertStatementsResolved(fixture);
@@ -51,11 +51,11 @@ public class MvpCaseFlowTest {
         fixture.collect("E08_ROUTER_ADMIN_ACCESS_RECORD");
     }
 
-    private void runTerminalPanels(TerminalCommandProcessor terminalCommandProcessor) {
-        assertTrue(terminalCommandProcessor.process("messages").contains("E06_SCHEDULED_VICTIM_MESSAGE"));
-        assertTrue(terminalCommandProcessor.process("activity").contains("E07_LAPTOP_SESSION_METADATA"));
-        assertTrue(terminalCommandProcessor.process("files").contains("E12_ACCESS_DATA_SALE_FILE"));
-        assertTrue(terminalCommandProcessor.process("draft").contains("E13_VICTIM_DRAFT_DISCLOSURE_EMAIL"));
+    private void openLaptopPanels(LaptopPanelProcessor laptopPanelProcessor) {
+        assertTrue(laptopPanelProcessor.openPanel("messages").contains("E06_SCHEDULED_VICTIM_MESSAGE"));
+        assertTrue(laptopPanelProcessor.openPanel("activity").contains("E07_LAPTOP_SESSION_METADATA"));
+        assertTrue(laptopPanelProcessor.openPanel("files").contains("E12_ACCESS_DATA_SALE_FILE"));
+        assertTrue(laptopPanelProcessor.openPanel("draft").contains("E13_VICTIM_DRAFT_DISCLOSURE_EMAIL"));
     }
 
     private void assertCoreThreadsStabilized(MvpCaseFixture fixture) {

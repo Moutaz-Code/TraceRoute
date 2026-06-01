@@ -16,7 +16,7 @@ import motaz.pharaon.adu.ac.ae.traceroute.gameplay.scene.Scene;
      * Responsibilities:
      * - Render the current fixed room background through RenderPipeline.
      * - Route taps to HotspotSystem.
-     * - Ask GameController to collect evidence, navigate rooms, open handheld, or open terminal.
+     * - Ask GameController to collect evidence, navigate rooms, open handheld, or open the laptop.
      * - Stay separate from Android Fragments; this is game logic/rendering mode, not UI container.
      *
      * Depends on:
@@ -78,9 +78,9 @@ public class WorldInvestigationScene implements Scene {
             if (uiEventListener != null) {
                 uiEventListener.onOpenHandheldRequested();
             }
-        } else if (hotspot.getActionType() == HotspotActionType.OPEN_TERMINAL) {
+        } else if (hotspot.getActionType() == HotspotActionType.OPEN_LAPTOP) {
             if (uiEventListener != null) {
-                uiEventListener.onOpenTerminalRequested();
+                uiEventListener.onOpenLaptopRequested();
             }
         } else if (hotspot.getActionType() == HotspotActionType.INSPECT_EVIDENCE) {
             EvidenceItem evidenceItem = gameRuntime.collectEvidence(hotspot.getPayloadId());
@@ -116,7 +116,7 @@ public class WorldInvestigationScene implements Scene {
             renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.95f, 0.55f, 0.20f, 0.18f);
         } else if (hotspot.getActionType() == HotspotActionType.OPEN_HANDHELD) {
             renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.75f, 0.95f, 0.80f, 0.24f);
-        } else if (hotspot.getActionType() == HotspotActionType.OPEN_TERMINAL) {
+        } else if (hotspot.getActionType() == HotspotActionType.OPEN_LAPTOP) {
             renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.30f, 0.95f, 0.70f, 0.28f);
         } else if (hotspot.getActionType() == HotspotActionType.INSPECT_EVIDENCE) {
             renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.95f, 0.85f, 0.25f, 0.28f);

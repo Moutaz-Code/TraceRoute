@@ -22,5 +22,5 @@ public enum HandheldScreen {
     TIMELINE,
     STATEMENTS,
     FINAL_TIMELINE,
-    TERMINAL
+    LAPTOP
 }

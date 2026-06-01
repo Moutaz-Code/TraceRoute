@@ -8,7 +8,7 @@ public interface GameUiEventListener {
      * Responsibilities:
      * - Let gameplay request major UI surfaces without importing Fragment classes.
      * - Keep fragment opening in the Android UI layer.
-     * - Support world hotspots such as open handheld, open terminal, and inspect evidence.
+     * - Support world hotspots such as open handheld, open laptop, and inspect evidence.
      *
      * Depends on:
      * - None.
@@ -21,7 +21,7 @@ public interface GameUiEventListener {
 
     void onOpenHandheldRequested();
 
-    void onOpenTerminalRequested();
+    void onOpenLaptopRequested();
 
     void onEvidenceInspectionRequested(String evidenceId);
 

@@ -1160,7 +1160,7 @@ Recommended fragment usage:
 -   `GameShellFragment` hosts the world fragment and overlay fragments.
 -   `WorldInvestigationFragment` contains the OpenGL `GameView`.
 -   `HandheldFragment` contains evidence, threads, timeline, and statements screens using regular internal views/controllers.
--   `TerminalFragment` is a popup/dialog fragment for the stylized terminal computer.
+-   `LaptopFragment` is a popup/dialog fragment for the stylized victim laptop.
 
 Avoid making every handheld tab its own fragment unless there is a concrete lifecycle reason.
 
@@ -1178,7 +1178,7 @@ Gameplay systems should:
 -   own evidence state,
 -   own thread progression,
 -   own timeline state,
--   parse terminal commands,
+-   open authored laptop panels,
 -   save/load progress.
 
 Views are still important.
@@ -1190,7 +1190,7 @@ Use Android Views inside fragments for:
 -   thread panels,
 -   timeline cards,
 -   suspect statement cards,
--   terminal text and command input,
+-   laptop screen text and panel buttons,
 -   buttons around the OpenGL surface.
 
 Recommended split:
@@ -1211,7 +1211,7 @@ Major screens:
 -   Timeline Screen.
 -   Suspect Statements Screen.
 -   Final Timeline Ordering Screen.
--   Stylized Terminal Popup.
+-   Stylized Laptop Popup.
 
 Possible later screen:
 
@@ -1253,7 +1253,7 @@ It should contain:
 -   Timeline screen.
 -   Suspect statements.
 -   Final timeline ordering.
--   Terminal access point.
+-   Laptop access point.
 
 Visual direction:
 
@@ -1276,38 +1276,46 @@ Avoid spending too much time on:
 -   deeply nested menus,
 -   decorative UI that makes text hard to read.
 
-## Terminal Computer
+## Victim Laptop
 
-The terminal computer is a major mechanic.
+The victim laptop is a major mechanic.
 
 It should be presented as:
 
 -   a stylized popup on the phone,
 -   an Android `DialogFragment`,
 -   connected to the handheld/device layer,
--   authored and limited rather than a full shell simulation.
+-   a small set of authored panels (Messages, Activity, Files, Draft), not a command line or shell.
 
-The terminal can be used to:
+The laptop can be used to:
 
--   inspect logs,
--   query device activity,
+-   open recovered messages,
+-   review device/session activity,
+-   open recovered files and the draft email,
 -   reveal metadata,
 -   unlock evidence,
 -   update investigation threads.
 
-The terminal should not:
+The laptop should not:
 
--   run real commands,
+-   accept typed commands,
+-   simulate a shell or run real device operations,
 -   require real cybersecurity expertise,
--   become a large freeform parser,
 -   replace the evidence/thread/timeline structure.
+
+Interaction model:
+
+-   the player taps a panel button,
+-   the panel opens its authored content on the laptop screen,
+-   opening a panel collects the linked evidence,
+-   a Clear button returns the screen to the laptop's starting view.
 
 Implementation split:
 
--   `TerminalFragment` owns the popup UI.
--   `TerminalSession` owns visible terminal state/history.
--   `TerminalCommandProcessor` handles authored commands.
--   `GameController` receives any evidence/thread/timeline unlocks caused by terminal actions.
+-   `LaptopFragment` owns the popup UI.
+-   `LaptopSession` owns the visible laptop screen state.
+-   `LaptopPanelProcessor` opens authored panels and returns their content.
+-   `GameController` receives any evidence/thread/timeline unlocks caused by opening panels.
 
 ## Evidence Database
 

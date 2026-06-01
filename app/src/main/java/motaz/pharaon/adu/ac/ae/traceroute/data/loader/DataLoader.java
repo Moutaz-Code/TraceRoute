@@ -18,8 +18,8 @@ import motaz.pharaon.adu.ac.ae.traceroute.data.model.GameContent;
 import motaz.pharaon.adu.ac.ae.traceroute.data.model.CaseCompletion;
 import motaz.pharaon.adu.ac.ae.traceroute.data.model.DialogueLine;
 import motaz.pharaon.adu.ac.ae.traceroute.data.model.DialogueScript;
-import motaz.pharaon.adu.ac.ae.traceroute.data.model.TerminalContent;
-import motaz.pharaon.adu.ac.ae.traceroute.data.model.TerminalPanel;
+import motaz.pharaon.adu.ac.ae.traceroute.data.model.LaptopContent;
+import motaz.pharaon.adu.ac.ae.traceroute.data.model.LaptopPanel;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.evidence.EvidenceItem;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.investigation.InvestigationThread;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.statement.SuspectStatement;
@@ -68,7 +68,7 @@ public class DataLoader {
                     parseFinalTimelineEvents(root.getJSONArray("finalTimelineEvents")),
                     parseStatements(root.getJSONArray("statements")),
                     parseRooms(root.getJSONArray("rooms")),
-                    parseTerminalContent(root.getJSONObject("terminal")),
+                    parseLaptopContent(root.getJSONObject("laptop")),
                     parseDialogueScript(root.getJSONObject("finalConfrontation")),
                     parseCaseCompletion(root.getJSONObject("caseCompletion"))
             );
@@ -209,25 +209,24 @@ public class DataLoader {
         );
     }
 
-    private TerminalContent parseTerminalContent(JSONObject object) throws JSONException {
-        return new TerminalContent(
+    private LaptopContent parseLaptopContent(JSONObject object) throws JSONException {
+        return new LaptopContent(
                 object.getString("title"),
                 parseStringArray(object.getJSONArray("introLines")),
-                parseTerminalPanels(object.getJSONArray("panels"))
+                parseLaptopPanels(object.getJSONArray("panels"))
         );
     }
 
-    private List<TerminalPanel> parseTerminalPanels(JSONArray array) throws JSONException {
-        List<TerminalPanel> panels = new ArrayList<>();
+    private List<LaptopPanel> parseLaptopPanels(JSONArray array) throws JSONException {
+        List<LaptopPanel> panels = new ArrayList<>();
 
         for (int index = 0; index < array.length(); index++) {
             JSONObject item = array.getJSONObject(index);
-            panels.add(new TerminalPanel(
-                    item.getString("command"),
+            panels.add(new LaptopPanel(
+                    item.getString("panelId"),
                     item.getString("label"),
                     item.getString("evidenceId"),
-                    parseStringArray(item.optJSONArray("aliases")),
-                    parseStringArray(item.getJSONArray("outputLines"))
+                    parseStringArray(item.getJSONArray("contentLines"))
             ));
         }
 

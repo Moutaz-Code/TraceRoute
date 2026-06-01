@@ -15,6 +15,6 @@ Current architectural direction:
 -   Hotspots are normalized screen-space rectangles owned by room definitions.
 -   The handheld opens from a bottom-center world hotspot, with Android UI opened through `GameUiEventListener`.
 -   The handheld is one fragment-based Android UI overlay with ordinary internal views/controllers.
--   The stylized terminal computer is a major mechanic and uses `TerminalFragment`.
+-   The stylized victim laptop is a major mechanic and uses `LaptopFragment`.
 -   Game logic should live in gameplay/core systems, not inside fragment classes.
 

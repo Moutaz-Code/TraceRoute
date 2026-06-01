@@ -54,7 +54,7 @@
       "id": "E06_SCHEDULED_VICTIM_MESSAGE",
       "title": "Scheduled Victim Message",
       "category": "Digital / communication",
-      "source": "Office terminal",
+      "source": "Office laptop",
       "playerSummary": "A message sent at 21:07 appears to show the victim was alive, but metadata suggests it was scheduled.",
       "technicalNote": "The message was queued before delivery, so the send time is not proof of manual activity.",
       "thumbnailAssetPath": "textures/evidence/e06_scheduled_victim_message_thumb.png",
@@ -64,7 +64,7 @@
       "id": "E07_LAPTOP_SESSION_METADATA",
       "title": "Laptop Session Metadata",
       "category": "Digital / device activity",
-      "source": "Office terminal",
+      "source": "Office laptop",
       "playerSummary": "Laptop activity continued after the likely death time, but the interaction pattern looks automated.",
       "technicalNote": "Session metadata shows repeated timed actions rather than varied manual input.",
       "thumbnailAssetPath": "textures/evidence/e07_laptop_session_metadata_thumb.png",
@@ -74,7 +74,7 @@
       "id": "E08_ROUTER_ADMIN_ACCESS_RECORD",
       "title": "Router / Admin Access Record",
       "category": "Digital / network",
-      "source": "Office terminal",
+      "source": "Office laptop",
       "playerSummary": "A trusted admin-level session accessed apartment systems around the staging period.",
       "technicalNote": "The session had privileged access to networked apartment devices, not just ordinary remote viewing.",
       "thumbnailAssetPath": "textures/evidence/e08_router_admin_access_record_thumb.png",
@@ -104,7 +104,7 @@
       "id": "E12_ACCESS_DATA_SALE_FILE",
       "title": "Access-Data Sale File",
       "category": "Digital / motive",
-      "source": "Office terminal",
+      "source": "Office laptop",
       "playerSummary": "Victim and partner were involved in illegal access-data activity.",
       "technicalNote": "The file lists paid transfers tied to apartment-system access data.",
       "thumbnailAssetPath": "textures/evidence/e12_access_data_sale_file_thumb.png",
@@ -114,7 +114,7 @@
       "id": "E13_VICTIM_DRAFT_DISCLOSURE_EMAIL",
       "title": "Victim Draft Disclosure Email",
       "category": "Digital / motive",
-      "source": "Office terminal",
+      "source": "Office laptop",
       "playerSummary": "Victim intended to expose or withdraw from the illegal operation.",
       "technicalNote": "The unsent draft names the operation and implies the partner would be legally exposed.",
       "thumbnailAssetPath": "textures/evidence/e13_victim_draft_disclosure_email_thumb.png",
@@ -529,7 +529,7 @@
           "y": 0.26,
           "width": 0.20,
           "height": 0.28,
-          "actionType": "OPEN_TERMINAL"
+          "actionType": "OPEN_LAPTOP"
         },
         {
           "id": "inspect_router_admin_record",
@@ -605,21 +605,18 @@
       ]
     }
   ],
-  "terminal": {
+  "laptop": {
     "title": "VICTIM LAPTOP // ADRIAN VOSS",
     "introLines": [
       "VICTIM LAPTOP // ADRIAN VOSS",
-      "Select a recovered laptop panel."
+      "Open a recovered laptop panel."
     ],
     "panels": [
       {
-        "command": "messages",
+        "panelId": "messages",
         "label": "Messages",
         "evidenceId": "E06_SCHEDULED_VICTIM_MESSAGE",
-        "aliases": [
-          "message"
-        ],
-        "outputLines": [
+        "contentLines": [
           "Message timestamp: 21:07",
           "Delivery state: sent",
           "Metadata flag: scheduled before delivery",
@@ -627,39 +624,30 @@
         ]
       },
       {
-        "command": "activity",
+        "panelId": "activity",
         "label": "Activity",
         "evidenceId": "E07_LAPTOP_SESSION_METADATA",
-        "aliases": [
-          "laptop"
-        ],
-        "outputLines": [
+        "contentLines": [
           "Session activity: 21:16",
           "Input pattern: repeated timed actions",
           "Finding: activity pattern resembles automation, not normal human use."
         ]
       },
       {
-        "command": "files",
+        "panelId": "files",
         "label": "Files",
         "evidenceId": "E12_ACCESS_DATA_SALE_FILE",
-        "aliases": [
-          "file"
-        ],
-        "outputLines": [
+        "contentLines": [
           "File: ledger_access_export.dat",
           "Status: hidden archive recovered",
           "Finding: sale records connect the company to illegal apartment-system access data."
         ]
       },
       {
-        "command": "draft",
+        "panelId": "draft",
         "label": "Draft",
         "evidenceId": "E13_VICTIM_DRAFT_DISCLOSURE_EMAIL",
-        "aliases": [
-          "email"
-        ],
-        "outputLines": [
+        "contentLines": [
           "Draft status: unsent",
           "Recipient: legal counsel / regulator",
           "Finding: victim intended to expose the access-data operation."

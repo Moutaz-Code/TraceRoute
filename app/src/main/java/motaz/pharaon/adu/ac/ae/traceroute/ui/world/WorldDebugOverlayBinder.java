@@ -163,8 +163,8 @@ public class WorldDebugOverlayBinder {
             return "Handheld";
         }
 
-        if (hotspot.getActionType() == HotspotActionType.OPEN_TERMINAL) {
-            return "Laptop terminal";
+        if (hotspot.getActionType() == HotspotActionType.OPEN_LAPTOP) {
+            return "Laptop";
         }
 
         if (hotspot.getActionType() == HotspotActionType.INSPECT_EVIDENCE) {

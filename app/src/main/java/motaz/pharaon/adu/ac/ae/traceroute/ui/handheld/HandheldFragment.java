@@ -18,14 +18,14 @@ public class HandheldFragment extends Fragment {
      * - Root overlay fragment for the player's handheld forensic device.
      *
      * Responsibilities:
-     * - Host evidence, threads, timeline, statements, and terminal entry points in one fragment.
+     * - Host evidence, threads, timeline, statements, and laptop entry points in one fragment.
      * - Present Android UI over the OpenGL world.
      * - Route handheld tab/screen changes through ordinary views/controllers, not one fragment per tab.
      *
      * Depends on:
      * - HandheldController when implemented.
      * - EvidenceSystem, ThreadSystem, TimelineSystem, and StatementSystem through GameController.
-     * - TerminalFragment as a popup launched from shell or handheld.
+     * - LaptopFragment as a popup launched from shell or handheld.
      *
      * Used by:
      * - GameShellFragment.

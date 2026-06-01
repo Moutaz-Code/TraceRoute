@@ -79,10 +79,10 @@ public class GameView extends GLSurfaceView implements GameUiEventListener {
     }
 
     @Override
-    public void onOpenTerminalRequested() {
+    public void onOpenLaptopRequested() {
         post(() -> {
             if (uiEventListener != null) {
-                uiEventListener.onOpenTerminalRequested();
+                uiEventListener.onOpenLaptopRequested();
             }
         });
     }

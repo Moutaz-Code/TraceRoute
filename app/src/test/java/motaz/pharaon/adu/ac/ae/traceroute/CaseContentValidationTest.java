@@ -21,7 +21,7 @@ public class CaseContentValidationTest {
         add("INSPECT_EVIDENCE");
         add("NAVIGATE_ROOM");
         add("OPEN_HANDHELD");
-        add("OPEN_TERMINAL");
+        add("OPEN_LAPTOP");
         add("SHOW_FLAVOR_TEXT");
     }};
 
@@ -44,7 +44,7 @@ public class CaseContentValidationTest {
         validateEvidenceArtPaths(root.getJSONArray("evidence"));
         validateStatements(root.getJSONArray("statements"));
         validateRooms(root.getJSONArray("rooms"), roomIds, evidenceIds);
-        validateTerminalContent(root.getJSONObject("terminal"), evidenceIds);
+        validateLaptopContent(root.getJSONObject("laptop"), evidenceIds);
         validateFinalTimelineOrder(root.getJSONArray("finalTimelineEvents"));
         validateFinalConfrontation(root.getJSONObject("finalConfrontation"));
         validateCaseCompletion(root.getJSONObject("caseCompletion"));
@@ -154,37 +154,26 @@ public class CaseContentValidationTest {
         }
     }
 
-    private void validateTerminalContent(JSONObject terminal, Set<String> evidenceIds) throws Exception {
-        assertFalse(terminal.getString("title").trim().isEmpty());
-        assertStringArrayNotEmpty(terminal.getJSONArray("introLines"), "terminal intro line");
+    private void validateLaptopContent(JSONObject laptop, Set<String> evidenceIds) throws Exception {
+        assertFalse(laptop.getString("title").trim().isEmpty());
+        assertStringArrayNotEmpty(laptop.getJSONArray("introLines"), "laptop intro line");
 
-        JSONArray panels = terminal.getJSONArray("panels");
-        assertTrue("Terminal needs at least one panel.", panels.length() > 0);
+        JSONArray panels = laptop.getJSONArray("panels");
+        assertTrue("Laptop needs at least one panel.", panels.length() > 0);
 
-        Set<String> commandsAndAliases = new HashSet<>();
+        Set<String> panelIds = new HashSet<>();
         for (int index = 0; index < panels.length(); index++) {
             JSONObject panel = panels.getJSONObject(index);
-            String command = normalizeCommand(panel.getString("command"));
+            String panelId = normalizePanelId(panel.getString("panelId"));
 
-            assertFalse(command.isEmpty());
-            assertTrue("Duplicate terminal command or alias: " + command, commandsAndAliases.add(command));
+            assertFalse(panelId.isEmpty());
+            assertTrue("Duplicate laptop panel id: " + panelId, panelIds.add(panelId));
             assertFalse(panel.getString("label").trim().isEmpty());
             assertTrue(
-                    "Terminal panel evidence does not exist: " + panel.optString("evidenceId"),
+                    "Laptop panel evidence does not exist: " + panel.optString("evidenceId"),
                     evidenceIds.contains(panel.getString("evidenceId"))
             );
-            assertStringArrayNotEmpty(panel.getJSONArray("outputLines"), "terminal output line");
-
-            JSONArray aliases = panel.optJSONArray("aliases");
-            if (aliases == null) {
-                continue;
-            }
-
-            for (int aliasIndex = 0; aliasIndex < aliases.length(); aliasIndex++) {
-                String alias = normalizeCommand(aliases.getString(aliasIndex));
-                assertFalse(alias.isEmpty());
-                assertTrue("Duplicate terminal command or alias: " + alias, commandsAndAliases.add(alias));
-            }
+            assertStringArrayNotEmpty(panel.getJSONArray("contentLines"), "laptop panel content line");
         }
     }
 
@@ -221,8 +210,8 @@ public class CaseContentValidationTest {
         }
     }
 
-    private String normalizeCommand(String command) {
-        return command.trim().toLowerCase(Locale.US);
+    private String normalizePanelId(String panelId) {
+        return panelId.trim().toLowerCase(Locale.US);
     }
 
     private void assertNormalizedRect(JSONObject object, String label) throws Exception {

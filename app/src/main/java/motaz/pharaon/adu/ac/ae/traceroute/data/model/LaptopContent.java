@@ -4,28 +4,37 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class TerminalContent {
+public class LaptopContent {
+    /*
+     * Purpose:
+     * - Authored content for the victim laptop: its title, starting screen lines, and panels.
+     *
+     * Responsibilities:
+     * - Provide the panels the player can open from the laptop's buttons.
+     * - Stay authored data only; there are no typed commands to interpret.
+     */
+
     private final String title;
     private final List<String> introLines;
-    private final List<TerminalPanel> panels;
+    private final List<LaptopPanel> panels;
 
-    public TerminalContent(String title, List<String> introLines, List<TerminalPanel> panels) {
+    public LaptopContent(String title, List<String> introLines, List<LaptopPanel> panels) {
         this.title = title;
         this.introLines = immutableCopy(introLines);
         this.panels = immutableCopy(panels);
     }
 
-    public static TerminalContent empty() {
-        return new TerminalContent(
+    public static LaptopContent empty() {
+        return new LaptopContent(
                 "VICTIM LAPTOP",
-                Collections.singletonList("No terminal content is available."),
+                Collections.singletonList("No laptop content is available."),
                 Collections.emptyList()
         );
     }
 
-    public TerminalPanel findPanel(String command) {
-        for (TerminalPanel panel : panels) {
-            if (panel.matches(command)) {
+    public LaptopPanel findPanel(String panelId) {
+        for (LaptopPanel panel : panels) {
+            if (panel.matches(panelId)) {
                 return panel;
             }
         }
@@ -41,7 +50,7 @@ public class TerminalContent {
         return introLines;
     }
 
-    public List<TerminalPanel> getPanels() {
+    public List<LaptopPanel> getPanels() {
         return panels;
     }
 
