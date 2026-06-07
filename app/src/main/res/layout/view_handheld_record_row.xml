@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  One full-width record surface. Used both for list rows (record title) and
+  for the drill-in table's header/title. All visual styling comes from
+  @style/handheld_record; the binder only sets text + (for variants) the
+  background colour in code.
+-->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/handheld_record"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/handheld_offset_10" />

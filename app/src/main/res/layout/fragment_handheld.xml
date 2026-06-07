@@ -171,13 +171,15 @@
                 android:id="@+id/handheld_display_scroll"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:background="@color/handheld_in_tab_bg">
 
                 <LinearLayout
                     android:id="@+id/handheld_display_content_list"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" />
+                    android:orientation="vertical"
+                    android:padding="@dimen/handheld_offset_10" />
 
             </ScrollView>
 
@@ -203,6 +205,7 @@
             android:orientation="vertical"
             >
             <LinearLayout
+                android:id="@+id/handheld_back_button"
                 style="@style/handheld_device_button_group.First"
                 >
                 <TextView
@@ -214,6 +217,7 @@
                     />
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/handheld_up_button"
                 style="@style/handheld_device_button_group"
                 >
                 <TextView
@@ -225,6 +229,7 @@
                     />
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/handheld_down_button"
                 style="@style/handheld_device_button_group"
                 >
                 <TextView
@@ -236,6 +241,7 @@
                     />
             </LinearLayout>
             <LinearLayout
+                android:id="@+id/handheld_interact_button"
                 style="@style/handheld_device_button_group.Last"
                 >
                 <TextView

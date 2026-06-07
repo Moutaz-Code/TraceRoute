@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A full-width interactive button for the in-tab flows (final timeline:
+  Reset / Confront / selectable events). Shares the @style/handheld_record
+  surface so it matches the record rows; centred text + the same 10dp bottom
+  margin mark it as a tappable action. Action emphasis (the "important" tint)
+  is applied in code where needed.
+-->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/handheld_record"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/handheld_offset_10"
+    android:gravity="center"
+    android:clickable="true"
+    android:focusable="true" />

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 
 import androidx.fragment.app.Fragment;
 
@@ -38,6 +39,20 @@ public class HandheldFragment extends Fragment {
     private String focusedEvidenceId;
     private static final String DIALOGUE_TAG = "final_confrontation";
 
+    private final HandheldViewBinder.RecordListener recordListener = new HandheldViewBinder.RecordListener() {
+        @Override
+        public boolean isNew(String recordId) {
+            return !GameRuntime.getInstance().isRecordViewed(recordId);
+        }
+
+        @Override
+        public void onRecordSelected(String recordId) {
+            GameRuntime.getInstance().markRecordViewed(recordId);
+            handheldController.openRecord(recordId);
+            renderSelectedScreen();
+        }
+    };
+
     public static HandheldFragment newInstance(String focusedEvidenceId) {
         HandheldFragment fragment = new HandheldFragment();
         Bundle arguments = new Bundle();
@@ -65,8 +80,26 @@ public class HandheldFragment extends Fragment {
         handheldController = new HandheldController();
         if (focusedEvidenceId != null && !focusedEvidenceId.trim().isEmpty()) {
             handheldController.selectScreen(HandheldScreen.EVIDENCE);
+            handheldController.openRecord(focusedEvidenceId);
+            GameRuntime.getInstance().markRecordViewed(focusedEvidenceId);
         }
         viewBinder = new HandheldViewBinder(view);
+
+        // Go Back
+        view.findViewById(R.id.handheld_back_button).setOnClickListener(backButton -> {
+            if (handheldController.closeRecord()) {
+                renderSelectedScreen();
+            } else {
+                getParentFragmentManager().popBackStack();
+            }
+        });
+
+        // Up / Down
+        ScrollView displayScroll = view.findViewById(R.id.handheld_display_scroll);
+        view.findViewById(R.id.handheld_up_button).setOnClickListener(upButton ->
+                displayScroll.smoothScrollBy(0, -displayScroll.getHeight() / 2));
+        view.findViewById(R.id.handheld_down_button).setOnClickListener(downButton ->
+                displayScroll.smoothScrollBy(0, displayScroll.getHeight() / 2));
 
         view.findViewById(R.id.handheld_evidence_tab).setOnClickListener(tab -> {
             handheldController.selectScreen(HandheldScreen.EVIDENCE);
@@ -100,18 +133,33 @@ public class HandheldFragment extends Fragment {
         viewBinder.renderTabState(handheldController.getSelectedScreen());
         renderCurrentLead();
 
+        String openRecordId = handheldController.getOpenRecordId();
+
         if (handheldController.getSelectedScreen() == HandheldScreen.FINAL_TIMELINE) {
             renderFinalTimeline();
         } else if (handheldController.getSelectedScreen() == HandheldScreen.STATEMENTS) {
-            viewBinder.renderStatements(GameRuntime.getInstance().getStatementSystem().getVisibleStatements());
+            viewBinder.renderStatements(
+                    GameRuntime.getInstance().getStatementSystem().getVisibleStatements(),
+                    openRecordId,
+                    recordListener
+            );
         } else if (handheldController.getSelectedScreen() == HandheldScreen.TIMELINE) {
-            viewBinder.renderTimeline(GameRuntime.getInstance().getTimelineSystem().getVisibleTimelineEvents());
+            viewBinder.renderTimeline(
+                    GameRuntime.getInstance().getTimelineSystem().getVisibleTimelineEvents(),
+                    openRecordId,
+                    recordListener
+            );
         } else if (handheldController.getSelectedScreen() == HandheldScreen.THREADS) {
-            viewBinder.renderThreads(GameRuntime.getInstance().getThreadSystem().getInvestigationThreads());
+            viewBinder.renderThreads(
+                    GameRuntime.getInstance().getThreadSystem().getInvestigationThreads(),
+                    openRecordId,
+                    recordListener
+            );
         } else {
             viewBinder.renderEvidence(
                     GameRuntime.getInstance().getEvidenceSystem().getCollectedEvidence(),
-                    focusedEvidenceId
+                    openRecordId,
+                    recordListener
             );
         }
     }

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+
+    <style name="handheld_display_text">
+        <item name="android:fontFamily">@font/micro5_regular</item>
+        <item name="android:textSize">26dp</item>
+    </style>
+
     <style name="handheld_display_element">
         <item name="android:fontFamily">@font/micro5_regular</item>
         <item name="android:textSize">26dp</item>
@@ -9,8 +15,8 @@
 
 <!--    regular -->
     <style name="handheld_display_element.regular">
-        <item name="android:background">#738C73</item>
-        <item name="android:textColor">#394639</item>
+        <item name="android:background">@color/handheld_record_bg</item>
+        <item name="android:textColor">@color/handheld_record_txt</item>
     </style>
 
 <!--    used for tabs -->
@@ -71,6 +77,12 @@
     <style name="handheld_device_button_group.Last">
         <item name="android:layout_marginTop">@dimen/handheld_offset_10</item>
         <item name="android:layout_marginBottom">@dimen/handheld_offset_20</item>
+    </style>
+
+    <style name="handheld_record" parent="handheld_display_text">
+        <item name="android:textColor">@color/handheld_record_txt</item>
+        <item name="android:background">@color/handheld_record_bg</item>
+        <item name="android:padding">@dimen/handheld_offset_10</item>
     </style>
 
 </resources>

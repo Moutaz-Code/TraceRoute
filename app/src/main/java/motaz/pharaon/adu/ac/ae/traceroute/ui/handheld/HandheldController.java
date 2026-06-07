@@ -21,6 +21,8 @@ public class HandheldController {
 
     private HandheldScreen selectedScreen;
 
+    private String openRecordId;
+
     public HandheldController() {
         selectedScreen = HandheldScreen.EVIDENCE;
     }
@@ -31,5 +33,22 @@ public class HandheldController {
 
     public void selectScreen(HandheldScreen selectedScreen) {
         this.selectedScreen = selectedScreen;
+        openRecordId = null;
+    }
+
+    public String getOpenRecordId() {
+        return openRecordId;
+    }
+
+    public void openRecord(String recordId) {
+        openRecordId = recordId;
+    }
+
+    public boolean closeRecord() {
+        if (openRecordId == null) {
+            return false;
+        }
+        openRecordId = null;
+        return true;
     }
 }

@@ -1,11 +1,12 @@
 package motaz.pharaon.adu.ac.ae.traceroute.ui.handheld;
 
 import android.graphics.Color;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
 
 import java.util.List;
 
@@ -15,7 +16,6 @@ import motaz.pharaon.adu.ac.ae.traceroute.gameplay.investigation.InvestigationTh
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.statement.SuspectStatement;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.timeline.FinalTimelineEvent;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.timeline.TimelineEvent;
-import motaz.pharaon.adu.ac.ae.traceroute.ui.AssetImageLoader;
 
 public class HandheldViewBinder {
     /*
@@ -23,14 +23,21 @@ public class HandheldViewBinder {
      * - Plain Java helper for wiring Android Views inside HandheldFragment.
      *
      * Responsibilities:
-     * - Find and cache handheld TextViews, Buttons, RecyclerViews, and tab controls later.
+     * - Find and cache handheld TextViews, Buttons, and tab controls.
      * - Render evidence, threads, timeline, and statements into ordinary Android Views.
+     * - List view = one styled record row per record; detail view = a 2-column
+     *   key/value table (think JSON) with a single title header.
      * - Keep view lookup/binding code out of HandheldController's state logic.
-     * - Keep the architecture balanced: Fragment for lifecycle, Views for actual UI widgets.
+     *
+     * Styling:
+     * - All look (font, size, colour, background, padding) comes from
+     *   @style/handheld_record on the inflated row/table layouts. Only the
+     *   data-driven variants (new / important / accent +/-) are applied here,
+     *   as one-line background/text-colour swaps.
      *
      * Depends on:
      * - HandheldFragment's inflated layout.
-     * - HandheldController for selected screen state.
+     * - view_handheld_record_row / view_handheld_table_row layouts.
      *
      * Used by:
      * - HandheldFragment.
@@ -51,6 +58,14 @@ public class HandheldViewBinder {
         void onFinalTimelineResetRequested();
 
         void onConfrontationRequested();
+    }
+
+    public interface RecordListener {
+        // True until the player has opened this record at least once.
+        boolean isNew(String recordId);
+
+        // Called when a list row is tapped, to open that record's detail view.
+        void onRecordSelected(String recordId);
     }
 
     public HandheldViewBinder(View rootView) {
@@ -76,73 +91,138 @@ public class HandheldViewBinder {
         leadText.setText(currentLead);
     }
 
-    public void renderEvidence(List<EvidenceItem> collectedEvidence) {
-        renderEvidence(collectedEvidence, null);
-    }
-
-    public void renderEvidence(List<EvidenceItem> collectedEvidence, String focusedEvidenceId) {
+    public void renderEvidence(List<EvidenceItem> collectedEvidence, String openRecordId, RecordListener listener) {
         contentList.removeAllViews();
 
-        boolean hasEvidence = collectedEvidence != null && !collectedEvidence.isEmpty();
-        if (!hasEvidence) {
+        if (collectedEvidence == null || collectedEvidence.isEmpty()) {
             contentList.addView(getPlaceholderText("No evidence collected."));
             return;
         }
 
-        EvidenceItem focusedEvidence = findEvidence(collectedEvidence, focusedEvidenceId);
-        if (focusedEvidence != null) {
-            contentList.addView(createSectionLabel("Latest inspection"));
-            contentList.addView(createEvidenceView(focusedEvidence));
-            contentList.addView(createSectionLabel("Collected evidence"));
+        for (EvidenceItem evidenceItem : collectedEvidence) {
+            // Detail view: the one opened record's table.
+            if (evidenceItem.getId().equals(openRecordId)) {
+                renderEvidenceDetail(evidenceItem);
+                return;
+            }
         }
 
+        // List view: one tappable title per record.
         for (EvidenceItem evidenceItem : collectedEvidence) {
-            if (focusedEvidence != null && focusedEvidence.getId().equals(evidenceItem.getId())) {
-                continue;
-            }
-            contentList.addView(createEvidenceView(evidenceItem));
+            addRecordRow(evidenceItem.getId(), evidenceItem.getTitle(), listener);
         }
     }
 
-    public void renderThreads(List<InvestigationThread> investigationThreads) {
+    public void renderThreads(List<InvestigationThread> investigationThreads, String openRecordId, RecordListener listener) {
         contentList.removeAllViews();
 
-        boolean hasThreads = investigationThreads != null && !investigationThreads.isEmpty();
-        if (!hasThreads) {
+        if (investigationThreads == null || investigationThreads.isEmpty()) {
             contentList.addView(getPlaceholderText("No investigation threads active."));
             return;
         }
 
         for (InvestigationThread investigationThread : investigationThreads) {
-            contentList.addView(createThreadView(investigationThread));
+            if (investigationThread.getId().equals(openRecordId)) {
+                renderThreadDetail(investigationThread);
+                return;
+            }
+        }
+
+        for (InvestigationThread investigationThread : investigationThreads) {
+            addRecordRow(investigationThread.getId(), investigationThread.getName(), listener);
         }
     }
 
-    public void renderTimeline(List<TimelineEvent> timelineEvents) {
+    public void renderTimeline(List<TimelineEvent> timelineEvents, String openRecordId, RecordListener listener) {
         contentList.removeAllViews();
 
-        boolean hasTimelineEvents = timelineEvents != null && !timelineEvents.isEmpty();
-        if (!hasTimelineEvents) {
+        if (timelineEvents == null || timelineEvents.isEmpty()) {
             contentList.addView(getPlaceholderText("No timeline contradictions visible."));
             return;
         }
 
         for (TimelineEvent timelineEvent : timelineEvents) {
-            contentList.addView(createTimelineView(timelineEvent));
+            if (timelineEvent.getId().equals(openRecordId)) {
+                renderTimelineDetail(timelineEvent);
+                return;
+            }
+        }
+
+        for (TimelineEvent timelineEvent : timelineEvents) {
+            addRecordRow(
+                    timelineEvent.getId(),
+                    timelineEvent.getDisplayTime() + "  " + timelineEvent.getTitle(),
+                    listener);
         }
     }
 
-    public void renderStatements(List<SuspectStatement> suspectStatements) {
+    public void renderStatements(List<SuspectStatement> suspectStatements, String openRecordId, RecordListener listener) {
         contentList.removeAllViews();
 
-        boolean hasStatements = suspectStatements != null && !suspectStatements.isEmpty();
-        if (!hasStatements) {
+        if (suspectStatements == null || suspectStatements.isEmpty()) {
             contentList.addView(getPlaceholderText("No suspect statements unlocked."));
             return;
         }
 
         for (SuspectStatement suspectStatement : suspectStatements) {
-            contentList.addView(createStatementView(suspectStatement));
+            if (suspectStatement.getId().equals(openRecordId)) {
+                renderStatementDetail(suspectStatement);
+                return;
+            }
+        }
+
+        for (SuspectStatement suspectStatement : suspectStatements) {
+            addRecordRow(suspectStatement.getId(), suspectStatement.getSpeaker(), listener);
+        }
+    }
+
+    private void addRecordRow(String recordId, String title, RecordListener listener) {
+        boolean isNew = listener.isNew(recordId);
+        TextView row = inflateRow();
+        row.setText((isNew ? "! " : "") + title);
+        if (isNew) {
+            row.setBackgroundResource(R.color.handheld_record_bg_new);
+        }
+        row.setOnClickListener(view -> listener.onRecordSelected(recordId));
+        contentList.addView(row);
+    }
+
+    private void renderEvidenceDetail(EvidenceItem evidenceItem) {
+        addHeader(evidenceItem.getTitle());
+        addKeyValue("Source", evidenceItem.getSource());
+        addKeyValue("Summary", evidenceItem.getPlayerSummary());
+        addKeyValue("Note", evidenceItem.getTechnicalNote());
+    }
+
+    private void renderThreadDetail(InvestigationThread investigationThread) {
+        addHeader(investigationThread.getName());
+        addKeyValue("Question", investigationThread.getCoreQuestion());
+        for (String observation : investigationThread.getObservations()) {
+            addKeyValue("Observation", observation);
+        }
+        if (investigationThread.isStabilized()) {
+            addKeyValue("Conclusion", investigationThread.getStabilizedConclusion(),
+                    R.color.handheld_record_bg_accent_positive);
+        } else {
+            addKeyValue("Conclusion", "???");
+        }
+    }
+
+    private void renderTimelineDetail(TimelineEvent timelineEvent) {
+        addHeader(timelineEvent.getTitle());
+        addKeyValue("Time", timelineEvent.getDisplayTime());
+        addKeyValue("Initial", timelineEvent.getInitialInterpretation());
+        addKeyValue("Current", timelineEvent.getResolvedInterpretation(),
+                timelineEvent.isStabilized() ? R.color.handheld_record_bg_accent_positive : 0);
+    }
+
+    private void renderStatementDetail(SuspectStatement suspectStatement) {
+        addHeader(suspectStatement.getSpeaker());
+        addKeyValue("Claim", suspectStatement.getClaim());
+        addKeyValue("Detail", suspectStatement.getSuspiciousDetail());
+        if (suspectStatement.isContradicted()) {
+            addKeyValue("Status", suspectStatement.getContradictionText(),
+                    R.color.handheld_record_bg_accent_negative);
         }
     }
 
@@ -161,115 +241,100 @@ public class HandheldViewBinder {
             return;
         }
 
-        contentList.addView(createFinalTimelineStatusView(feedback, completed));
+        TextView status = addHeader(feedback);
+        if (completed) {
+            tint(status, R.color.handheld_record_bg_accent_positive);
+        }
 
         boolean hasSelectedEvents = selectedEvents != null && !selectedEvents.isEmpty();
         if (hasSelectedEvents) {
-            TextView selectedHeader = createSectionLabel("Selected sequence");
-            contentList.addView(selectedHeader);
-
+            addHeader("Selected sequence");
             for (int index = 0; index < selectedEvents.size(); index++) {
-                contentList.addView(createSelectedFinalTimelineEventView(index + 1, selectedEvents.get(index)));
+                FinalTimelineEvent event = selectedEvents.get(index);
+                addKeyValue(String.valueOf(index + 1), event.getDisplayTime() + " // " + event.getTitle());
             }
         }
 
         if (!completed) {
-            Button resetButton = new Button(rootView.getContext());
-            resetButton.setText("Reset Sequence");
+            TextView resetButton = createButton("Reset Sequence");
+            tintImportant(resetButton);
             resetButton.setOnClickListener(view -> selectionListener.onFinalTimelineResetRequested());
             contentList.addView(resetButton);
 
-            TextView availableHeader = createSectionLabel("Tap events in true order");
-            contentList.addView(availableHeader);
-
+            addHeader("Tap events in true order");
             for (FinalTimelineEvent availableEvent : availableEvents) {
                 contentList.addView(createAvailableFinalTimelineEventButton(availableEvent, selectionListener));
             }
         } else {
-            Button confrontButton = new Button(rootView.getContext());
-            confrontButton.setText("Confront Partner");
-            confrontButton.setAllCaps(false);
+            TextView confrontButton = createButton("Confront Partner");
+            tintImportant(confrontButton);
             confrontButton.setOnClickListener(view -> selectionListener.onConfrontationRequested());
             contentList.addView(confrontButton);
         }
     }
 
-    private View createEvidenceView(EvidenceItem evidenceItem) {
-        LinearLayout card = new LinearLayout(rootView.getContext());
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setPadding(18, 16, 18, 16);
-        card.setBackgroundColor(Color.rgb(10, 25, 29));
 
-        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        cardParams.setMargins(0, 0, 0, 16);
-        card.setLayoutParams(cardParams);
-
-        TextView title = new TextView(rootView.getContext());
-        title.setText(evidenceItem.getTitle());
-        title.setTextColor(Color.rgb(214, 245, 227));
-        title.setTextSize(16);
-        card.addView(title);
-
-        TextView metadata = new TextView(rootView.getContext());
-        metadata.setText(evidenceItem.getCategory() + " // " + evidenceItem.getSource());
-        metadata.setTextColor(Color.rgb(159, 216, 180));
-        metadata.setTextSize(12);
-        card.addView(metadata);
-
-        card.addView(createEvidenceImageView(evidenceItem));
-
-        TextView summary = new TextView(rootView.getContext());
-        summary.setText(evidenceItem.getPlayerSummary());
-        summary.setTextColor(Color.rgb(230, 238, 232));
-        summary.setTextSize(14);
-        summary.setPadding(0, 12, 0, 0);
-        card.addView(summary);
-
-        TextView technicalNote = new TextView(rootView.getContext());
-        technicalNote.setText(evidenceItem.getTechnicalNote());
-        technicalNote.setTextColor(Color.rgb(139, 178, 155));
-        technicalNote.setTextSize(13);
-        technicalNote.setPadding(0, 10, 0, 0);
-        card.addView(technicalNote);
-
-        return card;
+    private TextView inflateRow() {
+        return (TextView) LayoutInflater.from(rootView.getContext())
+                .inflate(R.layout.view_handheld_record_row, contentList, false);
     }
 
-    private View createEvidenceImageView(EvidenceItem evidenceItem) {
-        ImageView imageView = new ImageView(rootView.getContext());
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setBackgroundColor(Color.rgb(18, 35, 39));
-
-        LinearLayout.LayoutParams imageParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                dp(132)
-        );
-        imageParams.setMargins(0, dp(12), 0, 0);
-        imageView.setLayoutParams(imageParams);
-
-        String preferredPath = evidenceItem.getDetailAssetPath();
-        if (!AssetImageLoader.loadInto(imageView, preferredPath)) {
-            AssetImageLoader.loadInto(imageView, evidenceItem.getThumbnailAssetPath());
-        }
-
-        return imageView;
+    private TextView addHeader(String text) {
+        TextView header = inflateRow();
+        header.setText(text);
+        tintImportant(header);
+        contentList.addView(header);
+        return header;
     }
 
-    private EvidenceItem findEvidence(List<EvidenceItem> evidenceItems, String evidenceId) {
-        if (evidenceItems == null || evidenceId == null || evidenceId.trim().isEmpty()) {
-            return null;
+    private void addKeyValue(String key, String value) {
+        addKeyValue(key, value, 0);
+    }
+
+    private void addKeyValue(String key, String value, int valueBgColorRes) {
+        View row = LayoutInflater.from(rootView.getContext())
+                .inflate(R.layout.view_handheld_table_row, contentList, false);
+
+        ((TextView) row.findViewById(R.id.handheld_table_key)).setText(key);
+
+        TextView valueCell = row.findViewById(R.id.handheld_table_value);
+        valueCell.setText(value);
+        if (valueBgColorRes != 0) {
+            valueCell.setBackgroundResource(valueBgColorRes);
         }
 
-        for (EvidenceItem evidenceItem : evidenceItems) {
-            if (evidenceId.equals(evidenceItem.getId())) {
-                return evidenceItem;
-            }
-        }
+        contentList.addView(row);
+    }
 
-        return null;
+    private View getPlaceholderText(String message) {
+        TextView placeholder = inflateRow();
+        placeholder.setText(message);
+        return placeholder;
+    }
+
+    private View createAvailableFinalTimelineEventButton(
+            FinalTimelineEvent finalTimelineEvent,
+            FinalTimelineSelectionListener selectionListener
+    ) {
+        TextView button = createButton(finalTimelineEvent.getDisplayTime() + " // " + finalTimelineEvent.getTitle());
+        button.setOnClickListener(view -> selectionListener.onFinalTimelineEventSelected(finalTimelineEvent.getId()));
+        return button;
+    }
+
+    private TextView createButton(String text) {
+        TextView button = (TextView) LayoutInflater.from(rootView.getContext())
+                .inflate(R.layout.view_handheld_button, contentList, false);
+        button.setText(text);
+        return button;
+    }
+
+    private void tint(TextView cell, int backgroundColorRes) {
+        cell.setBackgroundResource(backgroundColorRes);
+    }
+
+    private void tintImportant(TextView cell) {
+        cell.setBackgroundResource(R.color.handheld_record_bg_important);
+        cell.setTextColor(ContextCompat.getColor(rootView.getContext(), R.color.handheld_record_txt_important));
     }
 
     private void styleTab(TextView button, boolean selected) {
@@ -277,234 +342,5 @@ public class HandheldViewBinder {
                 ? R.style.handheld_display_element_active
                 : R.style.handheld_display_element_inactive);
         button.setBackgroundColor(Color.parseColor(selected ? "#455445" : "#506250"));
-    }
-
-    private int dp(int value) {
-        float density = rootView.getResources().getDisplayMetrics().density;
-        return Math.round(value * density);
-    }
-
-    private View createThreadView(InvestigationThread investigationThread) {
-        LinearLayout card = new LinearLayout(rootView.getContext());
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setPadding(18, 16, 18, 16);
-        card.setBackgroundColor(Color.rgb(14, 22, 34));
-
-        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        cardParams.setMargins(0, 0, 0, 16);
-        card.setLayoutParams(cardParams);
-
-        TextView title = new TextView(rootView.getContext());
-        title.setText(investigationThread.getName());
-        title.setTextColor(Color.rgb(214, 245, 227));
-        title.setTextSize(16);
-        card.addView(title);
-
-        TextView question = new TextView(rootView.getContext());
-        question.setText(investigationThread.getCoreQuestion());
-        question.setTextColor(Color.rgb(159, 216, 180));
-        question.setTextSize(13);
-        card.addView(question);
-
-        for (String observation : investigationThread.getObservations()) {
-            TextView observationText = new TextView(rootView.getContext());
-            observationText.setText("- " + observation);
-            observationText.setTextColor(Color.rgb(230, 238, 232));
-            observationText.setTextSize(13);
-            observationText.setPadding(0, 10, 0, 0);
-            card.addView(observationText);
-        }
-
-        if (investigationThread.isStabilized()) {
-            TextView conclusion = new TextView(rootView.getContext());
-            conclusion.setText("STABILIZED: " + investigationThread.getStabilizedConclusion());
-            conclusion.setTextColor(Color.rgb(245, 218, 122));
-            conclusion.setTextSize(13);
-            conclusion.setPadding(0, 12, 0, 0);
-            card.addView(conclusion);
-        }
-
-        return card;
-    }
-
-    private View createTimelineView(TimelineEvent timelineEvent) {
-        LinearLayout card = new LinearLayout(rootView.getContext());
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setPadding(18, 16, 18, 16);
-        card.setBackgroundColor(Color.rgb(26, 20, 32));
-
-        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        cardParams.setMargins(0, 0, 0, 16);
-        card.setLayoutParams(cardParams);
-
-        TextView time = new TextView(rootView.getContext());
-        time.setText(timelineEvent.getDisplayTime());
-        time.setTextColor(Color.rgb(245, 218, 122));
-        time.setTextSize(13);
-        card.addView(time);
-
-        TextView title = new TextView(rootView.getContext());
-        title.setText(timelineEvent.getTitle());
-        title.setTextColor(Color.rgb(214, 245, 227));
-        title.setTextSize(16);
-        title.setPadding(0, 6, 0, 0);
-        card.addView(title);
-
-        TextView initial = new TextView(rootView.getContext());
-        initial.setText("Initial: " + timelineEvent.getInitialInterpretation());
-        initial.setTextColor(Color.rgb(230, 238, 232));
-        initial.setTextSize(13);
-        initial.setPadding(0, 12, 0, 0);
-        card.addView(initial);
-
-        TextView resolved = new TextView(rootView.getContext());
-        resolved.setText("Current: " + timelineEvent.getResolvedInterpretation());
-        resolved.setTextColor(timelineEvent.isStabilized()
-                ? Color.rgb(245, 218, 122)
-                : Color.rgb(159, 216, 180));
-        resolved.setTextSize(13);
-        resolved.setPadding(0, 10, 0, 0);
-        card.addView(resolved);
-
-        return card;
-    }
-
-    private View createStatementView(SuspectStatement suspectStatement) {
-        LinearLayout card = new LinearLayout(rootView.getContext());
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setPadding(18, 16, 18, 16);
-        card.setBackgroundColor(Color.rgb(28, 23, 19));
-
-        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        cardParams.setMargins(0, 0, 0, 16);
-        card.setLayoutParams(cardParams);
-
-        TextView speaker = new TextView(rootView.getContext());
-        speaker.setText(suspectStatement.getSpeaker());
-        speaker.setTextColor(Color.rgb(214, 245, 227));
-        speaker.setTextSize(16);
-        card.addView(speaker);
-
-        TextView claim = new TextView(rootView.getContext());
-        claim.setText("\"" + suspectStatement.getClaim() + "\"");
-        claim.setTextColor(Color.rgb(230, 238, 232));
-        claim.setTextSize(14);
-        claim.setPadding(0, 12, 0, 0);
-        card.addView(claim);
-
-        TextView suspiciousDetail = new TextView(rootView.getContext());
-        suspiciousDetail.setText("Note: " + suspectStatement.getSuspiciousDetail());
-        suspiciousDetail.setTextColor(Color.rgb(159, 216, 180));
-        suspiciousDetail.setTextSize(13);
-        suspiciousDetail.setPadding(0, 10, 0, 0);
-        card.addView(suspiciousDetail);
-
-        if (suspectStatement.isContradicted()) {
-            TextView contradiction = new TextView(rootView.getContext());
-            contradiction.setText("STATUS: " + suspectStatement.getContradictionText());
-            contradiction.setTextColor(Color.rgb(245, 218, 122));
-            contradiction.setTextSize(13);
-            contradiction.setPadding(0, 12, 0, 0);
-            card.addView(contradiction);
-        }
-
-        return card;
-    }
-
-    private View createFinalTimelineStatusView(String feedback, boolean completed) {
-        LinearLayout card = new LinearLayout(rootView.getContext());
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setPadding(18, 16, 18, 16);
-        card.setBackgroundColor(completed ? Color.rgb(23, 34, 20) : Color.rgb(24, 27, 34));
-
-        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        cardParams.setMargins(0, 0, 0, 16);
-        card.setLayoutParams(cardParams);
-
-        TextView status = new TextView(rootView.getContext());
-        status.setText(feedback);
-        status.setTextColor(completed ? Color.rgb(245, 218, 122) : Color.rgb(214, 245, 227));
-        status.setTextSize(14);
-        card.addView(status);
-
-        return card;
-    }
-
-    private TextView createSectionLabel(String label) {
-        TextView textView = new TextView(rootView.getContext());
-        textView.setText(label);
-        textView.setTextColor(Color.rgb(159, 216, 180));
-        textView.setTextSize(13);
-        textView.setPadding(0, 12, 0, 8);
-        return textView;
-    }
-
-    private View createSelectedFinalTimelineEventView(int selectedOrder, FinalTimelineEvent finalTimelineEvent) {
-        LinearLayout card = new LinearLayout(rootView.getContext());
-        card.setOrientation(LinearLayout.VERTICAL);
-        card.setPadding(18, 16, 18, 16);
-        card.setBackgroundColor(Color.rgb(21, 26, 28));
-
-        LinearLayout.LayoutParams cardParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        cardParams.setMargins(0, 0, 0, 12);
-        card.setLayoutParams(cardParams);
-
-        TextView title = new TextView(rootView.getContext());
-        title.setText(selectedOrder + ". " + finalTimelineEvent.getDisplayTime() + " // " + finalTimelineEvent.getTitle());
-        title.setTextColor(Color.rgb(214, 245, 227));
-        title.setTextSize(15);
-        card.addView(title);
-
-        TextView summary = new TextView(rootView.getContext());
-        summary.setText(finalTimelineEvent.getSummary());
-        summary.setTextColor(Color.rgb(159, 216, 180));
-        summary.setTextSize(13);
-        summary.setPadding(0, 8, 0, 0);
-        card.addView(summary);
-
-        return card;
-    }
-
-    private View createAvailableFinalTimelineEventButton(
-            FinalTimelineEvent finalTimelineEvent,
-            FinalTimelineSelectionListener selectionListener
-    ) {
-        Button button = new Button(rootView.getContext());
-        button.setText(finalTimelineEvent.getDisplayTime() + " // " + finalTimelineEvent.getTitle());
-        button.setAllCaps(false);
-        button.setOnClickListener(view -> selectionListener.onFinalTimelineEventSelected(finalTimelineEvent.getId()));
-
-        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        buttonParams.setMargins(0, 0, 0, 10);
-        button.setLayoutParams(buttonParams);
-
-        return button;
-    }
-
-    private View getPlaceholderText(String message) {
-        TextView placeholder = new TextView(rootView.getContext());
-        placeholder.setText(message);
-        placeholder.setTextColor(Color.rgb(159, 216, 180));
-        placeholder.setTextSize(15);
-        placeholder.setPadding(0, dp(24), 0, 0);
-        return placeholder;
     }
 }

@@ -23,7 +23,9 @@ import motaz.pharaon.adu.ac.ae.traceroute.gameplay.world.RoomId;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class GameRuntime {
     /*
@@ -59,6 +61,7 @@ public class GameRuntime {
     private GameRepository gameRepository;
     private RoomId currentRoomId;
     private boolean savedStateLoaded;
+    private final Set<String> viewedRecordIds = new HashSet<>();
 
     private GameRuntime(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
@@ -116,6 +119,14 @@ public class GameRuntime {
 
     public StatementSystem getStatementSystem() {
         return statementSystem;
+    }
+
+    public boolean isRecordViewed(String recordId) {
+        return viewedRecordIds.contains(recordId);
+    }
+
+    public void markRecordViewed(String recordId) {
+        viewedRecordIds.add(recordId);
     }
 
     public List<RoomDefinition> getRoomDefinitions() {

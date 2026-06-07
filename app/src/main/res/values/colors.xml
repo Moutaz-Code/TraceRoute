@@ -2,4 +2,17 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="handheld_in_tab_bg">#506250</color>
+<!--    appropriate colors -->
+    <color name="handheld_record_bg">#738C73</color>
+    <color name="handheld_record_txt">#394639</color>
+<!--    positive, e.g., conclusion -->
+    <color name="handheld_record_bg_accent_positive">#669966</color>
+<!--    negative, e.g., false timeline, false statement-->
+    <color name="handheld_record_bg_accent_negative">#936C6C</color>
+    <color name="handheld_record_bg_new">#999166</color>
+<!--    important, e.g., suspect name on a statement -->
+    <color name="handheld_record_bg_important">#333E33</color>
+    <color name="handheld_record_txt_important">#B9C6B9</color>
 </resources>
