@@ -1,137 +1,252 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/handheld_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#CC05080A">
+    android:background="#CC111111">
 
     <LinearLayout
         android:id="@+id/handheld_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="28dp"
-        android:background="#E8081114"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        android:padding="20dp"
+        android:background="@drawable/handheld_gradient"
+        >
 
         <LinearLayout
-            android:id="@+id/handheld_header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/handheld_title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="HANDHELD // EVIDENCE"
-                android:textColor="#D6F5E3"
-                android:textSize="18sp" />
-
-            <Button
-                android:id="@+id/handheld_close_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Close" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/handheld_current_lead"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="#14272D"
-            android:lineSpacingExtra="2dp"
-            android:paddingStart="12dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="12dp"
-            android:paddingBottom="10dp"
-            android:text="Lead"
-            android:textColor="#F5DA7A"
-            android:textSize="13sp" />
-
-        <LinearLayout
-            android:id="@+id/handheld_tab_row"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/handheld_evidence_tab"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Evidence" />
-
-            <Button
-                android:id="@+id/handheld_threads_tab"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:text="Threads" />
-
-            <Button
-                android:id="@+id/handheld_timeline_tab"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:text="Timeline" />
-
-            <Button
-                android:id="@+id/handheld_statements_tab"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_weight="1"
-                android:text="Statements" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/handheld_secondary_tab_row"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:gravity="end"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/handheld_final_timeline_tab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Final Timeline" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/handheld_empty_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="No evidence collected."
-            android:textColor="#9FD8B4"
-            android:textSize="15sp" />
-
-        <ScrollView
-            android:id="@+id/handheld_evidence_scroll"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="16dp"
-            android:layout_weight="1">
-
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            >
             <LinearLayout
-                android:id="@+id/handheld_evidence_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:background="@drawable/handheld_bevel_outset_device"
+                android:orientation="vertical"
+                android:padding="@dimen/handheld_offset_5"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    style="@style/handheld_device_button_group"
+                    >
+                    <TextView
+                        android:id="@+id/handheld_close_button"
+                        android:layout_width="match_parent"
+                        android:layout_height="28dp"
+                        android:background="@drawable/handheld_device_button_switch"
+                        />
+                    <TextView
+                        android:text="ON  |  OFF"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        style="@style/handheld_device_label"
+                        />
+                </LinearLayout>
+            </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/jaro_regular"
+                android:textColor="#AD1F1F"
+                android:textSize="24dp"
+                android:text="NOMACAO"
+                android:gravity="center"
+                />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
 
-        </ScrollView>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    android:background="@drawable/handheld_bevel_outset_device"
+                    android:padding="@dimen/handheld_offset_15"
+                    >
+                    <View
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/handheld_joystick_base" />
+                    <View
+                        android:id="@+id/handheld_joystick_head"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:background="@drawable/handheld_joystick_head"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/handheld_display"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="3"
+            android:background="@drawable/handheld_bevel_inset_display"
+            android:layout_marginHorizontal="@dimen/handheld_offset_20"
+            >
+
+            <LinearLayout
+                android:id="@+id/handheld_tab_row"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/handheld_offset_10"
+                >
+
+                <TextView
+                    android:layout_marginRight="@dimen/handheld_offset_5"
+                    android:id="@+id/handheld_evidence_tab"
+                    android:text="Evidence"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:padding="@dimen/handheld_offset_5"
+                    style="@style/handheld_display_element.inactive"
+                    />
+
+                <TextView
+                    android:layout_marginRight="@dimen/handheld_offset_5"
+                    android:id="@+id/handheld_threads_tab"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Threads"
+                    android:padding="@dimen/handheld_offset_5"
+                    style="@style/handheld_display_element.inactive"
+                    />
+
+                <TextView
+                    android:layout_marginRight="@dimen/handheld_offset_5"
+                    android:id="@+id/handheld_timeline_tab"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Timeline"
+                    android:padding="@dimen/handheld_offset_5"
+                    style="@style/handheld_display_element.inactive"
+                    />
+
+                <TextView
+                    android:layout_marginRight="@dimen/handheld_offset_5"
+                    android:id="@+id/handheld_statements_tab"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Statements"
+                    android:padding="@dimen/handheld_offset_5"
+                    style="@style/handheld_display_element.inactive"
+                    />
+
+                <TextView
+                    android:id="@+id/handheld_final_timeline_tab"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Final Timeline"
+                    android:padding="@dimen/handheld_offset_5"
+                    style="@style/handheld_display_element.inactive"
+                    />
+            </LinearLayout>
+
+
+            <ScrollView
+                android:id="@+id/handheld_display_scroll"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:id="@+id/handheld_display_content_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+            </ScrollView>
+
+            <TextView
+                android:id="@+id/handheld_current_lead"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:text="Lead"
+                android:paddingVertical="@dimen/handheld_offset_5"
+                android:paddingHorizontal="@dimen/handheld_offset_10"
+                android:background="@drawable/handheld_bevel_inset_display"
+
+                style="@style/handheld_display_element.inactive"
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@drawable/handheld_bevel_outset_device"
+            android:orientation="vertical"
+            >
+            <LinearLayout
+                style="@style/handheld_device_button_group.First"
+                >
+                <TextView
+                    style="@style/handheld_device_button_group_button.Red"
+                    />
+                <TextView
+                    android:text="Go Back"
+                    style="@style/handheld_device_label.RightPanel"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                style="@style/handheld_device_button_group"
+                >
+                <TextView
+                    style="@style/handheld_device_button_group_button.Black"
+                    />
+                <TextView
+                    android:text="Up"
+                    style="@style/handheld_device_label.RightPanel"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                style="@style/handheld_device_button_group"
+                >
+                <TextView
+                    style="@style/handheld_device_button_group_button.Black"
+                    />
+                <TextView
+                    android:text="Down"
+                    style="@style/handheld_device_label.RightPanel"
+                    />
+            </LinearLayout>
+            <LinearLayout
+                style="@style/handheld_device_button_group.Last"
+                >
+                <TextView
+                    style="@style/handheld_device_button_group_button.Red"
+                    />
+                <TextView
+                    android:text="Interact"
+                    style="@style/handheld_device_label.RightPanel"
+                    />
+            </LinearLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
