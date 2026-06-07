@@ -14,4 +14,41 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <LinearLayout
+        android:id="@+id/game_notification_panel"
+        android:layout_width="360dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="20dp"
+        android:alpha="0"
+        android:background="#E805080A"
+        android:clickable="false"
+        android:focusable="false"
+        android:orientation="vertical"
+        android:paddingStart="14dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="10dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/game_notification_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Evidence acquired"
+            android:textColor="#F5DA7A"
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/game_notification_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:text="Item added to handheld"
+            android:textColor="#D6F5E3"
+            android:textSize="13sp" />
+
+    </LinearLayout>
+
 </FrameLayout>

@@ -155,7 +155,7 @@ public class GameRuntime {
     }
 
     public void setCurrentRoomId(RoomId currentRoomId) {
-        if (currentRoomId == null) {
+        if (!isPlayableDemoRoom(currentRoomId)) {
             return;
         }
 
@@ -216,10 +216,22 @@ public class GameRuntime {
         }
 
         try {
-            return RoomId.valueOf(roomId);
+            RoomId parsedRoomId = RoomId.valueOf(roomId);
+            return isPlayableDemoRoom(parsedRoomId) ? parsedRoomId : RoomId.LIVING_ROOM;
         } catch (IllegalArgumentException exception) {
             return RoomId.LIVING_ROOM;
         }
+    }
+
+    private boolean isPlayableDemoRoom(RoomId roomId) {
+        if (roomId == null) {
+            return false;
+        }
+
+        return roomId == RoomId.LIVING_ROOM
+                || roomId == RoomId.ENTRY_SMART_LOCK
+                || roomId == RoomId.KITCHEN_SIDE_AREA
+                || roomId == RoomId.OFFICE_DEVICE_CORNER;
     }
 
     private GameContent loadStaticContent(GameRepository gameRepository) {

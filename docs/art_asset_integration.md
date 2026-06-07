@@ -10,15 +10,15 @@ Room backgrounds are OpenGL textures loaded from:
 app/src/main/assets/textures/scenes/
 ```
 
-Each room uses:
+Each room uses a room-specific path:
 
 ```json
-"backgroundTexturePath": "textures/scenes/room_test.png"
+"backgroundTexturePath": "textures/scenes/living_room.png"
 ```
 
-Replace that path with the final room image path when ready. Missing scene textures fall back to a dark background instead of crashing the app.
+Missing room textures fall back to `textures/scenes/room_test.png` instead of crashing the app, so art can be dropped in one room at a time.
 
-Suggested final naming:
+Current final naming:
 
 ```text
 textures/scenes/living_room.png

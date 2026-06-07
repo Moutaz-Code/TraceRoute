@@ -43,8 +43,7 @@ public class RoomNavigator {
                 RoomId.LIVING_ROOM,
                 RoomId.ENTRY_SMART_LOCK,
                 RoomId.KITCHEN_SIDE_AREA,
-                RoomId.OFFICE_DEVICE_CORNER,
-                RoomId.CCTV_WINDOW_OPTIONAL
+                RoomId.OFFICE_DEVICE_CORNER
         };
 
         if (loadedRooms != null && !loadedRooms.isEmpty()) {
@@ -61,7 +60,7 @@ public class RoomNavigator {
                 "Victim: Adrian Voss. Physical clues define the real violence.",
                 "Body / vase / company award",
                 PLACEHOLDER_ROOM_TEXTURE,
-                RoomId.CCTV_WINDOW_OPTIONAL,
+                RoomId.OFFICE_DEVICE_CORNER,
                 RoomId.ENTRY_SMART_LOCK
         ));
         addRoom(buildRoom(
@@ -89,7 +88,7 @@ public class RoomNavigator {
                 "Victim laptop / router record",
                 PLACEHOLDER_ROOM_TEXTURE,
                 RoomId.KITCHEN_SIDE_AREA,
-                RoomId.CCTV_WINDOW_OPTIONAL
+                RoomId.LIVING_ROOM
         ));
         addRoom(buildRoom(
                 RoomId.CCTV_WINDOW_OPTIONAL,
@@ -113,7 +112,7 @@ public class RoomNavigator {
     }
 
     public void goToRoom(RoomId roomId) {
-        if (rooms.containsKey(roomId)) {
+        if (rooms.containsKey(roomId) && isInRoomOrder(roomId)) {
             currentRoomId = roomId;
         }
     }
@@ -259,5 +258,15 @@ public class RoomNavigator {
         }
 
         return 0;
+    }
+
+    private boolean isInRoomOrder(RoomId roomId) {
+        for (RoomId orderedRoomId : roomOrder) {
+            if (orderedRoomId == roomId) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

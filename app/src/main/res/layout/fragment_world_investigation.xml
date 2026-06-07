@@ -125,6 +125,25 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/open_handheld_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="18dp"
+        android:background="#E805080A"
+        android:clickable="true"
+        android:focusable="true"
+        android:paddingStart="14dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="10dp"
+        android:text="Handheld"
+        android:textColor="#F5DA7A"
+        android:textSize="13sp"
+        android:textStyle="bold" />
+
     <LinearLayout
         android:id="@+id/debug_room_context_panel"
         android:layout_width="wrap_content"

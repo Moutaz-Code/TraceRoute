@@ -23,6 +23,12 @@ The project now has a playable graybox MVP spine:
 
 - 2026-05-27: Began the recommended manual-test support / UX cleanup pass from this file.
 - 2026-05-27: Added initial laptop close/collection/read feedback, clearer handheld current-lead treatment, and a world demo/dev mode toggle. These still need manual device validation.
+- 2026-06-07: Began room-art integration pass. Case JSON now points at room-specific scene image paths, and rendering falls back to `room_test.png` when a room image is missing.
+- 2026-06-07: Reviewed four new room plates and aligned functional hotspots/visual annotations to the actual room compositions.
+- 2026-06-07: Removed legacy OpenGL debug quads, changed evidence taps to show shell notifications instead of opening handheld, and added a visible Handheld control.
+- 2026-06-07: Switched world startup to clean demo mode and routed the playable demo through the four finished room plates. The CCTV clue is temporarily reachable from Entry until a fifth room plate exists.
+- 2026-06-07: Added `docs/demo_manual_checklist.md` for focused due-date manual testing.
+- 2026-06-07: Hardened stale saved room state so old saves cannot reopen into the deferred CCTV room.
 
 ## MVP-Critical Work Left
 
@@ -84,7 +90,7 @@ The project now has a playable graybox MVP spine:
 
 ## Art / Asset Work Left
 
-- Replace `room_test.png` with actual room art:
+- Drop actual room art into `app/src/main/assets/textures/scenes/` using the room-specific filenames:
   - Living room / body scene.
   - Entry / smart-lock area.
   - Kitchen / AC area.

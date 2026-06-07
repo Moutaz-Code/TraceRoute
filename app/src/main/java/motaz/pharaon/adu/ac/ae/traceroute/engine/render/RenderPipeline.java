@@ -11,6 +11,7 @@ import motaz.pharaon.adu.ac.ae.traceroute.engine.gl.Texture;
 
 public class RenderPipeline {
     private static final float ROOM_BACKGROUND_SAFE_SCALE = 0.96f;
+    private static final String FALLBACK_ROOM_TEXTURE_PATH = "textures/scenes/room_test.png";
 
     private DebugQuad debugQuad;
     private ColoredQuad coloredQuad;
@@ -53,12 +54,17 @@ public class RenderPipeline {
     }
 
     public void drawRoomBackground(String texturePath) {
-        if (texturePath == null || viewportWidth == 0 || viewportHeight == 0) {
+        if (viewportWidth == 0 || viewportHeight == 0) {
             drawMissingTextureFallback();
             return;
         }
 
-        Texture roomTexture = getTexture(texturePath);
+        String normalizedTexturePath = texturePath == null ? "" : texturePath.trim();
+        Texture roomTexture = getTexture(normalizedTexturePath);
+        if (roomTexture == null && !FALLBACK_ROOM_TEXTURE_PATH.equals(normalizedTexturePath)) {
+            roomTexture = getTexture(FALLBACK_ROOM_TEXTURE_PATH);
+        }
+
         if (roomTexture == null) {
             drawMissingTextureFallback();
             return;

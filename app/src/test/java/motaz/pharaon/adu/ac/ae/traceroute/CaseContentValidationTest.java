@@ -8,8 +8,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -44,6 +46,7 @@ public class CaseContentValidationTest {
         validateEvidenceArtPaths(root.getJSONArray("evidence"));
         validateStatements(root.getJSONArray("statements"));
         validateRooms(root.getJSONArray("rooms"), roomIds, evidenceIds);
+        validateDemoNavigationCycle(root.getJSONArray("rooms"));
         validateLaptopContent(root.getJSONObject("laptop"), evidenceIds);
         validateFinalTimelineOrder(root.getJSONArray("finalTimelineEvents"));
         validateFinalConfrontation(root.getJSONObject("finalConfrontation"));
@@ -97,6 +100,68 @@ public class CaseContentValidationTest {
             validateHotspots(room.getJSONArray("hotspots"), roomIds, evidenceIds);
             validateVisualAnnotations(room.optJSONArray("visualAnnotations"));
         }
+    }
+
+    private void validateDemoNavigationCycle(JSONArray rooms) throws Exception {
+        Map<String, JSONObject> roomById = new HashMap<>();
+        for (int index = 0; index < rooms.length(); index++) {
+            JSONObject room = rooms.getJSONObject(index);
+            roomById.put(room.getString("id"), room);
+        }
+
+        Set<String> visitedRoomIds = new HashSet<>();
+        Set<String> reachableEvidenceIds = new HashSet<>();
+        String currentRoomId = "LIVING_ROOM";
+
+        for (int step = 0; step < 6; step++) {
+            JSONObject room = roomById.get(currentRoomId);
+            assertTrue("Demo route room does not exist: " + currentRoomId, room != null);
+            assertExistingSceneAsset(room.getString("backgroundTexturePath"), currentRoomId);
+            visitedRoomIds.add(currentRoomId);
+            collectEvidencePayloads(room.getJSONArray("hotspots"), reachableEvidenceIds);
+
+            String nextRoomId = findNavigationTarget(room.getJSONArray("hotspots"), "nav_next");
+            if ("LIVING_ROOM".equals(nextRoomId)) {
+                break;
+            }
+            currentRoomId = nextRoomId;
+        }
+
+        assertTrue(visitedRoomIds.contains("LIVING_ROOM"));
+        assertTrue(visitedRoomIds.contains("ENTRY_SMART_LOCK"));
+        assertTrue(visitedRoomIds.contains("KITCHEN_SIDE_AREA"));
+        assertTrue(visitedRoomIds.contains("OFFICE_DEVICE_CORNER"));
+        assertFalse("Demo route should not require missing CCTV art.", visitedRoomIds.contains("CCTV_WINDOW_OPTIONAL"));
+        assertTrue("Demo route must expose CCTV outage evidence.", reachableEvidenceIds.contains("E10_CCTV_OUTAGE_NOTE"));
+    }
+
+    private void collectEvidencePayloads(JSONArray hotspots, Set<String> evidenceIds) throws Exception {
+        for (int index = 0; index < hotspots.length(); index++) {
+            JSONObject hotspot = hotspots.getJSONObject(index);
+            if ("INSPECT_EVIDENCE".equals(hotspot.getString("actionType"))) {
+                evidenceIds.add(hotspot.getString("payloadId"));
+            }
+        }
+    }
+
+    private String findNavigationTarget(JSONArray hotspots, String hotspotId) throws Exception {
+        for (int index = 0; index < hotspots.length(); index++) {
+            JSONObject hotspot = hotspots.getJSONObject(index);
+            if (hotspotId.equals(hotspot.getString("id"))) {
+                return hotspot.getString("targetRoomId");
+            }
+        }
+
+        throw new AssertionError("Missing navigation hotspot: " + hotspotId);
+    }
+
+    private void assertExistingSceneAsset(String assetPath, String roomId) {
+        Path appRelativePath = Paths.get("src/main/assets", assetPath);
+        Path rootRelativePath = Paths.get("app/src/main/assets", assetPath);
+        assertTrue(
+                "Demo route room " + roomId + " references missing scene asset: " + assetPath,
+                Files.exists(appRelativePath) || Files.exists(rootRelativePath)
+        );
     }
 
     private void validateHotspots(JSONArray hotspots, Set<String> roomIds, Set<String> evidenceIds) throws Exception {

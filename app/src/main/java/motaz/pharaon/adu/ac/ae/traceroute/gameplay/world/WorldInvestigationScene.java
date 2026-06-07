@@ -52,13 +52,6 @@ public class WorldInvestigationScene implements Scene {
     public void render(RenderPipeline renderer) {
         RoomDefinition currentRoom = roomNavigator.getCurrentRoom();
         renderer.drawRoomBackground(currentRoom.getBackgroundTexturePath());
-
-        float[] roomColor = getDebugRoomColor(currentRoom.getId());
-        renderer.drawColorQuad(-0.92f, 0.78f, 0.22f, 0.12f, roomColor[0], roomColor[1], roomColor[2], 0.95f);
-
-        for (Hotspot hotspot : currentRoom.getHotspots()) {
-            drawHotspotDebugOverlay(renderer, hotspot);
-        }
     }
 
     @Override
@@ -83,10 +76,11 @@ public class WorldInvestigationScene implements Scene {
                 uiEventListener.onOpenLaptopRequested();
             }
         } else if (hotspot.getActionType() == HotspotActionType.INSPECT_EVIDENCE) {
+            boolean alreadyCollected = gameRuntime.getEvidenceSystem().isCollected(hotspot.getPayloadId());
             EvidenceItem evidenceItem = gameRuntime.collectEvidence(hotspot.getPayloadId());
             if (uiEventListener != null) {
                 String evidenceId = evidenceItem != null ? evidenceItem.getId() : hotspot.getPayloadId();
-                uiEventListener.onEvidenceInspectionRequested(evidenceId);
+                uiEventListener.onEvidenceInspectionRequested(evidenceId, alreadyCollected);
             }
         }
     }
@@ -104,38 +98,4 @@ public class WorldInvestigationScene implements Scene {
         );
     }
 
-    private void drawHotspotDebugOverlay(RenderPipeline renderer, Hotspot hotspot) {
-        float ndcX = hotspot.getX() * 2.0f - 1.0f;
-        float ndcY = 1.0f - ((hotspot.getY() + hotspot.getHeight()) * 2.0f);
-        float ndcWidth = hotspot.getWidth() * 2.0f;
-        float ndcHeight = hotspot.getHeight() * 2.0f;
-
-        if ("nav_previous".equals(hotspot.getId())) {
-            renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.15f, 0.65f, 0.95f, 0.18f);
-        } else if ("nav_next".equals(hotspot.getId())) {
-            renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.95f, 0.55f, 0.20f, 0.18f);
-        } else if (hotspot.getActionType() == HotspotActionType.OPEN_HANDHELD) {
-            renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.75f, 0.95f, 0.80f, 0.24f);
-        } else if (hotspot.getActionType() == HotspotActionType.OPEN_LAPTOP) {
-            renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.30f, 0.95f, 0.70f, 0.28f);
-        } else if (hotspot.getActionType() == HotspotActionType.INSPECT_EVIDENCE) {
-            renderer.drawColorQuad(ndcX, ndcY, ndcWidth, ndcHeight, 0.95f, 0.85f, 0.25f, 0.28f);
-        }
-    }
-
-    private float[] getDebugRoomColor(RoomId roomId) {
-        switch (roomId) {
-            case ENTRY_SMART_LOCK:
-                return new float[] {0.25f, 0.70f, 0.95f};
-            case KITCHEN_SIDE_AREA:
-                return new float[] {0.95f, 0.80f, 0.25f};
-            case OFFICE_DEVICE_CORNER:
-                return new float[] {0.30f, 0.95f, 0.55f};
-            case CCTV_WINDOW_OPTIONAL:
-                return new float[] {0.95f, 0.35f, 0.35f};
-            case LIVING_ROOM:
-            default:
-                return new float[] {0.80f, 0.45f, 0.95f};
-        }
-    }
 }

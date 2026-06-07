@@ -88,10 +88,10 @@ public class GameView extends GLSurfaceView implements GameUiEventListener {
     }
 
     @Override
-    public void onEvidenceInspectionRequested(String evidenceId) {
+    public void onEvidenceInspectionRequested(String evidenceId, boolean alreadyCollected) {
         post(() -> {
             if (uiEventListener != null) {
-                uiEventListener.onEvidenceInspectionRequested(evidenceId);
+                uiEventListener.onEvidenceInspectionRequested(evidenceId, alreadyCollected);
             }
         });
     }

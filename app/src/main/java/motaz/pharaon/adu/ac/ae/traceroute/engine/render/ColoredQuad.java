@@ -31,6 +31,7 @@ public class ColoredQuad {
 
     private final ShaderProgram shaderProgram;
 
+
     public ColoredQuad() {
         shaderProgram = new ShaderProgram(VERTEX_SHADER, FRAGMENT_SHADER);
         vertexBuffer = ByteBuffer

@@ -23,7 +23,7 @@ public interface GameUiEventListener {
 
     void onOpenLaptopRequested();
 
-    void onEvidenceInspectionRequested(String evidenceId);
+    void onEvidenceInspectionRequested(String evidenceId, boolean alreadyCollected);
 
     void onRoomContextChanged(String roomName, String contextText, String hotspotHint);
 }

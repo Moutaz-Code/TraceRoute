@@ -21,12 +21,51 @@ public class HotspotSystem {
      */
 
     public Hotspot findHotspot(RoomDefinition roomDefinition, float normalizedX, float normalizedY) {
+        Hotspot bestHotspot = null;
+
         for (Hotspot hotspot : roomDefinition.getHotspots()) {
             if (hotspot.contains(normalizedX, normalizedY)) {
-                return hotspot;
+                if (isBetterMatch(hotspot, bestHotspot)) {
+                    bestHotspot = hotspot;
+                }
             }
         }
 
-        return null;
+        return bestHotspot;
+    }
+
+    private boolean isBetterMatch(Hotspot candidate, Hotspot currentBest) {
+        if (currentBest == null) {
+            return true;
+        }
+
+        int candidatePriority = getActionPriority(candidate.getActionType());
+        int currentPriority = getActionPriority(currentBest.getActionType());
+        if (candidatePriority != currentPriority) {
+            return candidatePriority < currentPriority;
+        }
+
+        return getArea(candidate) < getArea(currentBest);
+    }
+
+    private int getActionPriority(HotspotActionType actionType) {
+        if (actionType == HotspotActionType.INSPECT_EVIDENCE
+                || actionType == HotspotActionType.OPEN_LAPTOP) {
+            return 0;
+        }
+
+        if (actionType == HotspotActionType.OPEN_HANDHELD) {
+            return 1;
+        }
+
+        if (actionType == HotspotActionType.NAVIGATE_ROOM) {
+            return 2;
+        }
+
+        return 3;
+    }
+
+    private float getArea(Hotspot hotspot) {
+        return hotspot.getWidth() * hotspot.getHeight();
     }
 }

@@ -78,8 +78,10 @@ public class WorldInvestigationFragment extends Fragment implements GameUiEventL
         debugPanelToggle.setOnClickListener(toggle -> toggleDebugTools());
         demoModeToggle.setOnClickListener(toggle -> setDemoModeEnabled(!demoModeEnabled));
         debugOverlayToggle.setOnClickListener(toggle -> toggleDebugOverlay());
+        view.findViewById(R.id.open_handheld_button).setOnClickListener(handheld -> onOpenHandheldRequested());
         view.findViewById(R.id.debug_reset_run).setOnClickListener(reset -> confirmResetPlaythrough());
         view.findViewById(R.id.debug_unlock_core).setOnClickListener(unlock -> unlockCoreEvidenceForDebug());
+        setDemoModeEnabled(true);
         renderCurrentLead();
 
         gameView = new GameView(requireContext());
@@ -128,10 +130,10 @@ public class WorldInvestigationFragment extends Fragment implements GameUiEventL
     }
 
     @Override
-    public void onEvidenceInspectionRequested(String evidenceId) {
+    public void onEvidenceInspectionRequested(String evidenceId, boolean alreadyCollected) {
         renderCurrentLead();
         if (getParentFragment() instanceof GameUiEventListener) {
-            ((GameUiEventListener) getParentFragment()).onEvidenceInspectionRequested(evidenceId);
+            ((GameUiEventListener) getParentFragment()).onEvidenceInspectionRequested(evidenceId, alreadyCollected);
         }
     }
 
