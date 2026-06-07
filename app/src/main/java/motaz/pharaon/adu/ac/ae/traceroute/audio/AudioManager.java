@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.AudioAttributes;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
+import android.media.ToneGenerator;
 
 /*
  * Purpose:
@@ -25,6 +26,7 @@ public class AudioManager {
 
     private MediaPlayer ambientPlayer;
     private SoundPool soundPool;
+    private ToneGenerator toneGenerator;
     private boolean initialized;
 
     private AudioManager() {
@@ -52,6 +54,7 @@ public class AudioManager {
                     .setMaxStreams(4)
                     .setAudioAttributes(audioAttributes)
                     .build();
+            toneGenerator = new ToneGenerator(android.media.AudioManager.STREAM_MUSIC, 36);
 
             initialized = true;
         } catch (Exception ignored) {
@@ -96,12 +99,52 @@ public class AudioManager {
         }
     }
 
+    public synchronized void playEvidenceAcquired() {
+        playTone(ToneGenerator.TONE_PROP_ACK, 110);
+    }
+
+    public synchronized void playAlreadyCollected() {
+        playTone(ToneGenerator.TONE_PROP_BEEP, 70);
+    }
+
+    public synchronized void playDeviceOpen() {
+        playTone(ToneGenerator.TONE_PROP_PROMPT, 95);
+    }
+
+    public synchronized void playPanelRead() {
+        playTone(ToneGenerator.TONE_DTMF_S, 75);
+    }
+
+    public synchronized void playTimelineSuccess() {
+        playTone(ToneGenerator.TONE_CDMA_CONFIRM, 150);
+    }
+
+    public synchronized void playCaseComplete() {
+        playTone(ToneGenerator.TONE_CDMA_ALERT_CALL_GUARD, 260);
+    }
+
     public synchronized void release() {
         stopAmbientLoop();
         if (soundPool != null) {
             soundPool.release();
             soundPool = null;
         }
+        if (toneGenerator != null) {
+            toneGenerator.release();
+            toneGenerator = null;
+        }
         initialized = false;
+    }
+
+    private void playTone(int toneType, int durationMs) {
+        if (!initialized || toneGenerator == null) {
+            return;
+        }
+
+        try {
+            toneGenerator.startTone(toneType, durationMs);
+        } catch (RuntimeException ignored) {
+            // Audio feedback must never block the demo.
+        }
     }
 }

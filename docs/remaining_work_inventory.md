@@ -29,6 +29,7 @@ The project now has a playable graybox MVP spine:
 - 2026-06-07: Switched world startup to clean demo mode and routed the playable demo through the four finished room plates. The CCTV clue is temporarily reachable from Entry until a fifth room plate exists.
 - 2026-06-07: Added `docs/demo_manual_checklist.md` for focused due-date manual testing.
 - 2026-06-07: Hardened stale saved room state so old saves cannot reopen into the deferred CCTV room.
+- 2026-06-07: Added GL-only room-background mood treatment (vignette/scanline/dither/color grade) and generated fallback audio cues. UI layer shaders are intentionally out of scope.
 
 ## MVP-Critical Work Left
 

@@ -7,6 +7,7 @@ import android.widget.TextView;
 import android.view.View;
 
 import motaz.pharaon.adu.ac.ae.traceroute.R;
+import motaz.pharaon.adu.ac.ae.traceroute.audio.AudioManager;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.laptop.LaptopPanelProcessor;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.laptop.LaptopSession;
 
@@ -76,6 +77,7 @@ public class LaptopViewBinder {
             LaptopPanelProcessor panelProcessor
     ) {
         laptopSession.openPanel(panelId, panelProcessor);
+        AudioManager.getInstance().playPanelRead();
         render(laptopSession);
     }
 
