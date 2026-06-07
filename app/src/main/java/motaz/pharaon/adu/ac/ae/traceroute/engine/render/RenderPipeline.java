@@ -8,9 +8,9 @@ import java.util.Map;
 import java.util.Set;
 
 import motaz.pharaon.adu.ac.ae.traceroute.engine.gl.Texture;
+import motaz.pharaon.adu.ac.ae.traceroute.engine.render.postprocess.RoomEffectSettings;
 
 public class RenderPipeline {
-    private static final float ROOM_BACKGROUND_SAFE_SCALE = 0.96f;
     private static final String FALLBACK_ROOM_TEXTURE_PATH = "textures/scenes/room_test.png";
 
     private DebugQuad debugQuad;
@@ -23,6 +23,7 @@ public class RenderPipeline {
 
     private int viewportWidth;
     private int viewportHeight;
+    private float elapsedTimeSeconds;
 
 
     public void initialize(Context context) {
@@ -39,6 +40,17 @@ public class RenderPipeline {
     public void resize(int width, int height) {
         viewportHeight = height;
         viewportWidth = width;
+    }
+
+    public void update(float deltaTime) {
+        if (deltaTime <= 0.0f || deltaTime > 1.0f) {
+            return;
+        }
+
+        elapsedTimeSeconds += deltaTime;
+        if (elapsedTimeSeconds > 3600.0f) {
+            elapsedTimeSeconds = 0.0f;
+        }
     }
 
     public void drawSprite(float x, float y, float width, float height, int textureId) {
@@ -86,13 +98,22 @@ public class RenderPipeline {
             drawWidth = 2.0f * (textureAspect / screenAspect);
         }
 
-        drawWidth *= ROOM_BACKGROUND_SAFE_SCALE;
-        drawHeight *= ROOM_BACKGROUND_SAFE_SCALE;
+        RoomEffectSettings roomEffectSettings = RoomEffectSettings.ACTIVE;
+        drawWidth *= roomEffectSettings.canvasScale;
+        drawHeight *= roomEffectSettings.canvasScale;
 
         float x = -drawWidth / 2.0f;
         float y = -drawHeight / 2.0f;
 
-        texturedQuad.draw(roomTexture.getTextureId(), x, y, drawWidth, drawHeight);
+        texturedQuad.draw(
+                roomTexture.getTextureId(),
+                x,
+                y,
+                drawWidth,
+                drawHeight,
+                elapsedTimeSeconds,
+                roomEffectSettings
+        );
 
     }
 

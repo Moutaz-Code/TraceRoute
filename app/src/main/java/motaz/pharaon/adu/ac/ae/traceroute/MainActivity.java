@@ -9,6 +9,7 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
+import motaz.pharaon.adu.ac.ae.traceroute.audio.AudioManager;
 import motaz.pharaon.adu.ac.ae.traceroute.core.GameRuntime;
 import motaz.pharaon.adu.ac.ae.traceroute.ui.shell.GameShellFragment;
 
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         GameRuntime.initialize(getApplicationContext());
+        AudioManager.getInstance().initialize(getApplicationContext());
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_main);
         hideSystemBars();
@@ -53,6 +55,14 @@ public class MainActivity extends AppCompatActivity {
         if (hasFocus) {
             hideSystemBars();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (isFinishing()) {
+            AudioManager.getInstance().release();
+        }
+        super.onDestroy();
     }
 
     private void hideSystemBars() {

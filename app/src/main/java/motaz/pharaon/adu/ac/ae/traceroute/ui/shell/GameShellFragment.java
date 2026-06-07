@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import motaz.pharaon.adu.ac.ae.traceroute.R;
+import motaz.pharaon.adu.ac.ae.traceroute.audio.AudioManager;
 import motaz.pharaon.adu.ac.ae.traceroute.core.GameUiEventListener;
 import motaz.pharaon.adu.ac.ae.traceroute.core.GameRuntime;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.evidence.EvidenceItem;
@@ -105,11 +106,13 @@ public class GameShellFragment extends Fragment implements GameUiEventListener {
 
     @Override
     public void onOpenHandheldRequested() {
+        AudioManager.getInstance().playDeviceOpen();
         openHandheld();
     }
 
     @Override
     public void onOpenLaptopRequested() {
+        AudioManager.getInstance().playDeviceOpen();
         openLaptop();
     }
 
@@ -141,6 +144,11 @@ public class GameShellFragment extends Fragment implements GameUiEventListener {
         String evidenceTitle = evidenceItem != null ? evidenceItem.getTitle() : evidenceId;
         notificationTitle.setText(alreadyCollected ? "Already in handheld" : "Evidence acquired");
         notificationBody.setText(evidenceTitle);
+        if (alreadyCollected) {
+            AudioManager.getInstance().playAlreadyCollected();
+        } else {
+            AudioManager.getInstance().playEvidenceAcquired();
+        }
 
         notificationHandler.removeCallbacks(hideNotificationRunnable);
         notificationPanel.setVisibility(View.VISIBLE);

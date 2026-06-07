@@ -65,6 +65,7 @@ public class GLRenderer implements GLSurfaceView.Renderer {
 
         GLES30.glClear(GLES30.GL_COLOR_BUFFER_BIT);
 
+        renderPipeline.update(deltaTime);
         gameController.update(deltaTime);
         gameController.render(renderPipeline);
     }

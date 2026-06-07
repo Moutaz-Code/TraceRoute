@@ -9,6 +9,7 @@ import android.widget.ScrollView;
 import androidx.fragment.app.Fragment;
 
 import motaz.pharaon.adu.ac.ae.traceroute.R;
+import motaz.pharaon.adu.ac.ae.traceroute.audio.AudioManager;
 import motaz.pharaon.adu.ac.ae.traceroute.core.GameRuntime;
 import motaz.pharaon.adu.ac.ae.traceroute.gameplay.timeline.TimelineSystem;
 import motaz.pharaon.adu.ac.ae.traceroute.ui.dialogue.DialogueFragment;
@@ -176,7 +177,11 @@ public class HandheldFragment extends Fragment {
                 new HandheldViewBinder.FinalTimelineSelectionListener() {
                     @Override
                     public void onFinalTimelineEventSelected(String eventId) {
+                        boolean wasCompleted = timelineSystem.isFinalTimelineCompleted();
                         timelineSystem.selectFinalTimelineEvent(eventId);
+                        if (!wasCompleted && timelineSystem.isFinalTimelineCompleted()) {
+                            AudioManager.getInstance().playTimelineSuccess();
+                        }
                         GameRuntime.getInstance().savePlayState();
                         renderFinalTimeline();
                     }
@@ -190,6 +195,7 @@ public class HandheldFragment extends Fragment {
 
                     @Override
                     public void onConfrontationRequested() {
+                        AudioManager.getInstance().playDeviceOpen();
                         if (getParentFragmentManager().findFragmentByTag(DIALOGUE_TAG) == null) {
                             new DialogueFragment().show(getParentFragmentManager(), DIALOGUE_TAG);
                         }
