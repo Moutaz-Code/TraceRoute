@@ -8,14 +8,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:layout_marginBottom="@dimen/handheld_offset_10">
+    android:layout_marginBottom="@dimen/handheld_offset_10"
+    android:minHeight="48dp">
 
     <TextView
         android:id="@+id/handheld_table_key"
         style="@style/handheld_record"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:gravity="center_vertical" />
 
     <TextView
         android:id="@+id/handheld_table_value"
@@ -23,6 +25,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="2"
-        android:layout_marginStart="@dimen/handheld_offset_5" />
+        android:layout_marginStart="@dimen/handheld_offset_5"
+        android:gravity="center_vertical" />
 
 </LinearLayout>

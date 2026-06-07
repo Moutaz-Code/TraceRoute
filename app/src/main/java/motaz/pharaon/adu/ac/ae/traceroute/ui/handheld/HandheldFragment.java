@@ -34,11 +34,15 @@ public class HandheldFragment extends Fragment {
      */
 
     private static final String ARG_FOCUSED_EVIDENCE_ID = "focused_evidence_id";
+    private static final String DIALOGUE_TAG = "final_confrontation";
+    // Debounce interval for clicks to avoid accidental double actions
+    private static final long CLICK_DEBOUNCE_MS = 150L;
 
     private HandheldController handheldController;
     private HandheldViewBinder viewBinder;
     private String focusedEvidenceId;
-    private static final String DIALOGUE_TAG = "final_confrontation";
+    // Tracks last click time for debounce
+    private long lastClickTime = 0L;
 
     private final HandheldViewBinder.RecordListener recordListener = new HandheldViewBinder.RecordListener() {
         @Override
@@ -77,12 +81,13 @@ public class HandheldFragment extends Fragment {
         view.findViewById(R.id.handheld_close_button).setOnClickListener(closeButton -> closeHandheld());
 
         handheldController = new HandheldController();
+        viewBinder = new HandheldViewBinder(view);
+
         if (focusedEvidenceId != null && !focusedEvidenceId.trim().isEmpty()) {
             handheldController.selectScreen(HandheldScreen.EVIDENCE);
             handheldController.openRecord(focusedEvidenceId);
             GameRuntime.getInstance().markRecordViewed(focusedEvidenceId);
         }
-        viewBinder = new HandheldViewBinder(view);
 
         // Go Back
         view.findViewById(R.id.handheld_back_button).setOnClickListener(backButton -> {
@@ -106,31 +111,49 @@ public class HandheldFragment extends Fragment {
         });
 
         view.findViewById(R.id.handheld_threads_tab).setOnClickListener(tab -> {
-            handheldController.selectScreen(HandheldScreen.THREADS);
-            renderSelectedScreen();
+            if (canClick()) {
+                AudioManager.getInstance().playDeviceOpen();
+                handheldController.selectScreen(HandheldScreen.THREADS);
+                renderSelectedScreen();
+            }
         });
 
         view.findViewById(R.id.handheld_timeline_tab).setOnClickListener(tab -> {
-            handheldController.selectScreen(HandheldScreen.TIMELINE);
-            renderSelectedScreen();
+            if (canClick()) {
+                AudioManager.getInstance().playDeviceOpen();
+                handheldController.selectScreen(HandheldScreen.TIMELINE);
+                renderSelectedScreen();
+            }
         });
 
         view.findViewById(R.id.handheld_statements_tab).setOnClickListener(tab -> {
-            handheldController.selectScreen(HandheldScreen.STATEMENTS);
-            renderSelectedScreen();
+            if (canClick()) {
+                AudioManager.getInstance().playDeviceOpen();
+                handheldController.selectScreen(HandheldScreen.STATEMENTS);
+                renderSelectedScreen();
+            }
         });
 
         view.findViewById(R.id.handheld_final_timeline_tab).setOnClickListener(tab -> {
-            handheldController.selectScreen(HandheldScreen.FINAL_TIMELINE);
-            renderSelectedScreen();
+            if (canClick()) {
+                AudioManager.getInstance().playDeviceOpen();
+                handheldController.selectScreen(HandheldScreen.FINAL_TIMELINE);
+                renderSelectedScreen();
+            }
         });
-
-        renderSelectedScreen();
     }
 
-    private void renderSelectedScreen() {
+    private boolean canClick() {
+        long now = System.currentTimeMillis();
+        if (now - lastClickTime < CLICK_DEBOUNCE_MS) {
+            return false;
+        }
+        lastClickTime = now;
+        return true;
+    }
+
+     private void renderSelectedScreen() {
         viewBinder.renderTabState(handheldController.getSelectedScreen());
-        renderCurrentLead();
 
         String openRecordId = handheldController.getOpenRecordId();
 
@@ -161,6 +184,7 @@ public class HandheldFragment extends Fragment {
                     recordListener
             );
         }
+        renderCurrentLead();
     }
 
     private void renderFinalTimeline() {
@@ -206,7 +230,17 @@ public class HandheldFragment extends Fragment {
         viewBinder.renderCurrentLead(GameRuntime.getInstance().getCurrentLead());
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Refresh UI when returning to fragment to show any state changes
+        if (handheldController != null && viewBinder != null) {
+            renderSelectedScreen();
+        }
+    }
+
     private void closeHandheld() {
+        AudioManager.getInstance().playDeviceOpen();
         getParentFragmentManager().popBackStack();
     }
 }

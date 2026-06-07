@@ -83,6 +83,7 @@
         <item name="android:textColor">@color/handheld_record_txt</item>
         <item name="android:background">@color/handheld_record_bg</item>
         <item name="android:padding">@dimen/handheld_offset_10</item>
+        <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
 
 </resources>

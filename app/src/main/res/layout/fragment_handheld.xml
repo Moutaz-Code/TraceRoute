@@ -44,6 +44,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="28dp"
                         android:background="@drawable/handheld_device_button_switch"
+                        android:contentDescription="Close device"
                         />
                     <TextView
                         android:text="I | 0"
@@ -206,9 +207,10 @@
             android:background="@drawable/handheld_bevel_outset_device"
             android:orientation="vertical"
             >
-            <LinearLayout
+             <LinearLayout
                 android:id="@+id/handheld_back_button"
                 style="@style/handheld_device_button_group.First"
+                android:contentDescription="Go back"
                 >
                 <TextView
                     style="@style/handheld_device_button_group_button.Red"
@@ -217,10 +219,11 @@
                     android:text="Go Back"
                     style="@style/handheld_device_label.RightPanel"
                     />
-            </LinearLayout>
-            <LinearLayout
+             </LinearLayout>
+             <LinearLayout
                 android:id="@+id/handheld_up_button"
                 style="@style/handheld_device_button_group"
+                android:contentDescription="Scroll up"
                 >
                 <TextView
                     style="@style/handheld_device_button_group_button.Black"
@@ -229,10 +232,11 @@
                     android:text="Up"
                     style="@style/handheld_device_label.RightPanel"
                     />
-            </LinearLayout>
-            <LinearLayout
+             </LinearLayout>
+             <LinearLayout
                 android:id="@+id/handheld_down_button"
                 style="@style/handheld_device_button_group"
+                android:contentDescription="Scroll down"
                 >
                 <TextView
                     style="@style/handheld_device_button_group_button.Black"
@@ -241,10 +245,11 @@
                     android:text="Down"
                     style="@style/handheld_device_label.RightPanel"
                     />
-            </LinearLayout>
-            <LinearLayout
+             </LinearLayout>
+             <LinearLayout
                 android:id="@+id/handheld_interact_button"
                 style="@style/handheld_device_button_group.Last"
+                android:contentDescription="Interact"
                 >
                 <TextView
                     style="@style/handheld_device_button_group_button.Red"
@@ -253,7 +258,7 @@
                     android:text="Interact"
                     style="@style/handheld_device_label.RightPanel"
                     />
-            </LinearLayout>
+             </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
