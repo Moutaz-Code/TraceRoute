@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Win98 sunken client area (the window's content/text region): dark shadow on
+  the top-left edge, light on the bottom-right, white client face for readable
+  text. Mirror of laptop_bevel_outset.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/laptop_face_light" />
+        </shape>
+    </item>
+    <item
+        android:bottom="2dp"
+        android:right="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/laptop_face_shadow" />
+        </shape>
+    </item>
+    <item
+        android:bottom="2dp"
+        android:left="2dp"
+        android:right="2dp"
+        android:top="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/laptop_window_client" />
+        </shape>
+    </item>
+</layer-list>

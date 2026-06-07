@@ -27,8 +27,7 @@ public class GameShellFragment extends Fragment implements GameUiEventListener {
      *
      * Responsibilities:
      * - Host the world investigation fragment.
-     * - Host overlay fragments such as handheld screens.
-     * - Open the laptop popup as a DialogFragment.
+     * - Host overlay fragments such as the handheld and laptop screens.
      * - Keep MainActivity thin and fragment-mandate compliant.
      *
      * Depends on:
@@ -97,11 +96,16 @@ public class GameShellFragment extends Fragment implements GameUiEventListener {
     }
 
     public void openLaptop() {
-        if (getChildFragmentManager().findFragmentByTag(LAPTOP_TAG) != null) {
+        FragmentManager fragmentManager = getChildFragmentManager();
+        if (fragmentManager.findFragmentByTag(LAPTOP_TAG) != null) {
             return;
         }
 
-        new LaptopFragment().show(getChildFragmentManager(), LAPTOP_TAG);
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.overlay_fragment_container, new LaptopFragment(), LAPTOP_TAG)
+                .addToBackStack(LAPTOP_TAG)
+                .commit();
     }
 
     @Override

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Win98 raised surface (window frame, buttons): white highlight on the
+  top-left edge, dark shadow on the bottom-right, silver face. Same
+  layer-list bevel technique as the handheld drawables.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/laptop_face_dark" />
+        </shape>
+    </item>
+    <item
+        android:bottom="2dp"
+        android:right="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/laptop_face_light" />
+        </shape>
+    </item>
+    <item
+        android:bottom="2dp"
+        android:left="2dp"
+        android:right="2dp"
+        android:top="2dp">
+        <shape android:shape="rectangle">
+            <solid android:color="@color/laptop_face" />
+        </shape>
+    </item>
+</layer-list>

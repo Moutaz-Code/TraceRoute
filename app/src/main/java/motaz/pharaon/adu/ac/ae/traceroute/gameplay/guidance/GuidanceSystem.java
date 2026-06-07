@@ -18,15 +18,15 @@ public class GuidanceSystem {
             TimelineSystem timelineSystem
     ) {
         if (timelineSystem != null && timelineSystem.isFinalTimelineCompleted()) {
-            return "Confront Marcus Hale with the completed timeline.";
+            return "Confront Marcus Hale (business partner).";
         }
 
         if (timelineSystem != null && timelineSystem.isFinalTimelineUnlocked()) {
-            return "Order the final sequence in the handheld timeline.";
+            return "Order the final sequence in the handheld final timeline.";
         }
 
         if (evidenceSystem == null || evidenceSystem.getCollectedEvidenceIds().isEmpty()) {
-            return "Start with the body, smart lock, AC log, and laptop.";
+            return "Look around, explore the rooms.";
         }
 
         if (!isThreadStabilized(threadSystem, DEATH_WINDOW_THREAD_ID)) {
@@ -34,7 +34,7 @@ public class GuidanceSystem {
         }
 
         if (!isThreadStabilized(threadSystem, POSTMORTEM_ACTIVITY_THREAD_ID)) {
-            return "Use the laptop Messages and Activity to test the postmortem activity.";
+            return "Search through laptop in signs of postmortem activity.";
         }
 
         if (!isThreadStabilized(threadSystem, APARTMENT_ACCESS_THREAD_ID)) {
@@ -42,14 +42,14 @@ public class GuidanceSystem {
         }
 
         if (!isThreadStabilized(threadSystem, DATA_SALE_MOTIVE_THREAD_ID)) {
-            return "Use the laptop Files and Draft to establish motive.";
+            return "Find motive – search through personal correspondence";
         }
 
         if (!isThreadStabilized(threadSystem, SCENE_DISTURBANCE_THREAD_ID)) {
             return "Inspect the living-room disturbance and weapon.";
         }
 
-        return "Order the final sequence in the handheld timeline.";
+        return "Order the final sequence in the handheld final timeline.";
     }
 
     private boolean isThreadStabilized(ThreadSystem threadSystem, String threadId) {

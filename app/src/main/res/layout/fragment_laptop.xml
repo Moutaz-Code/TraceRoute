@@ -1,120 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+  Win98-style victim-laptop desktop. The wallpaper image fills the back of the
+  frame; the binder builds one icon per laptop panel into laptop_icon_container
+  and shows laptop_window over the desktop when an icon is tapped.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/laptop_root"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#05080A"
-    android:minHeight="360dp"
-    android:orientation="vertical"
-    android:padding="20dp">
+    android:layout_height="match_parent"
+    android:background="@color/laptop_desktop_teal">
 
+    <!-- Wallpaper: fills the full-screen desktop (cropped to fit, no distortion). -->
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@null"
+        android:scaleType="centerCrop"
+        android:src="@drawable/laptop_desktop" />
+
+    <!-- Desktop icons: a top row (landscape is short, so a column would clip). -->
     <LinearLayout
-        android:id="@+id/laptop_header"
-        android:layout_width="match_parent"
+        android:id="@+id/laptop_icon_container"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_gravity="top|start"
+        android:orientation="horizontal"
+        android:padding="@dimen/handheld_offset_10" />
 
-        <TextView
-            android:id="@+id/laptop_title"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="VICTIM LAPTOP // ADRIAN VOSS"
-            android:textColor="#D6F5E3"
-            android:textSize="18sp" />
+    <!-- Floating Win98 window, hidden until an icon is opened. -->
+    <LinearLayout
+        android:id="@+id/laptop_window"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|start"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:minWidth="260dp"
+        android:padding="4dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="@drawable/laptop_bevel_outset">
 
-        <Button
-            android:id="@+id/laptop_close_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Close" />
-
-    </LinearLayout>
-
-    <ScrollView
-        android:id="@+id/laptop_scroll"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
-        android:layout_weight="1"
-        android:background="#0A191D"
-        android:padding="12dp">
-
-        <TextView
-            android:id="@+id/laptop_screen"
+        <!-- Title bar: navy strip with title + close box. -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#9FD8B4"
-            android:textSize="14sp" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@color/laptop_titlebar"
+            android:paddingHorizontal="@dimen/handheld_offset_5"
+            android:paddingVertical="@dimen/handheld_offset_5">
 
-    </ScrollView>
+            <TextView
+                android:id="@+id/laptop_window_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:fontFamily="@font/micro5_regular"
+                android:textColor="@color/laptop_titlebar_text"
+                android:textSize="22dp" />
 
-    <TextView
-        android:id="@+id/laptop_panel_label"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:text="LAPTOP PANELS"
-        android:textColor="#5E8B73"
-        android:textSize="12sp" />
+            <TextView
+                android:id="@+id/laptop_window_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/handheld_offset_5"
+                android:minWidth="28dp"
+                android:gravity="center"
+                android:text="X"
+                android:fontFamily="@font/micro5_regular"
+                android:textColor="@color/laptop_window_text"
+                android:textSize="22dp"
+                android:paddingHorizontal="@dimen/handheld_offset_5"
+                android:background="@drawable/laptop_bevel_outset"
+                android:clickable="true"
+                android:focusable="true" />
 
-    <LinearLayout
-        android:id="@+id/laptop_panel_row_one"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/laptop_panel_messages"
-            android:layout_width="0dp"
+        <!-- Client area: sunken white panel with the panel's info text. -->
+        <ScrollView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Messages" />
+            android:layout_marginTop="4dp"
+            android:background="@drawable/laptop_bevel_inset"
+            android:padding="@dimen/handheld_offset_10">
 
-        <Button
-            android:id="@+id/laptop_panel_activity"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:text="Activity" />
+            <TextView
+                android:id="@+id/laptop_window_body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/micro5_regular"
+                android:textColor="@color/laptop_window_text"
+                android:textSize="22dp" />
 
-        <Button
-            android:id="@+id/laptop_panel_files"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:text="Files" />
+        </ScrollView>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/laptop_panel_row_two"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+    <!-- Invisible "go back" hit area over the wallpaper's Start button. -->
+    <View
+        android:id="@+id/laptop_taskbar_back"
+        android:layout_width="96dp"
+        android:layout_height="36dp"
+        android:layout_gravity="bottom|start"
+        android:background="@android:color/transparent"
+        android:clickable="true"
+        android:focusable="true" />
 
-        <Button
-            android:id="@+id/laptop_panel_draft"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Draft" />
-
-        <Button
-            android:id="@+id/laptop_panel_clear"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:text="Clear" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</FrameLayout>
