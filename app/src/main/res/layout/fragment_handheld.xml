@@ -20,7 +20,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="10"
             android:orientation="vertical"
             >
             <LinearLayout
@@ -44,7 +44,7 @@
                         android:background="@drawable/handheld_device_button_switch"
                         />
                     <TextView
-                        android:text="ON  |  OFF"
+                        android:text="I | 0"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         style="@style/handheld_device_label"
@@ -98,7 +98,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_weight="3"
+            android:layout_weight="35"
             android:background="@drawable/handheld_bevel_inset_display"
             android:layout_marginHorizontal="@dimen/handheld_offset_20"
             >
@@ -198,7 +198,7 @@
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_weight="10"
             android:background="@drawable/handheld_bevel_outset_device"
             android:orientation="vertical"
             >
