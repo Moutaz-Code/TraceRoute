@@ -26,13 +26,12 @@ public class LaptopViewBinder {
      * - Open a single floating Win98 window when an icon is tapped (collecting that
      *   panel's evidence) and show its info text; close it with the window's X or by
      *   tapping the empty desktop.
-     * - Route the invisible taskbar hit area to closing the whole laptop.
+     * - Route the Quit button to closing the whole laptop.
      *
      * Styling:
      * - Look comes from the laptop_* drawables/colours and the inflated
-     *   view_laptop_desktop_icon layout. Art is resolved at runtime
-     *   (laptop_desktop wallpaper, laptop_icon_<panelId>) with safe fallbacks,
-     *   so the screen works before per-panel art is added.
+     *   view_laptop_desktop_icon layout. Panel icons are resolved at runtime
+     *   (laptop_icon_<panelId>).
      *
      * Depends on:
      * - LaptopFragment's inflated layout.
@@ -49,7 +48,7 @@ public class LaptopViewBinder {
     private final TextView windowTitle;
     private final TextView windowBody;
     private final View windowClose;
-    private final View taskbarBack;
+    private final View quitButton;
 
     private final Random random = new Random();
 
@@ -61,7 +60,7 @@ public class LaptopViewBinder {
         windowTitle = rootView.findViewById(R.id.laptop_window_title);
         windowBody = rootView.findViewById(R.id.laptop_window_body);
         windowClose = rootView.findViewById(R.id.laptop_window_close);
-        taskbarBack = rootView.findViewById(R.id.laptop_taskbar_back);
+        quitButton = rootView.findViewById(R.id.laptop_quit_button);
     }
 
     public void bind(
@@ -69,7 +68,7 @@ public class LaptopViewBinder {
             LaptopPanelProcessor panelProcessor,
             Runnable closeCallback
     ) {
-        taskbarBack.setOnClickListener(view -> closeCallback.run());
+        quitButton.setOnClickListener(view -> closeCallback.run());
         desktop.setOnClickListener(view -> hideWindow());
         windowClose.setOnClickListener(view -> hideWindow());
 
@@ -127,8 +126,6 @@ public class LaptopViewBinder {
         });
     }
 
-    // Maps a panel to its art by convention: drawable laptop_icon_<panelId>.
-    // Returns 0 if there is no matching drawable.
     private int iconDrawableFor(String panelId) {
         return rootView.getResources().getIdentifier(
                 "laptop_icon_" + panelId, "drawable", rootView.getContext().getPackageName());

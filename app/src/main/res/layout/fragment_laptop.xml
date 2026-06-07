@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Win98-style victim-laptop desktop. The wallpaper image fills the back of the
-  frame; the binder builds one icon per laptop panel into laptop_icon_container
-  and shows laptop_window over the desktop when an icon is tapped.
+  Win98-style victim-laptop desktop: a plain teal desktop with one icon per
+  laptop panel, a floating window for the opened panel, and a Quit button.
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/laptop_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/laptop_desktop_teal">
-
-    <!-- Wallpaper: fills the full-screen desktop (cropped to fit, no distortion). -->
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:contentDescription="@null"
-        android:scaleType="centerCrop"
-        android:src="@drawable/laptop_desktop" />
 
     <!-- Desktop icons: a top row (landscape is short, so a column would clip). -->
     <LinearLayout
@@ -98,13 +89,22 @@
 
     </LinearLayout>
 
-    <!-- Invisible "go back" hit area over the wallpaper's Start button. -->
-    <View
-        android:id="@+id/laptop_taskbar_back"
-        android:layout_width="96dp"
-        android:layout_height="36dp"
-        android:layout_gravity="bottom|start"
-        android:background="@android:color/transparent"
+    <!-- Quit: closes the laptop. Top-right so the window never hides it. -->
+    <TextView
+        android:id="@+id/laptop_quit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_margin="@dimen/handheld_offset_10"
+        android:minWidth="64dp"
+        android:gravity="center"
+        android:text="Quit"
+        android:fontFamily="@font/micro5_regular"
+        android:textColor="@color/laptop_window_text"
+        android:textSize="22dp"
+        android:paddingHorizontal="@dimen/handheld_offset_10"
+        android:paddingVertical="@dimen/handheld_offset_5"
+        android:background="@drawable/laptop_bevel_outset"
         android:clickable="true"
         android:focusable="true" />
 
