@@ -74,9 +74,7 @@ public class HandheldFragment extends Fragment {
             focusedEvidenceId = getArguments().getString(ARG_FOCUSED_EVIDENCE_ID);
         }
 
-        view.findViewById(R.id.handheld_close_button).setOnClickListener(closeButton -> {
-            getParentFragmentManager().popBackStack();
-        });
+        view.findViewById(R.id.handheld_close_button).setOnClickListener(closeButton -> closeHandheld());
 
         handheldController = new HandheldController();
         if (focusedEvidenceId != null && !focusedEvidenceId.trim().isEmpty()) {
@@ -206,5 +204,9 @@ public class HandheldFragment extends Fragment {
 
     private void renderCurrentLead() {
         viewBinder.renderCurrentLead(GameRuntime.getInstance().getCurrentLead());
+    }
+
+    private void closeHandheld() {
+        getParentFragmentManager().popBackStack();
     }
 }

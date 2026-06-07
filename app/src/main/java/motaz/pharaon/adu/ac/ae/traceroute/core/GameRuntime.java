@@ -60,6 +60,7 @@ public class GameRuntime {
     private CaseCompletion caseCompletion;
     private GameRepository gameRepository;
     private RoomId currentRoomId;
+    private boolean caseCompleted;
     private boolean savedStateLoaded;
     private final Set<String> viewedRecordIds = new HashSet<>();
 
@@ -75,6 +76,7 @@ public class GameRuntime {
         finalConfrontationScript = DialogueScript.empty();
         caseCompletion = CaseCompletion.empty();
         currentRoomId = RoomId.LIVING_ROOM;
+        caseCompleted = false;
         savedStateLoaded = false;
         registerStaticContent(loadStaticContent(gameRepository));
         restorePlayStateIfAvailable();
@@ -145,6 +147,19 @@ public class GameRuntime {
         return caseCompletion;
     }
 
+    public boolean isCaseCompleted() {
+        return caseCompleted;
+    }
+
+    public void markCaseCompleted() {
+        if (caseCompleted) {
+            return;
+        }
+
+        caseCompleted = true;
+        savePlayState();
+    }
+
     public String getCurrentLead() {
         return guidanceSystem.getCurrentLead(evidenceSystem, threadSystem, timelineSystem);
     }
@@ -183,7 +198,8 @@ public class GameRuntime {
                 evidenceSystem.getCollectedEvidenceIds(),
                 currentRoomId.name(),
                 timelineSystem.getSelectedFinalTimelineEventIds(),
-                timelineSystem.isFinalTimelineCompleted()
+                timelineSystem.isFinalTimelineCompleted(),
+                caseCompleted
         ));
     }
 
@@ -218,6 +234,7 @@ public class GameRuntime {
                 gameSaveState.getSelectedFinalTimelineEventIds(),
                 gameSaveState.isFinalTimelineCompleted()
         );
+        caseCompleted = gameSaveState.isCaseCompleted() && timelineSystem.isFinalTimelineCompleted();
         savedStateLoaded = true;
     }
 

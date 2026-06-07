@@ -25,17 +25,20 @@ public class GameSaveState {
     private final String currentRoomId;
     private final List<String> selectedFinalTimelineEventIds;
     private final boolean finalTimelineCompleted;
+    private final boolean caseCompleted;
 
     public GameSaveState(
             List<String> collectedEvidenceIds,
             String currentRoomId,
             List<String> selectedFinalTimelineEventIds,
-            boolean finalTimelineCompleted
+            boolean finalTimelineCompleted,
+            boolean caseCompleted
     ) {
         this.collectedEvidenceIds = new ArrayList<>(collectedEvidenceIds);
         this.currentRoomId = currentRoomId;
         this.selectedFinalTimelineEventIds = new ArrayList<>(selectedFinalTimelineEventIds);
         this.finalTimelineCompleted = finalTimelineCompleted;
+        this.caseCompleted = caseCompleted;
     }
 
     public static GameSaveState empty(String defaultRoomId) {
@@ -43,6 +46,7 @@ public class GameSaveState {
                 Collections.emptyList(),
                 defaultRoomId,
                 Collections.emptyList(),
+                false,
                 false
         );
     }
@@ -61,5 +65,9 @@ public class GameSaveState {
 
     public boolean isFinalTimelineCompleted() {
         return finalTimelineCompleted;
+    }
+
+    public boolean isCaseCompleted() {
+        return caseCompleted;
     }
 }

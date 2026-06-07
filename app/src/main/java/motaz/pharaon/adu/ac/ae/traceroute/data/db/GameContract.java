@@ -37,6 +37,7 @@ public final class GameContract {
         public static final String KEY_CURRENT_ROOM = "current_room";
         public static final String KEY_SELECTED_FINAL_TIMELINE = "selected_final_timeline";
         public static final String KEY_FINAL_TIMELINE_COMPLETED = "final_timeline_completed";
+        public static final String KEY_CASE_COMPLETED = "case_completed";
 
         private SaveState() {
         }

@@ -36,6 +36,7 @@ public class DialogueFragment extends DialogFragment {
 
     private void showCompletionAndDismiss() {
         FragmentManager fragmentManager = getParentFragmentManager();
+        GameRuntime.getInstance().markCaseCompleted();
         dismiss();
 
         if (fragmentManager.findFragmentByTag(CaseCompletionFragment.TAG) == null) {

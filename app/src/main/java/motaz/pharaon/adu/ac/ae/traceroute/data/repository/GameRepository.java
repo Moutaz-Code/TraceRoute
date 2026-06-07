@@ -63,12 +63,17 @@ public class GameRepository {
                 GameContract.SaveState.KEY_FINAL_TIMELINE_COMPLETED,
                 "false"
         );
+        String caseCompleted = gameDatabase.getValue(
+                GameContract.SaveState.KEY_CASE_COMPLETED,
+                "false"
+        );
 
         return new GameSaveState(
                 splitList(collectedEvidence),
                 currentRoom,
                 splitList(selectedFinalTimeline),
-                TRUE_VALUE.equals(finalTimelineCompleted)
+                TRUE_VALUE.equals(finalTimelineCompleted),
+                TRUE_VALUE.equals(caseCompleted)
         );
     }
 
@@ -88,6 +93,10 @@ public class GameRepository {
         gameDatabase.putValue(
                 GameContract.SaveState.KEY_FINAL_TIMELINE_COMPLETED,
                 gameSaveState.isFinalTimelineCompleted() ? "true" : "false"
+        );
+        gameDatabase.putValue(
+                GameContract.SaveState.KEY_CASE_COMPLETED,
+                gameSaveState.isCaseCompleted() ? "true" : "false"
         );
     }
 
