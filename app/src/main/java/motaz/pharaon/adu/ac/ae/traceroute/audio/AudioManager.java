@@ -1,4 +1,107 @@
 package motaz.pharaon.adu.ac.ae.traceroute.audio;
 
+import android.content.Context;
+import android.media.AudioAttributes;
+import android.media.MediaPlayer;
+import android.media.SoundPool;
+
+/*
+ * Purpose:
+ * - Manages ambient background audio and one-shot sound effects for the investigation.
+ *
+ * Responsibilities:
+ * - Load and play the ambient apartment loop.
+ * - Trigger short SFX (evidence collected, thread stabilized, laptop interaction).
+ * - Release media resources on teardown.
+ * - Fail silently when audio assets are absent, so the game still runs without audio.
+ *
+ * Used by:
+ * - MainActivity / GameShellFragment for lifecycle hooks.
+ * - GameController for SFX triggers (future pass).
+ */
 public class AudioManager {
+
+    private static AudioManager instance;
+
+    private MediaPlayer ambientPlayer;
+    private SoundPool soundPool;
+    private boolean initialized;
+
+    private AudioManager() {
+    }
+
+    public static synchronized AudioManager getInstance() {
+        if (instance == null) {
+            instance = new AudioManager();
+        }
+        return instance;
+    }
+
+    public synchronized void initialize(Context context) {
+        if (initialized) {
+            return;
+        }
+
+        try {
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                    .build();
+
+            soundPool = new SoundPool.Builder()
+                    .setMaxStreams(4)
+                    .setAudioAttributes(audioAttributes)
+                    .build();
+
+            initialized = true;
+        } catch (Exception ignored) {
+            // Audio not critical for MVP.
+        }
+    }
+
+    public synchronized void startAmbientLoop(Context context, String assetPath) {
+        if (!initialized || assetPath == null || assetPath.trim().isEmpty()) {
+            return;
+        }
+
+        stopAmbientLoop();
+
+        try {
+            ambientPlayer = new MediaPlayer();
+            android.content.res.AssetFileDescriptor descriptor =
+                    context.getAssets().openFd(assetPath);
+            ambientPlayer.setDataSource(
+                    descriptor.getFileDescriptor(),
+                    descriptor.getStartOffset(),
+                    descriptor.getLength()
+            );
+            descriptor.close();
+            ambientPlayer.setLooping(true);
+            ambientPlayer.setVolume(0.5f, 0.5f);
+            ambientPlayer.prepare();
+            ambientPlayer.start();
+        } catch (Exception ignored) {
+            ambientPlayer = null;
+        }
+    }
+
+    public synchronized void stopAmbientLoop() {
+        if (ambientPlayer != null) {
+            try {
+                ambientPlayer.stop();
+                ambientPlayer.release();
+            } catch (Exception ignored) {
+            }
+            ambientPlayer = null;
+        }
+    }
+
+    public synchronized void release() {
+        stopAmbientLoop();
+        if (soundPool != null) {
+            soundPool.release();
+            soundPool = null;
+        }
+        initialized = false;
+    }
 }
