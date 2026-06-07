@@ -10,10 +10,7 @@
     style="@style/handheld_record"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="56dp"
     android:layout_marginBottom="@dimen/handheld_offset_10"
     android:gravity="center"
     android:clickable="true"
-    android:focusable="true"
-    android:foreground="?attr/selectableItemBackground"
-    android:contentDescription="Action button" />
+    android:focusable="true" />

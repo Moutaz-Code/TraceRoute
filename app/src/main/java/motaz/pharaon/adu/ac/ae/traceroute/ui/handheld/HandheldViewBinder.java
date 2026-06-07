@@ -179,14 +179,11 @@ public class HandheldViewBinder {
     private void addRecordRow(String recordId, String title, RecordListener listener) {
         boolean isNew = listener.isNew(recordId);
         TextView row = inflateRow();
-        row.setText((isNew ? "★ " : "") + (title != null ? title : "Unknown"));
+        row.setText((isNew ? "! " : "") + title);
         if (isNew) {
             row.setBackgroundResource(R.color.handheld_record_bg_new);
         }
-        row.setOnClickListener(view -> {
-            listener.onRecordSelected(recordId);
-        });
-        row.setMinHeight(56); // Better touch target
+        row.setOnClickListener(view -> listener.onRecordSelected(recordId));
         contentList.addView(row);
     }
 
@@ -328,9 +325,6 @@ public class HandheldViewBinder {
         TextView button = (TextView) LayoutInflater.from(rootView.getContext())
                 .inflate(R.layout.view_handheld_button, contentList, false);
         button.setText(text);
-        button.setMinHeight(56); // Better touch target
-        button.setFocusable(true);
-        button.setClickable(true);
         return button;
     }
 
