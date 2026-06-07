@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="handheld_display_element">
+        <item name="android:fontFamily">@font/micro5_regular</item>
+        <item name="android:textSize">26dp</item>
+    </style>
+
+
+<!--    regular -->
+    <style name="handheld_display_element.regular">
+        <item name="android:background">#738C73</item>
+        <item name="android:textColor">#394639</item>
+    </style>
+
+<!--    used for tabs -->
+    <style name="handheld_display_element.active">
+        <item name="android:background">#455445</item>
+        <item name="android:textColor">#B9C6B9</item>
+    </style>
+    <style name="handheld_display_element.inactive">
+        <item name="android:background">#506250</item>
+        <item name="android:textColor">#738C73</item>
+    </style>
+
+<!--    used for hover -->
+    <style name="handheld_display_element.important">
+        <item name="android:background">#333E33</item>
+        <item name="android:textColor">#B9C6B9</item>
+    </style>
+
+    <style name="handheld_device_label">
+        <item name="android:fontFamily">@font/jaro_regular</item>
+        <item name="android:textColor">#eee</item>
+        <item name="android:textSize">20dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+    <style name="handheld_device_label.RightPanel">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+
+    <style name="handheld_device_button_group_button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+    </style>
+    <style name="handheld_device_button_group_button.Red">
+        <item name="android:background">@drawable/handheld_device_button_red</item>
+    </style>
+    <style name="handheld_device_button_group_button.Black">
+        <item name="android:background">@drawable/handheld_device_button_black</item>
+    </style>
+
+    <style name="handheld_device_button_group">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">0dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_marginLeft">@dimen/handheld_offset_20</item>
+        <item name="android:layout_marginRight">@dimen/handheld_offset_20</item>
+        <item name="android:layout_marginTop">@dimen/handheld_offset_10</item>
+        <item name="android:layout_marginBottom">@dimen/handheld_offset_10</item>
+    </style>
+    <style name="handheld_device_button_group.First">
+        <item name="android:layout_marginTop">@dimen/handheld_offset_20</item>
+        <item name="android:layout_marginBottom">@dimen/handheld_offset_10</item>
+    </style>
+    <style name="handheld_device_button_group.Last">
+        <item name="android:layout_marginTop">@dimen/handheld_offset_10</item>
+        <item name="android:layout_marginBottom">@dimen/handheld_offset_20</item>
+    </style>
+
+</resources>

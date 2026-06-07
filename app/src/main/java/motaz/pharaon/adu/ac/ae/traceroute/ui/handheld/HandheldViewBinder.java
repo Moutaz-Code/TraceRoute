@@ -37,15 +37,13 @@ public class HandheldViewBinder {
      */
 
     private final View rootView;
-    private final TextView titleText;
     private final TextView leadText;
-    private final TextView emptyText;
     private final LinearLayout contentList;
-    private final Button evidenceTab;
-    private final Button threadsTab;
-    private final Button timelineTab;
-    private final Button statementsTab;
-    private final Button finalTimelineTab;
+    private final TextView evidenceTab;
+    private final TextView threadsTab;
+    private final TextView timelineTab;
+    private final TextView statementsTab;
+    private final TextView finalTimelineTab;
 
     public interface FinalTimelineSelectionListener {
         void onFinalTimelineEventSelected(String eventId);
@@ -57,10 +55,8 @@ public class HandheldViewBinder {
 
     public HandheldViewBinder(View rootView) {
         this.rootView = rootView;
-        titleText = rootView.findViewById(R.id.handheld_title);
         leadText = rootView.findViewById(R.id.handheld_current_lead);
-        emptyText = rootView.findViewById(R.id.handheld_empty_text);
-        contentList = rootView.findViewById(R.id.handheld_evidence_list);
+        contentList = rootView.findViewById(R.id.handheld_display_content_list);
         evidenceTab = rootView.findViewById(R.id.handheld_evidence_tab);
         threadsTab = rootView.findViewById(R.id.handheld_threads_tab);
         timelineTab = rootView.findViewById(R.id.handheld_timeline_tab);
@@ -77,7 +73,7 @@ public class HandheldViewBinder {
     }
 
     public void renderCurrentLead(String currentLead) {
-        leadText.setText("CURRENT LEAD\n" + currentLead);
+        leadText.setText(currentLead);
     }
 
     public void renderEvidence(List<EvidenceItem> collectedEvidence) {
@@ -85,14 +81,11 @@ public class HandheldViewBinder {
     }
 
     public void renderEvidence(List<EvidenceItem> collectedEvidence, String focusedEvidenceId) {
-        titleText.setText("HANDHELD // EVIDENCE");
         contentList.removeAllViews();
 
         boolean hasEvidence = collectedEvidence != null && !collectedEvidence.isEmpty();
-        emptyText.setVisibility(hasEvidence ? View.GONE : View.VISIBLE);
-        emptyText.setText("No evidence collected.");
-
         if (!hasEvidence) {
+            contentList.addView(getPlaceholderText("No evidence collected."));
             return;
         }
 
@@ -112,14 +105,11 @@ public class HandheldViewBinder {
     }
 
     public void renderThreads(List<InvestigationThread> investigationThreads) {
-        titleText.setText("HANDHELD // THREADS");
         contentList.removeAllViews();
 
         boolean hasThreads = investigationThreads != null && !investigationThreads.isEmpty();
-        emptyText.setVisibility(hasThreads ? View.GONE : View.VISIBLE);
-        emptyText.setText("No investigation threads active.");
-
         if (!hasThreads) {
+            contentList.addView(getPlaceholderText("No investigation threads active."));
             return;
         }
 
@@ -129,14 +119,11 @@ public class HandheldViewBinder {
     }
 
     public void renderTimeline(List<TimelineEvent> timelineEvents) {
-        titleText.setText("HANDHELD // TIMELINE");
         contentList.removeAllViews();
 
         boolean hasTimelineEvents = timelineEvents != null && !timelineEvents.isEmpty();
-        emptyText.setVisibility(hasTimelineEvents ? View.GONE : View.VISIBLE);
-        emptyText.setText("No timeline contradictions visible.");
-
         if (!hasTimelineEvents) {
+            contentList.addView(getPlaceholderText("No timeline contradictions visible."));
             return;
         }
 
@@ -146,14 +133,11 @@ public class HandheldViewBinder {
     }
 
     public void renderStatements(List<SuspectStatement> suspectStatements) {
-        titleText.setText("HANDHELD // STATEMENTS");
         contentList.removeAllViews();
 
         boolean hasStatements = suspectStatements != null && !suspectStatements.isEmpty();
-        emptyText.setVisibility(hasStatements ? View.GONE : View.VISIBLE);
-        emptyText.setText("No suspect statements unlocked.");
-
         if (!hasStatements) {
+            contentList.addView(getPlaceholderText("No suspect statements unlocked."));
             return;
         }
 
@@ -170,13 +154,10 @@ public class HandheldViewBinder {
             String feedback,
             FinalTimelineSelectionListener selectionListener
     ) {
-        titleText.setText("HANDHELD // FINAL TIMELINE");
         contentList.removeAllViews();
-        emptyText.setVisibility(View.GONE);
 
         if (!unlocked) {
-            emptyText.setVisibility(View.VISIBLE);
-            emptyText.setText(feedback);
+            contentList.addView(getPlaceholderText(feedback));
             return;
         }
 
@@ -291,10 +272,11 @@ public class HandheldViewBinder {
         return null;
     }
 
-    private void styleTab(Button button, boolean selected) {
-        button.setAllCaps(false);
-        button.setTextColor(selected ? Color.rgb(5, 8, 10) : Color.rgb(214, 245, 227));
-        button.setBackgroundColor(selected ? Color.rgb(245, 218, 122) : Color.rgb(18, 35, 39));
+    private void styleTab(TextView button, boolean selected) {
+        button.setTextAppearance(selected
+                ? R.style.handheld_display_element_active
+                : R.style.handheld_display_element_inactive);
+        button.setBackgroundColor(Color.parseColor(selected ? "#455445" : "#506250"));
     }
 
     private int dp(int value) {
@@ -515,5 +497,14 @@ public class HandheldViewBinder {
         button.setLayoutParams(buttonParams);
 
         return button;
+    }
+
+    private View getPlaceholderText(String message) {
+        TextView placeholder = new TextView(rootView.getContext());
+        placeholder.setText(message);
+        placeholder.setTextColor(Color.rgb(159, 216, 180));
+        placeholder.setTextSize(15);
+        placeholder.setPadding(0, dp(24), 0, 0);
+        return placeholder;
     }
 }
