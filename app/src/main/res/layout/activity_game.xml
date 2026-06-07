@@ -1,19 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    activity_game.xml
-    Legacy container retained for backward compatibility.
-    The active game entry point is activity_main.xml + GameShellFragment.
-    This layout is a plain full-screen frame in case a second Activity is needed.
--->
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/game_activity_root"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#05080A">
+    android:layout_height="match_parent">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/game_activity_fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
