@@ -82,7 +82,8 @@
     <style name="handheld_record" parent="handheld_display_text">
         <item name="android:textColor">@color/handheld_record_txt</item>
         <item name="android:background">@color/handheld_record_bg</item>
-        <item name="android:padding">@dimen/handheld_offset_10</item>
+        <item name="android:paddingHorizontal">@dimen/handheld_offset_10</item>
+        <item name="android:paddingVertical">@dimen/handheld_offset_5</item>
     </style>
 
 </resources>
